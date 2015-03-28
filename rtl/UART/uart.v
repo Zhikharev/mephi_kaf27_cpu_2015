@@ -35,7 +35,7 @@ module uart(
     output recv_error // Indicates error in receiving packet.
     );
 
-parameter CLOCK_DIVIDE = 325; // clock rate (50Mhz) / baud rate (9600) / 16
+parameter CLOCK_DIVIDE = 1302; // clock rate (100Mhz) / baud rate (4800) / 16
 
 // States for the receiving state machine.
 // These are just constants, not parameters to override.
@@ -59,6 +59,7 @@ reg [2:0] recv_state = RX_IDLE;
 reg [5:0] rx_countdown;
 reg [3:0] rx_bits_remaining;
 reg [7:0] rx_data;
+//reg [27:0] transmit_count;
 
 reg tx_out = 1'b1;
 reg [1:0] tx_state = TX_IDLE;
@@ -78,8 +79,10 @@ always @(posedge clk) begin
 	if (rst) begin
 		recv_state = RX_IDLE;
 		tx_state = TX_IDLE;
+	//	transmit_count <= 0;
 	end
 	
+	//if (transmit_count == 50000001) transmit_count <= 0;
 	// The clk_divider counter counts down from
 	// the CLOCK_DIVIDE constant. Whenever it
 	// reaches 0, 1/16 of the bit period has elapsed.
@@ -171,7 +174,8 @@ always @(posedge clk) begin
 	// Transmit state machine
 	case (tx_state)
 		TX_IDLE: begin
-			if (transmit) begin
+			if (~transmit) begin   
+			//    if (transmit_count == 50000000) begin             //transmit every 0.5s
 				// If the transmit flag is raised in the idle
 				// state, start transmitting the current content
 				// of the tx_byte input.
@@ -182,7 +186,8 @@ always @(posedge clk) begin
 				tx_out = 0;
 				tx_bits_remaining = 8;
 				tx_state = TX_SENDING;
-			end
+		//	 end
+		  end
 		end
 		TX_SENDING: begin
 			if (!tx_countdown) begin
@@ -208,5 +213,7 @@ always @(posedge clk) begin
 		end
 	endcase
 end
+
+
 
 endmodule
