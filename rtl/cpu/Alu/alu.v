@@ -20,14 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 module alu(
 input clk,
-input [31:0] sr1,
-input [31:0] sr2,
-input  [2:0] os,
-input [31:0] shift,
-input [31:0] rot,
-input reset,
-output [31:0] rd,
-output zeroflag
+input [31:0] sr1,   // Первый вход
+input [31:0] sr2,   // Второй вход
+input  [2:0] os,    // Управл. сигнал
+input [31:0] shift, // На сколько лог. сдвигать
+//input [31:0] rot,   // Значение цикл. сдвига
+//input reset,
+output [31:0] rd,   // Результат
+output zeroflag     // На всяк случай
 
 	);
 //reg [31:0] reg_sr1;			
@@ -36,15 +36,15 @@ reg [31:0] reg_rd;
 
 shift uutt(
 .clk(clk),
+.sr1(sr1),
 .rot(rot),
 .shift(shift),
-.log_shift(log_shift),
-.num_rot(num_rot)
+.log_shift(log_shift)
 );
 
 
 
-always @* // Нужно придумать по каким сигн работает always
+always @(posedge clk) // Нужно придумать по каким сигн работает always
   begin
    //if(reset)
      // begin
@@ -65,8 +65,8 @@ always @* // Нужно придумать по каким сигн работает always
   end
 //assign 
 assign rd = reg_rd;	
-assign  reg_sr1 = sr1;
-assign reg_sr2 = sr2;
+//assign  reg_sr1 = sr1;
+//assign reg_sr2 = sr2;
 
 
 endmodule
