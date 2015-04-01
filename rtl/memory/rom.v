@@ -31,6 +31,7 @@ module rom
 );
 
 	reg [15:0] rom [0:6];
+	wire [3:0] addr;
 
 	always @(posedge sys_clk, posedge sys_rst) begin
 		if(sys_rst) begin
@@ -49,7 +50,8 @@ module rom
 		*/
 	end
 
-	assign rom_instrution = rom[rom_pc];
+	assign addr = rom_pc >> 1;
+	assign rom_instrution = rom[addr];
 /*
 assign rom_instruction = ({16{pc == 30'h00000000}} & 16'b0101110011001101) |
                          ({16{pc == 30'h00000002}} & 16'b0001010011001110) |
