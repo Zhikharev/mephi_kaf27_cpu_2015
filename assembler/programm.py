@@ -7,6 +7,10 @@ class Register:
         self.name = name # Имя регистра
         self.addr = addr # Адрес регистра
 
+# Функция вывода ошибки
+def ERROR (error_string):
+    ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
+    exit(0)
 
 # Функция для чтения из файла данных о регистрах
 # file_name - путь к файлу
@@ -39,10 +43,9 @@ def findRegisterAddress(registr, registers):
     # То выводится сообщения об ошибке и программа останавливается
     error_string = 'Обнаружена ошибка при нахождении адреса регистра: ' + registr
     error_string += '. Регистр не обнаружен'
-    ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
-    exit(0)
+    ERROR(error_string)
 
-# Функция формирования строки с адресами регистров    
+# Функция формирования строки с адресами регистров
 def getInstrAddrStr(reg_data, registers):
     result = findRegisterAddress(reg_data[1], registers)
     result += findRegisterAddress(reg_data[2], registers)
@@ -56,8 +59,7 @@ def translateAddInstr(instruction, registers):
     if len(instruct_data) != 4: # Проверка количества аргументов в инструкции
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Недостаточно аргументов.'
-        ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
-        exit(0)
+        ERROR(error_string)
 
     # Записываем в строку код команды Add
     result = '0000'
@@ -75,8 +77,7 @@ def translateOrInstr(instruction, registers):
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Недостаточно аргументов.'
-        ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
-        exit(0)
+        ERROR(error_string)
 
     result = '0010'
     for i in range(1, 3):
@@ -92,8 +93,7 @@ def translateAndInstr(instruction, registers):
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Недостаточно аргументов.'
-        ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
-        exit(0)
+        ERROR(error_string)
 
     result = '0011'
     for i in range(1, 3):
@@ -105,4 +105,4 @@ def translateAndInstr(instruction, registers):
 
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateOrInstr("Or $0, $1, $2", s))
+print(translateAndInstr("And $ABC, $1, $2", s))
