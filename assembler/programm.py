@@ -58,7 +58,26 @@ def translateAddInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    # Формируем конечный двоичный код инструкции    
+    # Формируем конечный двоичный код инструкции
+    result += findRegisterAddress(instruct_data[2], registers)
+    result += findRegisterAddress(instruct_data[3], registers)
+    result += findRegisterAddress(instruct_data[1], registers)
+    return result
+
+# Функция пееревода инструкции Or в машинный код
+def translateOrInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
+        exit(0)
+
+    result = '0010'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
     result += findRegisterAddress(instruct_data[2], registers)
     result += findRegisterAddress(instruct_data[3], registers)
     result += findRegisterAddress(instruct_data[1], registers)
@@ -66,4 +85,4 @@ def translateAddInstr(instruction, registers):
 
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateAddInstr("Add $0, $1, $2", s))
+print(translateOrInstr("Or $0, $1, $2", s))
