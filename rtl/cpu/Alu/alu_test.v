@@ -25,12 +25,11 @@
 module alu_test;
 
 	// Inputs
-	reg reset;
 	reg clk;
 	reg [31:0] sr1;
 	reg [31:0] sr2;
 	reg [2:0] os;
-	reg [31:0] shift;
+	reg [5:0] shift;
 
 	// Outputs
 	wire [31:0] rd;

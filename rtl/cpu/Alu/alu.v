@@ -23,7 +23,7 @@ input clk,
 input [31:0] sr1,   // Первый вход
 input [31:0] sr2,   // Второй вход
 input  [2:0] os,    // Управл. сигнал
-input [31:0] shift, // На сколько лог. сдвигать
+input [5:0] shift, // На сколько лог. сдвигать
 //input [31:0] rot,   // Значение цикл. сдвига
 //input reset,
 output [31:0] rd,   // Результат
@@ -33,7 +33,8 @@ output zeroflag     // На всяк случай
 //reg [31:0] reg_sr1;			
 //reg [31:0] reg_sr2;
 reg [31:0] reg_rd;
-
+wire [31:0] rot;
+wire [31:0] log_shift;
 shift uutt(
 .clk(clk),
 .sr1(sr1),
@@ -41,12 +42,15 @@ shift uutt(
 .shift(shift),
 .log_shift(log_shift)
 );
+//reg [31:0] rot1;
+//reg [31:0] log_shift1;
 
 
-
-always @(posedge clk) // Нужно придумать по каким сигн работает always
+always @* // Нужно придумать по каким сигн работает always
   begin
-   //if(reset)
+   //rot1 = rot;
+	//log_shift1 = log_shift;
+	//if(reset)
      // begin
        //reg_sr1 <= 0;
 		 //reg_sr2 <= 0;
