@@ -128,6 +128,81 @@ def translateAndInstr(instruction, registers):
     result += getInstrAddrStr(instruct_data[1:], registers)
     return result
 
+def translateXorInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '0100'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+
+def translateNorInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '0101'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+
+def translateSllInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '0110'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+
+def translateRotInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '0111'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+
+def translateBneInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '1000'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateAndInstr("And $ABC, $1, $2", s))
+print(translateXorInstr("Xor $3, $2, $1", s))
