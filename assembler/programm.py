@@ -32,7 +32,7 @@ def getNumStr(num, length):
     if len(i) > length: # Проверка на превышения лимита
         ERROR("Ошибка при переводе числа " + num + ". Превышен лимит знаков")
 
-    while (len(i)< length): # Подгоняем под необходимую длину 
+    while (len(i)< length): # Подгоняем под необходимую длину
         i = '0' + i
 
     return i
@@ -94,6 +94,23 @@ def translateAddInstr(instruction, registers):
 
     # Формируем конечный двоичный код инструкции
     result += getInstrAddrStr(instruct_data[1:], registers)
+    return result
+# Функция пееревода инструкции Addi в машинный код
+def translateAddiInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 4:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Недостаточно аргументов.'
+        ERROR(error_string)
+
+    result = '0001'
+    for i in range(1, 3):
+        if (instruct_data[i].endswith(',')):
+            instruct_data[i] = instruct_data[i][:-1]
+
+    result += getNumStr(instruct_data[3], 4)
+    result += findRegisterAddress(instruct_data[2], registers)
+    result += findRegisterAddress(instruct_data[1], registers)
     return result
 
 # Функция пееревода инструкции Or в машинный код
@@ -203,6 +220,8 @@ def translateBneInstr(instruction, registers):
     result += getInstrAddrStr(instruct_data[1:], registers)
     return result
 
+
+
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateXorInstr("Xor $3, $2, $1", s))
+print(translateAddiInstr("Addi $3, $2, 0xFF", s))
