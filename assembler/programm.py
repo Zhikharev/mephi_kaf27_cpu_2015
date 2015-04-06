@@ -12,6 +12,31 @@ def ERROR (error_string):
     ctypes.windll.user32.MessageBoxW(0, error_string, 'Ошибка', 0)
     exit(0)
 
+# Функция для перевода числа в двоичную систему счисления, с заданным
+# количеством знаков
+def getNumStr(num, length):
+    i = 0
+    if num.startswith('0x'): # Проверяем на 16-ю систему счисления
+        i = int(num, 16)
+        i = bin(i)
+
+    elif num.startswith('0b'): # Проверяем на 2-ю систему счисления
+        i = int(num, 2)
+        i = bin(i)
+
+    else: # Если не то не другое, значит 10-я система счисления
+        i = int(num)
+        i = bin(i)
+
+    i = i[2:]
+    if len(i) > length: # Проверка на превышения лимита
+        ERROR("Ошибка при переводе числа " + num + ". Превышен лимит знаков")
+
+    while (len(i)< length): # Подгоняем под необходимую длину 
+        i = '0' + i
+
+    return i
+
 # Функция для чтения из файла данных о регистрах
 # file_name - путь к файлу
 def readRegisters(file_name):
