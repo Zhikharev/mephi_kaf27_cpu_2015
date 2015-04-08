@@ -6,4 +6,4 @@ module cpu (
 	output[15:0] ADR_O,
 	output [15:0] DAT_O
 	);
-endmodule
+endmodule       
