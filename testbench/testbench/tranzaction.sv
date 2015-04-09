@@ -54,31 +54,70 @@ typedef enum bit[3:0] {
                                          
 
 class tranz 
-        rand bit type_inst;
+        logic pak[15:0];
+        logic imm [3:0];
+        logic type_inst[3:0];  
+        logic addr[9:0];
+        /////////////////
+        ////random chouse type instraction
+        /////////////////
+        rand  type_inst;
+        rand imm; 
+        rand addr;    
+        
         rand cop_t cop;
-        rand reg_t reg0;
-        rand reg_t reg1;
-        rand reg_t reg2;
+        rand reg_t reg0; ///rs
+        rand reg_t reg1; ///rt 
+        rand reg_t reg2; ///rd
+        constraint reg2 {        
+                reg2 != 4'b1100;
+        }
         rand dcod_t dcot;
         
         function new begin
                 
                 end         
                  
+       
+            
+       if (tupe_inst[2] & tupe_inst[0]) begin
+                //////// the 1st kind of instraction
+                pak[3:0] = cop;
+                if(cop == 4'b0011) begin
+                        ////////// the 1st type with immidiate
+                        pak[4:7] = imm;
+                        pak[8:11] = reg1;
+                        pak[12:15] = reg2;
+                                        
+                end
+                else begin
+                        /////////// the 2nd type with 3 registers
+                        
+                        pak[4:7] =reg0;
+                        pak[8:11] = reg1;
+                        pak[12:15] = reg2;
+                
+                
+                end 
+                
+      end
+      else begin
+         if((dcot == 6'b101110) or (dcot == 6'b1011111)) begin
+                /////// have some qustian about cpu contain
+                pak[3:0] = dcot;
+                ///////pak[4:7] = 
+         end
+         else begin
+                pak[3:0] = dcot;
+                pak[15:4] = addr;
+         end
         
-        
-        end
+      
+      end
 
+     task $display(pak)
 
-
-
-
-
-
-
-
-
-
+endclass
 
 
 `endif 
