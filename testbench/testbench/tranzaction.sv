@@ -69,7 +69,7 @@ class tranz
         rand reg_t reg0; ///rs
         rand reg_t reg1; ///rt 
         rand reg_t reg2; ///rd
-        constraint reg2 {        
+        constraint reg2,reg1 {        
                 reg2 != 4'b1100;
         }
         rand dcod_t dcot;
@@ -102,12 +102,15 @@ class tranz
                 
       end
       else begin
+      /////// jump with rs
          if((dcot == 6'b101110) or (dcot == 6'b1011111)) begin
-                /////// have some qustian about cpu contain
+                
                 pak[3:0] = dcot;
-                ///////pak[4:7] = 
+                pak[11:4] = 0;
+                pak[15:12] = reg0;
          end
          else begin
+         ////// jump with imm
                 pak[3:0] = dcot;
                 pak[15:4] = addr;
          end
@@ -115,8 +118,10 @@ class tranz
       
       end
 
-     task $display(pak)
-
+   function print (pak) begin
+        $display(pak,/n);        
+   
+   end
 endclass
 
 
