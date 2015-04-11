@@ -1,4 +1,4 @@
-`ifndef TRANZACTION
+bg`ifndef TRANZACTION
 `define TRANZACTION
 
 //////////// typedef for  4 felds instractions
