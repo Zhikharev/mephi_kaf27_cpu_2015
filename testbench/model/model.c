@@ -68,7 +68,7 @@ short readinstr (){
 	else
 		printf ("ERROR\n");
 
-	printf ("i: %x\n",i);
+	printf ("i: %d\n",i);
 	printf("PC %6d\n", PC);
 
 	while (g < 2) {
