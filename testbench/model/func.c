@@ -28,6 +28,7 @@ int rd;
 int imm;   
 int Mtype;
 int addr;
+int addr_rs;
 int operand1;
 int operand2;
 int result;
@@ -1347,9 +1348,62 @@ void jal (short addr)
 {
 	//JumpAddr???????
 }
-void jr (int operand1)
-{
 
+//??????????????????????????????????????
+void jr (void)
+{
+	    switch(addr_rs){                 
+			case 0x0 : PC = reg_A;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x1 : PC = reg_B;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x2 : PC = reg_C;
+				       printf ("PC: %d\n",PC);
+					break;
+			case 0x3 : PC = reg_D;
+					   printf ("PC: %d\n",PC);
+					break;	
+			case 0x4 : PC = reg_E;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x5 : PC = reg_F;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x6 : PC = reg_G;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x7 : PC = reg_H;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x8 : PC = reg_W;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x9 : PC = reg_K;
+					   printf ("PC: %d\n",PC);
+					break;	
+			case 0xA : PC = reg_MR;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xB : PC = reg_LR;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xC : PC = reg_zero;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xD : PC = reg_t0;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xE : PC = reg_t1;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xF : PC = reg_t2;
+					   printf ("PC: %d\n",PC);
+					break;
+			default: 
+					break;	
+		}
 }
 void jalr (int operand1)
 {
