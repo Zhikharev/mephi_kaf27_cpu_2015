@@ -13,14 +13,14 @@ class environment
         driver dr;
         scorebord sb;
         monitor mon;  
-        mailbox mb_dr;
-        mailbox mb_mon;      
+        mailbox #(inst) mb_dr;
+        mailbox #(inst)mb_mon;      
         
-        function new(virtual  wishbone inst_cpu, virtual wishbone data_cpu) begin
+        function new(virtual  wishbone inst_cpu, virtual wishbone data_cpu) 
                       this wishbone = inst_cpu;
                       this wishbone = data_cpu;           
                       this control = cont_cpu;
-        end
+        endfunction
         
         
     
