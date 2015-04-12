@@ -22,10 +22,9 @@ class environment
         
         
     
-        function bilt () begin 
+        function built () begin 
                 $display("Enviroment: build is started. %0t",$time);
-                
-                
+                // не понимаю как сделать блок built             
                 
                 
                 
@@ -91,7 +90,7 @@ class environment
 
         function void report ()begin
                 $display()
-        
+      // не знаю что писать в функции report  
         end
 
 
