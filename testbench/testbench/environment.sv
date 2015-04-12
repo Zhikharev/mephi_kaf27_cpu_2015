@@ -12,7 +12,9 @@ class environment
         virtual control cont_cpu;
         driver dr;
         scorebord sb;
-        monitor mon;        
+        monitor mon;  
+        mailbox mb_dr;
+        mailbox mb_mon;      
         
         function new(virtual  wishbone inst_cpu, virtual wishbone data_cpu) begin
                       this wishbone = inst_cpu;
