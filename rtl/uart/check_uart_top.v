@@ -24,20 +24,33 @@ module check_uart_top(
     input rx, 
     output tx, 
     input transmit, 
-  //  input [7:0] tx_byte, 
+    input [7:0] tx_byte, 
     output received, 
     output [7:0] rx_byte, 
     output is_receiving, 
     output is_transmitting, 
-    output recv_error
+    output recv_error,
+	 
+	 
+	 input wr_en,
+	 input rd_en,
+	 output [7:0] dout,
+	 output full, 
+	 output empty
 	  );
 	  
 	 wire [7:0] lb_byte;
+	
 	 wire clk_cmt;
-	 
-	 clk clock
-     (.CLK_IN1(clk),      
-      .CLK_OUT1(clk_cmt)); 
+	 wire wr_clk_cmt;
+	 wire rd_clk_cmt;
+	 wire [7:0] din;
+		
+		clk instance_name
+   (.CLK_IN1(clk),      
+    .CLK_OUT1(clk_cmt),     
+    .CLK_OUT2(rd_clk_cmt), 
+    .CLK_OUT3(wr_clk_cmt));  
 	  
     uart uart_1 (
        .clk(clk_cmt), 
@@ -53,5 +66,17 @@ module check_uart_top(
        .recv_error(recv_error)
                );
 					
-	 assign lb_byte = rx_byte;
+		fifo fifo (
+  .rst(rst), // input rst
+  .wr_clk(wr_clk_cmt), // input wr_clk
+  .rd_clk(rd_clk_cmt), // input rd_clk
+  .din(din), // input [7 : 0] din
+  .wr_en(wr_en), // input wr_en
+  .rd_en(rd_en), // input rd_en
+  .dout(dout), // output [7 : 0] dout
+  .full(full), // output full
+  .empty(empty) // output empty
+);
+	 assign din = rx_byte;				
+	 assign lb_byte = dout;
 endmodule
