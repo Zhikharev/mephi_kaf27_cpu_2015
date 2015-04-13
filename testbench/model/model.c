@@ -46,7 +46,7 @@ openfile(){
 	f = fopen(string, "r");*/
 
 	printf ("Opening a file : ");
-    f = fopen ("D:/instr/instructions.bin","rb");
+    f = fopen ("prog.bin","rb");
     if(f == NULL)
 	{
 		printf("ERROR opening file\n");
@@ -60,56 +60,58 @@ openfile(){
 }
 
 short readinstr (){
-
+	short buffer[2];
 	int g = 0;
+
 	printf ("Set the position at the beginning of the file\n ");
-	if (fseek (f,i,0) == 0)
+	if (fseek (f, i, SEEK_SET) == 0)
 		printf ("Done\n");
 	else
 		printf ("ERROR\n");
 
-	printf ("i: %d\n",i);
+	printf ("i: %i\n",i);
 	printf("PC %6d\n", PC);
 
 	while (g < 2) {
-		instr = fgetc (f);
-		if (instr == EOF)
+		buffer[g] = fgetc (f);
+		printf ("F: buffer[%d]: %x\n", g, buffer[g]);
+		if (buffer[g] == EOF)
 		{
 			if ( feof (f) != 0)
 				printf ("Reading the file finished\n");
 			else
 				printf ("ERROR\n");
 		}
-
 		g++;
-
-		}
-	i = i + 16;
-
+	}
+	buffer[0] = buffer[0] << 8;
+	printf ("F: buffer[0]: %x\n", buffer[0]);
+	instr = buffer[0]  | buffer[1];
+	printf ("F: instr: 0x%04x\n",instr);
+	i = i + 2;
 	printf ("i: %d\n",i);
-	printf ("instr: %d\n",instr);
     return (instr);
 }
 
 
 decode(short instr){ 
-
+	printf ("D: instr: 0x%04x\n",instr);
 	opcode = (instr >> 12);
-	printf ("opcode: %x\n",opcode);
+	printf ("D: opcode: %x\n",opcode);
 	rs = ((instr & 0x0F00) >> 8);
-	printf ("rs: %x\n",rs);
+	printf ("D: rs: %x\n",rs);
 	imm = ((instr & 0x0F00) >> 8);
-	printf ("imm: %x\n",imm);
+	printf ("D: imm: %x\n",imm);
 	rt = ((instr & 0x00F0) >> 4);
-	printf ("rt: %x\n",rt);
+	printf ("D: rt: %x\n",rt);
 	rd = (instr & 0x000F);
-	printf ("rd: %x\n",rd);
+	printf ("D: rd: %x\n",rd);
 	Mtype = ((instr & 0x0C00) >> 10);
-	printf ("Mtype: %x\n",Mtype);
+	printf ("D: Mtype: %x\n",Mtype);
 	addr = (instr & 0x03FF);
-	printf ("addr: %x\n",addr);
+	printf ("D: addr: %x\n",addr);
 	addr_rs = (instr & 0x03FF);
-	printf ("Mrs: %x\n",addr_rs);
+	printf ("D: Mrs: %x\n",addr_rs);
 
 	switch (opcode) {
 			case 0x0 : add(rs, rt); 
