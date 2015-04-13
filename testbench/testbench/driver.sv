@@ -1,6 +1,6 @@
 `ifdef DRIVER
 `define DRIVER
-`define inst=instraction;
+`define inst=instraction; // что это??? 
 class
         virtual wishbone dr_int;
         mailbox #(trans) mb_dr;
