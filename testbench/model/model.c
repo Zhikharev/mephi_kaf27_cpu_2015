@@ -1,11 +1,9 @@
 //model_cpu
 #include <stdio.h>
 #include <math.h>
-//#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "svdpi.h"
-#include "func.h"
 
 int reg_A = 1; // Register for storing hashsum
 int reg_B = 2;
@@ -29,7 +27,6 @@ short instr;
 int i = 0;
 int result;
 
-
 int opcode;
 int rs;
 int rt;
@@ -37,21 +34,19 @@ int rd;
 int imm;   
 int Mtype;
 int addr;
-int operand1;
-int operand2;
-
+int addr_rs;
 
 //Fetch
 FILE *f;
-int openfile(void){
-
+openfile(){
+		
 	/*char string[50];
 	printf("Please set program file\n");
 	scanf("%s", string);
 	f = fopen(string, "r");*/
 
 	printf ("Opening a file : ");
-    f = fopen ("D:/instr/instructions.bin","rb");
+    f = fopen ("prog.bin","rb");
     if(f == NULL)
 	{
 		printf("ERROR opening file\n");
@@ -64,83 +59,87 @@ int openfile(void){
 	}
 }
 
-//считывает только 8 бит!!!!!!!!!!
-int readinstr (void){
+short readinstr (){
+	short buffer[2];
 	int g = 0;
 
-		printf ("Set the position at the beginning of the file\n ");
-		if (fseek (f,i,0) == 0)
-			printf ("Done\n");
-		else
-			printf ("ERROR\n");
+	printf ("Set the position at the beginning of the file\n ");
+	if (fseek (f, i, SEEK_SET) == 0)
+		printf ("Done\n");
+	else
+		printf ("ERROR\n");
 
-		printf ("i: %d\n",i);
-		printf("PC %6d\n", PC);
+	printf ("i: %i\n",i);
+	printf("PC %6d\n", PC);
 
-		while (g != 2) {
-		instr = fgetc (f);
-		//instr += instr;
-		if (instr == EOF)
+	while (g < 2) {
+		buffer[g] = fgetc (f);
+		printf ("F: buffer[%d]: %x\n", g, buffer[g]);
+		if (buffer[g] == EOF)
 		{
 			if ( feof (f) != 0)
 				printf ("Reading the file finished\n");
 			else
 				printf ("ERROR\n");
 		}
-
-		g = g + 1;
-
-		}
-		i = i + 16;
-
+		g++;
+	}
+	buffer[0] = buffer[0] << 8;
+	printf ("F: buffer[0]: %x\n", buffer[0]);
+	instr = buffer[0]  | buffer[1];
+	printf ("F: instr: 0x%04x\n",instr);
+	i = i + 2;
 	printf ("i: %d\n",i);
-	printf ("instr: %d\n",instr);
     return (instr);
 }
 
-void decode(int instr){ 
 
+decode(short instr){ 
+	printf ("D: instr: 0x%04x\n",instr);
 	opcode = (instr >> 12);
-	printf ("opcode: %d\n",opcode);
+	printf ("D: opcode: %x\n",opcode);
 	rs = ((instr & 0x0F00) >> 8);
-	printf ("rs: %d\n",rs);
+	printf ("D: rs: %x\n",rs);
 	imm = ((instr & 0x0F00) >> 8);
-	printf ("imm: %d\n",imm);
+	printf ("D: imm: %x\n",imm);
 	rt = ((instr & 0x00F0) >> 4);
-	printf ("rt: %d\n",rt);
+	printf ("D: rt: %x\n",rt);
 	rd = (instr & 0x000F);
-	printf ("rd: %d\n",rd);
+	printf ("D: rd: %x\n",rd);
 	Mtype = ((instr & 0x0C00) >> 10);
-	printf ("Mtype: %d\n",Mtype);
+	printf ("D: Mtype: %x\n",Mtype);
 	addr = (instr & 0x03FF);
-	printf ("addr: %d\n",addr);
+	printf ("D: addr: %x\n",addr);
+	addr_rs = (instr & 0x03FF);
+	printf ("D: Mrs: %x\n",addr_rs);
 
 	switch (opcode) {
-			case 0x0 :  add(operand1, operand2); 
-					    printf ("add\n");
+			case 0x0 : add(rs, rt); 
+					   printf ("add\n");
 					break;
-			case 0x1 : addi(imm, operand2); 
+			case 0x1 : addi(imm, rt, rd); 
 					   printf ("addi\n");
 					break;
-			case 0x2 : or(operand1, operand2);
+			case 0x2 : or(rs, rt, rd);
 				       printf ("or\n");
 					break; 
-			case 0x3 : and(operand1, operand2);
+			case 0x3 : and(rs, rt, rd);
 				       printf ("and\n");
 					break;
-			case 0x4 : xor(operand1, operand2);
+			case 0x4 : xor(rs, rt, rd);
 					   printf ("xor\n");
 					break;
-			case 0x5 : nor(operand1, operand2);
+			case 0x5 : nor(rs, rt, rd);
 					   printf ("nor\n");
 					break;
-			case 0x6 : sll(operand1, operand2);
+			case 0x6 : sll(rs, rt, rd);
 					   printf ("sll\n");
 					break;
-			case 0x7 : rot(operand1, operand2);
+			case 0x7 : rot(rs, rt, rd);
 				       printf ("rot\n");
 					break;
-			case 0x8 : bne(operand1, operand2);
+			case 0x8 : bne(rs, rt, rd);
+					   printf ("bne\n");
 					break;
 			case 0x9 : switch (Mtype) {
 							case 0: ldl(addr);
@@ -179,20 +178,20 @@ void decode(int instr){
 							case 1: jal(addr);
 									printf ("jal\n");
 								break;
-							case 2: jr(operand1);
+							case 2: jr(addr_rs);
 									printf ("jr\n");
 								break;
-							case 3: jalr(operand1);
+							case 3: jalr(addr_rs);
 									printf ("jarl\n");
 								break;
 					   }
 					break;
 			case 0xC : printf ("nop\n");
 					break;// nop     
-			default: printf ("Такого кода операции не сущетвует\n");
+			default: printf ("This operation doesn't exist\n");
+					 return 0;
 					break;		
 			}
-		printf ("opcode: %d\n",opcode);
 }
 //??????????????????????
 short checkmemory(short addr)

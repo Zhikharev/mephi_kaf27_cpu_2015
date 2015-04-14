@@ -53,7 +53,7 @@ build_rtl:
 	vlog                  \
 	-l build_rtl.log     \
 	+incdir+$(RTL)        \
-	+incdir+$(TB)/verilog \
+	+incdir+$(TB)        \
 	$(RTL_SRC);
 
 
