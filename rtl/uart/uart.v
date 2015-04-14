@@ -35,7 +35,7 @@ module uart(
     output recv_error // Indicates error in receiving packet.
     );
 
-parameter CLOCK_DIVIDE = 1302; // clock rate (100Mhz) / baud rate (4800) / 16
+parameter CLOCK_DIVIDE = 24; // clock rate (100Mhz) / baud rate (256000) / 16
 
 // States for the receiving state machine.
 // These are just constants, not parameters to override.
@@ -174,7 +174,7 @@ always @(posedge clk) begin
 	// Transmit state machine
 	case (tx_state)
 		TX_IDLE: begin
-			if (~transmit) begin   
+			if (transmit) begin   
 			//    if (transmit_count == 50000000) begin             //transmit every 0.5s
 				// If the transmit flag is raised in the idle
 				// state, start transmitting the current content
