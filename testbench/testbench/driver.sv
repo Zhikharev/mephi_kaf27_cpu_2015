@@ -1,12 +1,12 @@
-`ifdef DRIVER
+`ifndef DRIVER
 `define DRIVER
-`define inst=instraction;
+
 class driver;
    virtual wishbone dr_int;
    virtual control dr_cont;
    mailbox #(trans) mb_dr;
    trans inst;
-        
+
    function new (virtual wishbone dr_int , mailbox #(trans) mb_dr)
       this dr_int = dr_int;
       inst = new();
