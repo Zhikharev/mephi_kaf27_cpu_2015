@@ -95,6 +95,7 @@ def translateAddInstr(instruction, registers):
     # Формируем конечный двоичный код инструкции
     result += getInstrAddrStr(instruct_data[1:], registers)
     return result
+
 # Функция пееревода инструкции Addi в машинный код
 def translateAddiInstr(instruction, registers):
     instruct_data = instruction.split(" ")
@@ -266,7 +267,25 @@ def translateJalrInstr(instruction, registers):
     result += findRegisterAddress(instruct_data[1], registers)
     return result
 
+def translateNopInstr(instruction):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) == 1:
+        result = '1100000000000000'
+
+    elif len(instruct_data) == 2:
+        num = int(instruct_data[1])
+        result = '1100000000000000' * num
+
+    else:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    return result
+
+
+
 
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateJalrInstr("JALR $C", s))
+print(translateNopInstr('NOP 3'))
