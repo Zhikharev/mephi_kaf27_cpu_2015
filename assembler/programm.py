@@ -83,7 +83,7 @@ def translateAddInstr(instruction, registers):
     instruct_data = instruction.split(" ") # Разделяем инструкцию по пробелам
     if len(instruct_data) != 4: # Проверка количества аргументов в инструкции
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     # Записываем в строку код команды Add
@@ -100,7 +100,7 @@ def translateAddiInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0001'
@@ -118,7 +118,7 @@ def translateOrInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0010'
@@ -134,7 +134,7 @@ def translateAndInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0011'
@@ -149,7 +149,7 @@ def translateXorInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0100'
@@ -164,7 +164,7 @@ def translateNorInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0101'
@@ -179,7 +179,7 @@ def translateSllInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0110'
@@ -194,7 +194,7 @@ def translateRotInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '0111'
@@ -209,7 +209,7 @@ def translateBneInstr(instruction, registers):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Недостаточно аргументов.'
+        error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '1000'
@@ -220,8 +220,53 @@ def translateBneInstr(instruction, registers):
     result += getInstrAddrStr(instruct_data[1:], registers)
     return result
 
+def translateJmpInstr(instruction):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101100'
+    result +=  getNumStr(instruct_data[1], 10)
+    return result
+
+def translateJalInstr(instruction):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101101'
+    result +=  getNumStr(instruct_data[1], 10)
+    return result
+
+def translateJrInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101110'
+    result += '000000'
+    result += findRegisterAddress(instruct_data[1], registers)
+    return result
+
+def translateJalrInstr(instruction, registers):
+    instruct_data = instruction.split(" ")
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101111'
+    result += '000000'
+    result += findRegisterAddress(instruct_data[1], registers)
+    return result
 
 
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateAddiInstr("Addi $3, $2, 0xFF", s))
+print(translateJalrInstr("JALR $C", s))
