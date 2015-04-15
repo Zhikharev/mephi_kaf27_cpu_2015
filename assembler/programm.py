@@ -32,9 +32,7 @@ def getNumStr(num, length):
     if len(i) > length: # Проверка на превышения лимита
         ERROR("Ошибка при переводе числа " + num + ". Превышен лимит знаков")
 
-    while (len(i)< length): # Подгоняем под необходимую длину
-        i = '0' + i
-
+    i = i.zfill(length)    # Дополнение нулями слева до необходимой длинны
     return i
 
 # Функция для чтения из файла данных о регистрах
@@ -221,7 +219,7 @@ def translateBneInstr(instruction, registers):
     result += getInstrAddrStr(instruct_data[1:], registers)
     return result
 
-def translateJmpInstr(instruction):
+"""def translateJmpInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 2:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -241,7 +239,7 @@ def translateJalInstr(instruction):
 
     result = '101101'
     result +=  getNumStr(instruct_data[1], 10)
-    return result
+    return result"""
 
 def translateJrInstr(instruction, registers):
     instruct_data = instruction.split(" ")
@@ -284,7 +282,8 @@ def translateNopInstr(instruction):
     return result
 
 
-
+a = getNumStr('10', 6)
+print(a)
 
 rfile='registers.conf'
 s = readRegisters(rfile)
