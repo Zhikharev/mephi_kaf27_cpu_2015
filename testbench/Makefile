@@ -1,8 +1,8 @@
 # Exports
-export LM_LICENSE_FILE=/opt/questasim_v6/license.dat
+export LM_LICENSE_FILE=/opt/questasim_v6.6c/license.dat
 
 # Environment variables
-MTI_HOME = /opt/questasim_v6/questasim
+MTI_HOME = /opt/questasim_v6.6c/questasim
 
 # Main path variables
 HOME       := $(shell pwd)
