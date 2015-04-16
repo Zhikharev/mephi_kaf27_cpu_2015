@@ -271,7 +271,7 @@ def translateNopInstr(instruction):
         result = '1100000000000000'
 
     elif len(instruct_data) == 2:
-        num = int(instruct_data[1])
+        num = int(instruct_data[1][1:-1])
         result = '1100000000000000' * num
 
     else:
@@ -287,4 +287,4 @@ print(a)
 
 rfile='registers.conf'
 s = readRegisters(rfile)
-print(translateNopInstr('NOP 3'))
+print(translateNopInstr('NOP (13)'))
