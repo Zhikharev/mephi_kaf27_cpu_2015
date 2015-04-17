@@ -7,15 +7,15 @@ class driver;
    mailbox #(trans) mb_dr2sb;
    trans inst;
 
-   function new (virtual wishbone dr_int_new, mailbox #(trans) mb_dr_new);
-      this dr_int = dr_int_new;
+   function new (virtual wishbone dr_int, mailbox #(trans) mb_dr);
+      this.dr_int = dr_int;
       inst = new();
               
       if (mb_dr2sb == null) begin
              $display("Driver -- --  ERROR mailbox is emply ");
              $finish;
       end 
-      else  this mb_dr = mb_dr_new;
+      else  this.mb_dr = mb_dr;
                  
    endfunction
    
@@ -27,7 +27,7 @@ class driver;
             sec_inst.randomize;
             ////how to adres to create inst
             mb_dr2sb.put(sec_inst);
-            $cast(sec_inst inst);
+            $cast(inst sec_inst);
             send_transaction;
          end
       end
