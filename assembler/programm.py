@@ -1,4 +1,27 @@
 import ctypes
+# Адресс файла с кодом на ассемблере
+parsingFile = open("code.as", 'r')
+# Файл разделенный на блоки директивами
+fileByDirects = {}
+# Метки и их адреса
+label = {}
+# Переменные объявленные в .set
+variables = {}
+# Ссылки на регистры
+regLinks = {}
+# Ссылки в память объявленные .data
+dataLinks = {}
+# Список, в который добавим регистры
+registers = []
+# Адрес в памяти с которого начинается запись программы
+memStartAddr = 0
+# Адрес в памяти на котором заканчивается память занимаемая программой
+codeEndAddr = 0
+dataEndAddr = 0
+# Колличество байт на которое идет выравнивание
+align = 2
+data = ''
+code = ''
 
 # Класс который необходим для хранения данных о регистрах
 class Register:
@@ -37,9 +60,9 @@ def getNumStr(num, length):
 
 # Функция для чтения из файла данных о регистрах
 # file_name - путь к файлу
-def readRegisters(file_name):
-    registers = [] # Задаем пустой список, в который добавим регистры
-    reg_input = open(file_name, 'r')
+def readRegisters():
+    global registers
+    reg_input = open('registers.conf', 'r')
     for line in reg_input: # Построчно считываем файл
         line=line[:-1] # Удаляем символ перехода на новую строку '\n'
         reg_data = line.split(' ') # Получаем данные о регистре в виде 3х строк
@@ -47,17 +70,20 @@ def readRegisters(file_name):
         # объект для хранения данных о регистре
         registers.append(reg) # Добавляем новый регистр в список
 
-    return registers
+    print("Registers saved")
 
 # Функция для нахождения адреса регистра по его номеру или имени
 # передается имя или номер регистра и список всех регистров
-def findRegisterAddress(registr, registers):
+def findRegisterAddress(registr):
+    global registers
+    if registr in regLinks:
+        registr = regLinks[registr]
+
     for reg in registers: # Проверяем не является ли переданная строка
         if registr[1:] == reg.name: # Именем регистра
             return reg.addr # если является, то возвращаем адрес регистра
             break;
 
-    for reg in registers:
         if registr[1:] == reg.num: # Номером регистра
             return reg.addr
             break;
@@ -69,15 +95,15 @@ def findRegisterAddress(registr, registers):
     ERROR(error_string)
 
 # Функция формирования строки с адресами регистров
-def getInstrAddrStr(reg_data, registers):
-    result = findRegisterAddress(reg_data[1], registers)
-    result += findRegisterAddress(reg_data[2], registers)
-    result += findRegisterAddress(reg_data[0], registers)
+def getInstrAddrStr(reg_data):
+    result = findRegisterAddress(reg_data[1])
+    result += findRegisterAddress(reg_data[2])
+    result += findRegisterAddress(reg_data[0])
     return result
 
 # Функция пееревода инструкции Add в машинный код
-# Передаётся строка инструкции и список регистров
-def translateAddInstr(instruction, registers):
+# Передаётся строка инструкции
+def translateAddInstr(instruction):
     instruct_data = instruction.split(" ") # Разделяем инструкцию по пробелам
     if len(instruct_data) != 4: # Проверка количества аргументов в инструкции
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -91,12 +117,12 @@ def translateAddInstr(instruction, registers):
             instruct_data[i] = instruct_data[i][:-1]
 
     # Формируем конечный двоичный код инструкции
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-# Функция пееревода инструкции Addi в машинный код
-def translateAddiInstr(instruction, registers):
-    instruct_data = instruction.split(" ")
+def translateAddiInstr(instruction):
+    global variables
+    instruct_data = instruction.split(' ')
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Неверное количество аргументов.'
@@ -107,13 +133,17 @@ def translateAddiInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getNumStr(instruct_data[3], 4)
-    result += findRegisterAddress(instruct_data[2], registers)
-    result += findRegisterAddress(instruct_data[1], registers)
+    if instruct_data[3] in variables:
+        result += getNumStr(str(variables[instruct_data[3]]), 4)
+
+    else:
+        result += getNumStr(instruct_data[3], 4)
+
+    result += findRegisterAddress(instruct_data[2])
+    result += findRegisterAddress(instruct_data[1])
     return result
 
-# Функция пееревода инструкции Or в машинный код
-def translateOrInstr(instruction, registers):
+def translateOrInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -125,11 +155,10 @@ def translateOrInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-# Функция пееревода инструкции And в машинный код
-def translateAndInstr(instruction, registers):
+def translateAndInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -141,10 +170,10 @@ def translateAndInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-def translateXorInstr(instruction, registers):
+def translateXorInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -156,10 +185,10 @@ def translateXorInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-def translateNorInstr(instruction, registers):
+def translateNorInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -171,10 +200,10 @@ def translateNorInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-def translateSllInstr(instruction, registers):
+def translateSllInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -186,10 +215,10 @@ def translateSllInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-def translateRotInstr(instruction, registers):
+def translateRotInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -201,10 +230,10 @@ def translateRotInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
-def translateBneInstr(instruction, registers):
+def translateBneInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 4:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
@@ -216,7 +245,7 @@ def translateBneInstr(instruction, registers):
         if (instruct_data[i].endswith(',')):
             instruct_data[i] = instruct_data[i][:-1]
 
-    result += getInstrAddrStr(instruct_data[1:], registers)
+    result += getInstrAddrStr(instruct_data[1:])
     return result
 
 """def translateJmpInstr(instruction):
@@ -239,7 +268,7 @@ def translateJalInstr(instruction):
 
     result = '101101'
     result +=  getNumStr(instruct_data[1], 10)
-    return result"""
+    return result
 
 def translateJrInstr(instruction, registers):
     instruct_data = instruction.split(" ")
@@ -263,7 +292,7 @@ def translateJalrInstr(instruction, registers):
     result = '101111'
     result += '000000'
     result += findRegisterAddress(instruct_data[1], registers)
-    return result
+    return result"""
 
 def translateNopInstr(instruction):
     instruct_data = instruction.split(" ")
@@ -281,10 +310,70 @@ def translateNopInstr(instruction):
 
     return result
 
+# Функция для разделения фала на блоки по директивам
+def setDirectivesList():
+    global parsingFile
+    global fileByDirects
+    current = ''
+    for line in parsingFile:
+        if '#' in line: # Удаление комментария в строке
+            line = line[:line.find('#')] + '\n'
 
-a = getNumStr('10', 6)
-print(a)
+        line = line.strip() + '\n' # Удаление пробельных символов слева и справа
+        if line.startswith('.'): # Нахождение директив
+            # Обработка .text и .data
+            if line.startswith('.text') or line.startswith('.data'):
+                current = line.strip()
+                # Директивы могут встречаться в файле несколько раз
+                if current not in fileByDirects:
+                    fileByDirects[current] = ''
 
-rfile='registers.conf'
-s = readRegisters(rfile)
-print(translateNopInstr('NOP (13)'))
+                continue;
+
+            elif line.startswith('.set') or line.startswith('.def'):
+                if len(line) == 4:
+                    current = line.strip()
+                    if current not in fileByDirects:
+                        fileByDirects[current] = ''
+
+                elif len(line.split(' ')) == 3:
+                    current = line[:4]
+                    if current not in fileByDirects:
+                        fileByDirects[current] = line[4:].lstrip()
+
+                    else:
+                        fileByDirects[current] += line[4:].lstrip()
+
+        else:
+            if current != '':
+                if len(line) > 0:
+                    fileByDirects[current] += line
+
+            elif len(line) > 0:
+                current = '.none'
+                fileByDirects[current] = line
+
+def parseDataLines():
+    global codeEndAddr
+    global fileByDirects
+    global dataEndAddr
+    global data
+    global align
+    global dataLinks
+    dataEndAddr = codeEndAddr + 2
+    if '.data' in fileByDirects:
+        dataLines = fileByDirects['.data'].splitlines()
+        for line in dataLines:
+            line = line.upper()
+            line = line.split(' ')
+            line = [l.strip() for l in line]
+            if len(line) == 2:
+                data += getNumStr(line[1], align * 8)
+                dataLinks[line[0]] = dataEndAddr
+                dataEndAddr += align
+
+            else:
+                ERROR('Ошибка в блоке .data')
+
+    else:
+        print('.data not included in fileByDirectives')
