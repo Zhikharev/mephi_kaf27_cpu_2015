@@ -15,7 +15,9 @@ interface wishbone (input clk);
         logic           ack_in ;
         logic           ack_out;
         logic   [3:0]   sel_out;
-        logic   [3:0]   seb_in;
+        //logic   [3:0]   seb_in;
+        logic           stb_in;
+        logic           stb_out;
         logic           cyc_out;
         
         /*

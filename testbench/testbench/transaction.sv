@@ -28,7 +28,7 @@ typedef enum bit[5:0] {
         AND  = 6'b000011,
         XOR  = 6'b000100,
         NOR  = 6'b000101,
-        SLL= 6'b000110,
+        SLL  = 6'b000110,
         ROT  = 6'b000111,   
         BNE  = 6'b001000,
         NOP  = 6'b001100,
@@ -63,14 +63,14 @@ class trans;
       if(this.op_type()) begin
          inst[3:0] = opcode[3:0];
          if(opcode == ADDI)begin
-             inst[4:7] = imm;
-             inst[8:11] = rt;
-             inst[12:15] = rd;
+             inst[7:4] = imm;
+             inst[11:8] = rt;
+             inst[15:12] = rd;
          end
          else begin
-            inst[4:7]=rs;
-            inst[8:11]=rt;
-             inst[12:15]=rd;
+            inst[7:4]=rs;
+            inst[11:8]=rt;
+             inst[15:12]=rd;
          end
    
       end
@@ -78,17 +78,26 @@ class trans;
       else begin
       inst[5:0] = opcode;
          if(opcode inside {JR, JALR})begin
-         inst[6:11]=0;
-         inst[12:15]=rs;
+         inst[11:6]=0;
+         inst[15:12]=rs;
          end
          else begin
-         inst[6:15]=addr;
+         inst[15:6]=addr;
          end
       end
       return inst;
    endfunction
 
-
+    function decode_inst (inst);
+        string inst_2;
+        if(this.op_type()) begin
+            
+        
+        
+        end
+    
+    
+    endfunction
 
    function void print();
 
