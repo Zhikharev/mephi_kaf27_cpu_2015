@@ -4,14 +4,14 @@
 class driver;
    virtual wishbone dr_int;
    virtual control dr_cont;
-   mailbox #(trans) mb_dr;
+   mailbox #(trans) mb_dr2sb;
    trans inst;
 
    function new (virtual wishbone dr_int_new, mailbox #(trans) mb_dr_new);
       this dr_int = dr_int_new;
       inst = new();
               
-      if (mb_dr == null) begin
+      if (mb_dr2sb == null) begin
              $display("Driver -- --  ERROR mailbox is emply ");
              $finish;
       end 
@@ -21,10 +21,12 @@ class driver;
    
    task start ();
       trans sec_inst;
+      $display("-------------------Driver is starting to send instractions -------------- ");
       repeat(1000) begin
          @(posedge dr_cont.clk) begin
             sec_inst.randomize;
-            mb_dr.put(sec_inst);
+            ////how to adres to create inst
+            mb_dr2sb.put(sec_inst);
             $cast(sec_inst inst);
             send_transaction;
          end
