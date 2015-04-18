@@ -87,23 +87,52 @@ class trans;
       end
       return inst;
    endfunction
-
-    function decode_inst (inst);
-        string inst_2;
-        if(this.op_type()) begin
-            
-        
-        
-        end
     
-    
+    function decode_inst (bit[15:0]inst);
+        opcode_t opcode;
+        reg_t rs;
+        reg_t rd;
+        reg_t rt;
+        bit[9:0] addr;
+        inst[3:0] imm;
+        this. imm = imm;
+        this.rs =rs;
+        this.rd =rd;
+        this.rt =rrt;
+        this.opcode = opcode;
+        this.inst = inst;
+        if(inst[3:0] == 4'b1001) begin
+            opcode = inst[5:0];
+            if(opcode inside {JR,JALR})) begin
+              rs = inst[15:12];            
+            end    
+            else begin
+                addr = inst[9:0];
+            end
+        end        
+        else begin
+            opcode = inst[3:0];
+            if(opcode == ADDI)begin
+             imm = inst[7:4]; 
+             rt = inst[11:8];
+             rd = inst[15:12];
+         end
+         else begin
+            rs = inst[7:4];
+            rt =inst[11:8];
+            rd = inst[15:12];
+         end
+        end 
+        return opcode;
+        return rs;
+        return rd;
+        return rt;
+        return imm;
+        return addr;
+           
     endfunction
 
-   function void print();
-
-      //$display("instraction=%0b",inst);
-
-   endfunction
+   
 
 endclass
 
