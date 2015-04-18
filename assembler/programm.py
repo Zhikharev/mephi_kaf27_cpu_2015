@@ -373,7 +373,53 @@ def parseDataLines():
                 dataEndAddr += align
 
             else:
-                ERROR('Ошибка в блоке .data')
+                error_string = 'Ошибка в блоке .data'
+                ERROR(error_string)
 
     else:
         print('.data not included in fileByDirectives')
+
+def parseTextLines():
+    global label
+    global codeEndAddr
+    global code
+    if '.text' in fileByDirects:
+        codeLines = fileByDirects['.text'].splitlines()
+        if '.none' in fileByDirects:
+            codeLines = fileByDirects['.none'].splitlines() + codeLines
+
+    elif '.none' in fileByDirects:
+        codeLines = fileByDirects['.none'].splitlines()
+
+    else:
+        error_string = 'Код не найден.'
+        ERROR(error_string)
+
+    count = 0
+    for line in codeLines:
+        if ':' in line: # Метка
+            line = line.split(':')
+            # Условие если метка на отдельной строке
+            if len(line)==2 and line[1] == '' :
+                label[line[0]] = codeEndAddr
+                # Удаляет строку с назаванием метки
+                codeLines = codeLines[:count] + codeLines[count + 1:]
+                continue;
+            # Если после метки идет код
+            elif len(line) == 2 and line[1] != '':
+                label[line[0]] = codeEndAddr
+                line = line[1]
+                codeEndAddr += 2
+                codeLines[count] = line.strip() + '\n'
+                continue;
+
+            # Если встроке встретилось более одного знака ":"
+            else:
+                error_string = ' В строке:'
+                error_string += ' В одной строке может быть только одна метка.'
+                ERROR(error_string)
+
+        else:
+            codeEndAddr += 2
+
+        count += 1
