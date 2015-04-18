@@ -1,6 +1,6 @@
 import ctypes
 # Адресс файла с кодом на ассемблере
-parsingFile = open("code.as", 'r')
+parsingFile = open("trycode.as", 'r')
 # Файл разделенный на блоки директивами
 fileByDirects = {}
 # Метки и их адреса
@@ -331,7 +331,7 @@ def setDirectivesList():
                 continue;
 
             elif line.startswith('.set') or line.startswith('.def'):
-                if len(line) == 4:
+                if len(line) == 5:
                     current = line.strip()
                     if current not in fileByDirects:
                         fileByDirects[current] = ''
@@ -364,12 +364,11 @@ def parseDataLines():
     if '.data' in fileByDirects:
         dataLines = fileByDirects['.data'].splitlines()
         for line in dataLines:
-            line = line.upper()
             line = line.split(' ')
             line = [l.strip() for l in line]
             if len(line) == 2:
                 data += getNumStr(line[1], align * 8)
-                dataLinks[line[0]] = dataEndAddr
+                dataLinks[line[0].upper()] = dataEndAddr
                 dataEndAddr += align
 
             else:
@@ -423,3 +422,81 @@ def parseTextLines():
             codeEndAddr += 2
 
         count += 1
+
+    parseDataLines()
+    for line in codeLines:
+        line = line.upper()
+        if line.split(' ')[0] == 'ADD':
+            code += translateAddInstr(line)
+
+        elif line.startswith('ADDI'):
+            code += translateAddiInstr(line)
+
+        elif line.startswith('OR'):
+            code += translateOrInstr(line)
+
+        elif line.startswith('AND'):
+            code += translateAndInstr(line)
+
+        elif line.startswith('XOR'):
+            code += translateXorInstr(line)
+
+        elif line.startswith('NOR'):
+            code += translateNorInstr(line)
+
+        elif line.startswith('SLL'):
+            code += translateSllInstr(line)
+
+        elif line.startswith('ROT'):
+            code += translateRotInstr(line)
+
+        elif line.startswith('BNE'):
+            code += translateBneInstr(line)
+
+        elif line.startswith('NOP'):
+            code += translateNopInstr(line)
+
+def parseSetLines():
+    global fileByDirectives
+    global variables
+    if '.set' in fileByDirects:
+        setLines = fileByDirects['.set'].splitlines()
+        for line in setLines:
+            line = line.upper()
+            if len(line) > 0:
+                line = line.split(' ')
+                if len(line) == 2:
+                    variables[line[0]] = int(line[1])
+
+                else:
+                    ERROR('Ошибка в блоке .set')
+
+    else:
+        print('.set not included in fileByDirectives')
+
+def parseDefLines():
+    global fileByDirects
+    global regLinks
+    if '.def' in fileByDirects:
+        defLines = fileByDirects['.def'].splitlines()
+        for line in defLines:
+            line = line.upper()
+            if len(line) > 0:
+                line = line.split(' ')
+                if len(line) == 2:
+                    regLinks[line[0]] = (line[1])
+
+                else:
+                    ERROR('Ошибка в блоке .def')
+    else:
+        print('.def not included in fileByDirectives')
+
+def parseFile():
+    readRegisters()
+    setDirectivesList()
+    parseSetLines()
+    parseDefLines()
+    parseTextLines()
+
+parseFile()
+print(code)
