@@ -5,5 +5,6 @@ A $A
 .text
 add A, $C, 4
 xor A, A, $3
+st 0xC
 .data
 fuf 0xC

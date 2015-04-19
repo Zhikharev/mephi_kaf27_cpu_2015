@@ -39,11 +39,11 @@ def ERROR (error_string):
 # количеством знаков
 def getNumStr(num, length):
     i = 0
-    if num.startswith('0x'): # Проверяем на 16-ю систему счисления
+    if num.startswith('0X'): # Проверяем на 16-ю систему счисления
         i = int(num, 16)
         i = bin(i)
 
-    elif num.startswith('0b'): # Проверяем на 2-ю систему счисления
+    elif num.startswith('0B'): # Проверяем на 2-ю систему счисления
         i = int(num, 2)
         i = bin(i)
 
@@ -248,6 +248,37 @@ def translateBneInstr(instruction):
     result += getInstrAddrStr(instruct_data[1:])
     return result
 
+def translateLdInstr(instruction):
+    instruct_data = instruction.split(' ')
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '10010'
+    addr = getNumStr(instruct_data[1], 10)
+    result += addr[0] + addr
+    result += '10011'
+    addr = getNumStr(str(int(addr, 2) + align), 10)
+    result += addr[0] + addr
+    return result
+
+def translateStInstr(instruction):
+    instruct_data = instruction.split(' ')
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '10100'
+    addr = getNumStr(instruct_data[1], 10)
+    result += addr[0] + addr
+    result += '10101'
+    addr = getNumStr(str(int(addr, 2) + align), 10)
+    result += addr[0] + addr
+    return result
+
+
 """def translateJmpInstr(instruction):
     instruct_data = instruction.split(" ")
     if len(instruct_data) != 2:
@@ -367,7 +398,7 @@ def parseDataLines():
             line = line.split(' ')
             line = [l.strip() for l in line]
             if len(line) == 2:
-                data += getNumStr(line[1], align * 8)
+                data += getNumStr(line[1].upper(), align * 8)
                 dataLinks[line[0].upper()] = dataEndAddr
                 dataEndAddr += align
 
@@ -453,8 +484,15 @@ def parseTextLines():
         elif line.startswith('BNE'):
             code += translateBneInstr(line)
 
+        elif line.startswith('LD'):
+            code += translateLdInstr(line)
+
+        elif line.startswith('ST'):
+            code += translateStInstr(line)
+
         elif line.startswith('NOP'):
             code += translateNopInstr(line)
+
 
 def parseSetLines():
     global fileByDirectives
@@ -500,3 +538,4 @@ def parseFile():
 
 parseFile()
 print(code)
+print(len(code))
