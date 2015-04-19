@@ -22,8 +22,9 @@ int reg_t0 = 13; // Register for storing temporary variables
 int reg_t1 = 14;
 int reg_t2 = 15;
 int PC;
-short memory[1024]; 
-short instr;
+//int *PC;
+int memory[1024]; 
+int instr;
 int i = 0;
 int result;
 
@@ -39,11 +40,6 @@ int addr_rs;
 //Fetch
 FILE *f;
 openfile(){
-		
-	/*char string[50];
-	printf("Please set program file\n");
-	scanf("%s", string);
-	f = fopen(string, "r");*/
 
 	printf ("Opening a file : ");
     f = fopen ("prog.bin","rb");
@@ -59,8 +55,8 @@ openfile(){
 	}
 }
 
-short readinstr (){
-	short buffer[2];
+int readinstr (){
+	int buffer[2];
 	int g = 0;
 
 	printf ("Set the position at the beginning of the file\n ");
@@ -70,7 +66,8 @@ short readinstr (){
 		printf ("ERROR\n");
 
 	printf ("i: %i\n",i);
-	printf("PC %6d\n", PC);
+	//printf("PC %6p\n", PC);
+	printf("PC: %d\n",PC);
 
 	while (g < 2) {
 		buffer[g] = fgetc (f);
@@ -94,7 +91,7 @@ short readinstr (){
 }
 
 
-decode(short instr){ 
+    decode(int instr){ 
 	printf ("D: instr: 0x%04x\n",instr);
 	opcode = (instr >> 12);
 	printf ("D: opcode: %x\n",opcode);
@@ -193,10 +190,9 @@ decode(short instr){
 					break;		
 			}
 }
-//??????????????????????
-short checkmemory(short addr)
+
+int checkmemory(int addr)
 {	
-	printf("addr %6d\n", addr);
 	return memory[addr];
 }
 

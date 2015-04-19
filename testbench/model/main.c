@@ -2,19 +2,32 @@
 #include <stdio.h>
 #include "main.h"
 
-const N = 3;
+const N = 5;
 
 main()
 {
-	short instr;
-	//int addr;
+	int instr;
+	//int *PC;
+	int addr;
 	int k = 0;
 	int i = 0;
+	int memory[1024];
+	int t = 0;
+
+	for(addr = 0; addr < 1024; addr++)
+		{
+			memory[addr] = t;
+			printf("%x ",memory[addr]);
+			t++;
+		}
+
+	//PC = &instr;
 	openfile();
 	while(k < N){    
 		instr = readinstr();
 		decode(instr);
-		//checkmemory(addr);
+		checkmemory(addr);
+		//printf("Значение по адресу PC: %x\n", *PC); 
 		k++;
 	}
 

@@ -19,7 +19,8 @@ int reg_t0; // Register for storing temporary variables
 int reg_t1;
 int reg_t2;
 int PC;
-short memory[1024]; 
+//int *PC;
+int memory[1024]; 
 
 int opcode;
 int rs;
@@ -197,6 +198,8 @@ int add (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+    //printf("PC: %p\n", PC);
     return rd_data;
 }
 
@@ -315,6 +318,8 @@ int addi (int imm, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 
@@ -485,6 +490,8 @@ int or (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 
@@ -655,6 +662,8 @@ int and (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 int xor (int rs, int rt, int rd) 
@@ -824,6 +833,8 @@ int xor (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 int nor (int rs, int rt, int rd) 
@@ -993,6 +1004,8 @@ int nor (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 int sll (int rs, int rt, int rd) 
@@ -1162,6 +1175,8 @@ int sll (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 int rot (int rs, int rt, int rd)
@@ -1331,11 +1346,11 @@ int rot (int rs, int rt, int rd)
 		}
 
 	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
     return rd_data;
 }
 
-/////////////////////////////////////////////////////
-////////////???????????????????????//////////////////
 int bne (int rs, int rt, int rd) 
 {		   
 	int rs_data;
@@ -1502,50 +1517,74 @@ int bne (int rs, int rt, int rd)
 
     if (rs_data != rt_data)
 		PC = PC + rd_data; //?????? allign ??????
-		//PC = PC + 2; //?????
+	printf("PC: %d\n", PC);
+	//printf("PC: %p\n", PC);
+	//PC = PC + 1;//???????????????
+	//return *PC; //????????
     return PC; //????????
 }
 
-
-
-// h/l reg ?????????????????????
-//загрузить и сделать сдвиги???
-//сделать регистр массивом???
-int ldl (short addr) 
+int ldl (int addr) 
 {
 	reg_MR = memory[addr];
 	printf("reg_MR %6d\n", reg_MR);
-	return reg_MR;//??????
+	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
+	return reg_MR;
 }
-int ldh (short addr) 
+int ldh (int addr) 
 {
 	reg_MR = memory[addr];
+	reg_MR = reg_MR << 16; //можно сделать сдвиг, чтобы MR[15:0] занулились, или нам нужна эта часть регистра???
 	printf("reg_MR %6d\n", reg_MR);
-	return reg_MR;//?????
+	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
+	return reg_MR;
 }
- stl (short addr) 
+ int stl (int addr) 
 {
+    reg_MR = reg_MR & 0x00FF;
 	memory[addr] = reg_MR;
+	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
 }
- sth (short addr) 
-{
+ int sth (int addr) 
+{   
+	reg_MR = reg_MR >> 16;
 	memory[addr] = reg_MR;
+	PC = PC + 2;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
 }
- jmp (short addr)
+ int jmp (int addr)
 {
-	//JumpAddr???????
+	PC = addr;
+	//PC = PC + 1;
+	//printf("PC: %p\n", PC);
+	//return *PC;//?????????????
+	return PC;//?????????????
 }
-int jal (short addr)
+int jal (int addr)
 {
-	//JumpAddr???????
+	reg_LR = PC + 2;
+	PC = addr;
+	//PC = PC + 1;//????????????
+    //printf("PC: %p\n", PC);
+	//return *PC;//?????????????
+	return PC;//?????
 }
 
-//??????????????????????????????????????
-int jr ()
+//PC = адрес регистра или значение регистра???????
+int jr (int addr_rs)
 {
 	switch(addr_rs){                 
 			case 0x0 : PC = reg_A;
 					   printf ("PC: %d\n",PC);
+					   //PC = &reg_A;//???????????
+					   //printf ("PC: %p\n",PC);
 					break;
 			case 0x1 : PC = reg_B;
 					   printf ("PC: %d\n",PC);
@@ -1584,20 +1623,81 @@ int jr ()
 					   printf ("PC: %d\n",PC);
 					break;
 			case 0xD : PC = reg_t0;
-					   printf ("PC: %d\n",PC);
+					   printf("PC: %d\n", PC);
 					break;
 			case 0xE : PC = reg_t1;
-					   printf ("PC: %d\n",PC);
+					   printf("PC: %d\n", PC);
 					break;
 			case 0xF : PC = reg_t2;
-					   printf ("PC: %d\n",PC);
+					   printf("PC: %d\n", PC);
 					break;
 			default: 
 					break;	
 		}
-		return PC;
+	//PC = PC + 1;
+    //printf("PC: %p\n", PC);
+	//return *PC;//?????????????
+	return PC;//?????????????
 }
 int jalr (int addr_rs)
-{
-
+{	
+	reg_LR = PC + 2;
+	switch(addr_rs){                 
+			case 0x0 : PC = reg_A;
+					   printf ("PC: %d\n",PC);
+					   //PC = &reg_A;//???????????
+					   //printf ("PC: %p\n",PC);
+					break;
+			case 0x1 : PC = reg_B;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x2 : PC = reg_C;
+				       printf ("PC: %d\n",PC);
+					break;
+			case 0x3 : PC = reg_D;
+					   printf ("PC: %d\n",PC);
+					break;	
+			case 0x4 : PC = reg_E;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x5 : PC = reg_F;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x6 : PC = reg_G;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x7 : PC = reg_H;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x8 : PC = reg_W;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0x9 : PC = reg_K;
+					   printf ("PC: %d\n",PC);
+					break;	
+			case 0xA : PC = reg_MR;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xB : PC = reg_LR;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xC : PC = reg_zero;
+					   printf ("PC: %d\n",PC);
+					break;
+			case 0xD : PC = reg_t0;
+					   printf("PC: %d\n", PC);
+					break;
+			case 0xE : PC = reg_t1;
+					   printf("PC: %d\n", PC);
+					break;
+			case 0xF : PC = reg_t2;
+					   printf("PC: %d\n", PC);
+					break;
+			default: 
+					break;	
+		}
+	//PC = PC + 1;
+    //printf("PC: %p\n", PC);
+	//return *PC;//?????????????
+	return PC;//?????????????
 }
