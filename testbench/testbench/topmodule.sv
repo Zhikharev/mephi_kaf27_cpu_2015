@@ -14,6 +14,12 @@ module testbench ();
     wishbone instraction(clk);
     wishbone data(clk);
     control control(clk);
+    inner_if inner_intf(clk, control.reset);
+
+    /*
+    TODO
+    assign inner_intf.pc = dut.pc;
+    */
               
     cpu dut(
         .CLK_I(control.clk),
