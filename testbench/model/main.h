@@ -29,12 +29,14 @@ extern int reg_t1;
 extern int reg_t2;
 extern int PC;
 //extern int *PC;
+extern int addr_reg;
 extern int memory[];
 extern FILE  *f;
 
 DPI_LINK_DECL DPI_DLLESPEC openfile();
 DPI_LINK_DECL DPI_DLLESPEC int readinstr();
 DPI_LINK_DECL DPI_DLLESPEC decode(int);
+DPI_LINK_DECL DPI_DLLESPEC int checkreg(int);
 DPI_LINK_DECL DPI_DLLESPEC int checkmemory(int);
 DPI_LINK_DECL DPI_DLLESPEC int add(int, int, int); 
 DPI_LINK_DECL DPI_DLLESPEC int addi (int, int, int);

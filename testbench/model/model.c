@@ -26,7 +26,8 @@ int PC;
 int memory[1024]; 
 int instr;
 int i = 0;
-int result;
+int REG;
+int addr_reg;
 
 int opcode;
 int rs;
@@ -189,6 +190,64 @@ int readinstr (){
 					 return 0;
 					break;		
 			}
+}
+
+int checkreg(int addr_reg)
+{
+	int REG;
+	switch(addr_reg){
+			case 0x0 : REG = reg_A;
+					   printf("reg_A %6d\n", reg_A);
+					break;
+			case 0x1 : REG = reg_B;
+				       printf("reg_B %6d\n", reg_B);
+					break;
+			case 0x2 : REG = reg_C;
+					   printf("reg_C %6d\n", reg_C);
+					break;
+			case 0x3 : REG = reg_D;
+				       printf("reg_D %6d\n", reg_D);
+					break;	
+			case 0x4 : REG = reg_E;
+				       printf("reg_E %6d\n", reg_E);
+					break;
+			case 0x5 : REG = reg_F;
+				       printf("reg_F %6d\n", reg_F);
+					break;
+			case 0x6 : REG = reg_G;
+				       printf("reg_G %6d\n", reg_G);
+					break;
+			case 0x7 : REG = reg_H;
+				       printf("reg_H %6d\n", reg_H);
+					break;
+			case 0x8 : REG = reg_W;
+				       printf("reg_W %6d\n", reg_W);
+					break;
+			case 0x9 : REG = reg_K;
+		        	   printf("reg_K %6d\n", reg_K);
+					break;	
+			case 0xA : REG = reg_MR;
+				       printf("reg_MR %6d\n", reg_MR);
+					break;
+			case 0xB : REG = reg_LR;
+				       printf("reg_LR %6d\n", reg_LR);
+					break;
+			case 0xC : REG = reg_zero;
+				       printf("reg_zero %6d\n", reg_zero);
+					break;
+			case 0xD : REG = reg_t0;
+				       printf("reg_t0 %6d\n", reg_t0);
+					break;
+			case 0xE : REG = reg_t1;
+				       printf("reg_t1 %6d\n", reg_t1);
+					break;
+			case 0xF : REG = reg_t2;
+				       printf("reg_t2 %6d\n", reg_t2);
+					break;
+			default: return 0;
+					break;
+		}
+	return REG;				
 }
 
 int checkmemory(int addr)
