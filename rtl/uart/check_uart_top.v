@@ -34,31 +34,36 @@ module check_uart_top(
 	 
 	 input wr_en,
 	 input rd_en,
-	 output [7:0] dout,
+	 output [15:0] dout,
 	 output full, 
 	 output empty
 	  );
 	  
-	 wire [7:0] lb_byte;
+	  
+	 localparam idle = 2'b00,
+	            load_h = 2'b01,
+					load_l = 2'b10;
+	  
+//	 wire [7:0] lb_byte;
 	
 	 wire clk_cmt;
 	 wire wr_clk_cmt;
 	 wire rd_clk_cmt;
-	 wire [7:0] din;
+	 wire [15:0] din;
 		
-		clk instance_name
+	clk instance_name
    (.CLK_IN1(clk),      
     .CLK_OUT1(clk_cmt),     
     .CLK_OUT2(rd_clk_cmt), 
     .CLK_OUT3(wr_clk_cmt));  
 	  
     uart uart_1 (
-       .clk(clk_cmt), 
+       .clk(clk_cmt), //clk_cmt
        .rst(rst), 
        .rx(rx), 
        .tx(tx), 
        .transmit(transmit), 
-       .tx_byte(lb_byte),        //  loopback is here
+       .tx_byte(tx_byte),        //  loopback is here
        .received(received), 
        .rx_byte(rx_byte), 
        .is_receiving(is_receiving), 
@@ -68,15 +73,82 @@ module check_uart_top(
 					
 		fifo fifo (
   .rst(rst), // input rst
-  .wr_clk(wr_clk_cmt), // input wr_clk
-  .rd_clk(rd_clk_cmt), // input rd_clk
-  .din(din), // input [7 : 0] din
+  .wr_clk(wr_clk_cmt), // input wr_clk_cmt
+  .rd_clk(rd_clk_cmt), // input rd_clk_cmt
+  .din(din), // input [15 : 0] din
   .wr_en(wr_en), // input wr_en
   .rd_en(rd_en), // input rd_en
-  .dout(dout), // output [7 : 0] dout
+  .dout(dout), // output [15 : 0] dout
   .full(full), // output full
   .empty(empty) // output empty
 );
 	 assign din = rx_byte;				
-	 assign lb_byte = dout;
+	// assign lb_byte = dout;
+	 
+reg [1:0] state_reg;
+reg [1:0] state_next;
+reg [5:0] count;	 
+initial count = 0;
+
+reg [9:0] addr_beg;
+reg [19:10] addr_end;
+reg  status;
+reg  start;
+reg  ready;
+reg [15:0] data;
+reg [25:16] addr;
+reg  finish;
+
+	 
+always@(posedge clk)
+   begin
+	    if (rst) begin
+		            state_reg <= idle;
+						status <= 0;
+			      	start <= 0;
+				      ready <= 0;
+				      data <= 0;
+		        		addr <= 0;
+				      finish <= 0;
+					 end
+       else state_reg <= state_next;
+		 if (rx_byte == 8'b01000000)
+    		  status <= 1'b1;
+	    if (rx_byte == 8'b00100000)
+           ready <= 1'b1;	
+	end
+	
+always@(posedge received)
+   begin
+     count <= count + 1'b1;
+	  if (count == 3)
+	     count <= 0;
+	end
+	
+always@*
+   begin
+	   state_next = state_reg;
+		case (state_reg)
+		   idle: begin
+			         if (rx_byte == 8'b10000000) begin
+						                                 state_next = load_h;
+															  end
+			      end
+			load_h: begin
+			         if (count == 2)
+						   begin
+							  din [15:8] = rx_byte;
+							  state_next = load_l;
+							end
+						end
+			load_l: begin
+			          if (count == 3)
+						    begin
+							   din [7:0] = rx_byte;
+                        state_next = idle;
+                       end
+                 end							  
+		endcase
+	end
+	 
 endmodule
