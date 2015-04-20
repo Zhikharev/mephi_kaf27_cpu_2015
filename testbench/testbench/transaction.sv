@@ -50,6 +50,7 @@ class trans;
    rand reg_t rd;
    rand reg_t rt;
    rand opcod_t opcode;
+   string decoded_inst;
    constraint reg_c {
     rd != zero;
     rt != zero;   
@@ -88,26 +89,28 @@ class trans;
       return inst;
    endfunction
     
-    function decode_inst (bit[15:0]inst);
-        opcode_t opcode;
+    function decode_inst (bit[15:0] inst);
+        opcod_t opcode;
         reg_t rs;
         reg_t rd;
         reg_t rt;
         bit[9:0] addr;
-        inst[3:0] imm;
-        this. imm = imm;
+        bit[3:0] imm;
+        this.imm = imm;
         this.rs =rs;
         this.rd =rd;
-        this.rt =rrt;
+        this.rt =rt;
         this.opcode = opcode;
         this.inst = inst;
         if(inst[3:0] == 4'b1001) begin
             opcode = inst[5:0];
-            if(opcode inside {JR,JALR})) begin
-              rs = inst[15:12];            
+            if(opcode inside {JR,JALR}) begin
+              rs = inst[15:12]; 
+              decoded_inst = {opcode,rs};           
             end    
             else begin
                 addr = inst[9:0];
+                decoded_inst = {opcode,addr};
             end
         end        
         else begin
@@ -116,19 +119,16 @@ class trans;
              imm = inst[7:4]; 
              rt = inst[11:8];
              rd = inst[15:12];
-         end
+             decoded_inst = {opcode,imm,rt,rd};
+            end
          else begin
             rs = inst[7:4];
             rt =inst[11:8];
             rd = inst[15:12];
+            decoded_inst = {opcode,rs,rt,rd};
          end
         end 
-        return opcode;
-        return rs;
-        return rd;
-        return rt;
-        return imm;
-        return addr;
+        
            
     endfunction
 
