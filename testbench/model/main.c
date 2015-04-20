@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include "main.h"
 
-const N = 5;
-
+FILE  *f;
 main()
 {
 	int instr;
@@ -23,14 +22,14 @@ main()
 
 	//PC = &instr;
 	openfile();
-	while(k < N){    
+	while(!feof(f)){ 
+
 		instr = readinstr();
 		decode(instr);
 		checkmemory(addr);
 		//printf("Значение по адресу PC: %x\n", *PC); 
 		k++;
 	}
-
 	printf ("Close file\n");
 	if ( fclose (f) == EOF)
 		printf ("ERROR\n");
