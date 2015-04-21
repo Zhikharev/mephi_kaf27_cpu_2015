@@ -8,7 +8,8 @@ MTI_HOME = /opt/questasim_v6.6c/questasim
 HOME       := $(shell pwd)
 RTL         = $(RTL_HOME)
 TB          = $(HOME)/testbench
-RUN         = $(TB)/run
+RUN         = $(HOME)/run
+MODEL       = $(HOME)/model
 
 # RTL and SV files
 RTL_SRC    = $(TB)/rtl.inc.v
@@ -17,6 +18,13 @@ TOP_MODULE = testbench
 
 SEED = random
 SIM_OPTS='-c'
+
+# Model files
+MODEL_SRC = $(MODEL)/alu.c $(MODEL)/model.c
+MODEL_LIB_NAME = model
+MODEL_LIB_DIR = $(RUN)/model_lib
+MODEL_SO = $(MODEL_LIB_DIR)/$(MODEL_LIB_NAME).so
+MODEL_VSIM_OPT= -sv_lib $(MODEL_LIB_DIR)/$(MODEL_LIB_NAME)
 
 
 # Make all (default)
@@ -56,6 +64,9 @@ build_rtl:
 	+incdir+$(TB)        \
 	$(RTL_SRC);
 
+build_c:
+	mkdir -p $(MODEL_LIB_DIR)
+	gcc -fPIC -shared -I$(MTI_HOME)/include -o $(MODEL_SO) $(MODEL_SRC)
 
 # Cleaning project files
 .PHONY: clean

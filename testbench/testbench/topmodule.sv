@@ -32,6 +32,7 @@ module testbench ();
 
     initial begin
         $display("START TEST");
+        model::test_sv_c_communication(5);
         #100;
         $finish();
     end

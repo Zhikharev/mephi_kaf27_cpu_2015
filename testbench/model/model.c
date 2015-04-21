@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "svdpi.h"
+#include "model.h"
 
 int reg_A = 1; // Register for storing hashsum
 int reg_B = 2;
@@ -37,6 +38,10 @@ int imm;
 int Mtype;
 int addr;
 int addr_rs;
+
+test_sv_c_communication(int var) {
+    printf("C: var is %d", var);
+}
 
 //Fetch
 FILE *f;
