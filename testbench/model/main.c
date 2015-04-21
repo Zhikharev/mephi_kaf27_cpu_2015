@@ -27,7 +27,7 @@ main()
 		instr = readinstr();
 		decode(instr);
 		checkmemory(addr);
-		//printf("Значение по адресу PC: %x\n", *PC); 
+		//printf("Value at the address PC: %x\n", *PC); 
 		k++;
 	}
 	printf ("Close file\n");
@@ -52,5 +52,8 @@ main()
 	printf("reg_t0 %x\n", reg_t0);
 	printf("reg_t1 %x\n", reg_t1);
 	printf("reg_t2 %x\n", reg_t2);
+	printf("PC %x\n", PC);
 	printf("****************************\n");
+
+	printf("The number of instructions: k = %d\n", k-1);
 }

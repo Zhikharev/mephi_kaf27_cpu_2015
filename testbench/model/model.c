@@ -48,7 +48,8 @@ FILE *f;
 openfile(){
 
 	printf ("Opening a file : ");
-    f = fopen ("prog.bin","rb");
+    //f = fopen ("prog1.bin","rb");
+    f = fopen ("prog2.bin","rb");
     if(f == NULL)
 	{
 		printf("ERROR opening file\n");
@@ -122,16 +123,16 @@ decode(int instr){
 			case 0x1 : addi(imm, rt, rd); 
 					   printf ("addi\n");
 					break;
-			case 0x2 : or(rs, rt, rd);
+			case 0x2 : or_1(rs, rt, rd);
 				       printf ("or\n");
 					break; 
-			case 0x3 : and(rs, rt, rd);
+			case 0x3 : and_1(rs, rt, rd);
 				       printf ("and\n");
 					break;
-			case 0x4 : xor(rs, rt, rd);
+			case 0x4 : xor_1(rs, rt, rd);
 					   printf ("xor\n");
 					break;
-			case 0x5 : nor(rs, rt, rd);
+			case 0x5 : nor_1(rs, rt, rd);
 					   printf ("nor\n");
 					break;
 			case 0x6 : sll(rs, rt, rd);

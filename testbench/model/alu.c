@@ -218,7 +218,7 @@ int addi (int imm, int rt, int rd)
     return rd_data;
 }
 
-int or (int rs, int rt, int rd) 
+int or_1 (int rs, int rt, int rd) 
 {	
 	int rs_data;
 	int rt_data;
@@ -337,7 +337,7 @@ int or (int rs, int rt, int rd)
     return rd_data;
 }
 
-int and (int rs, int rt, int rd) 
+int and_1 (int rs, int rt, int rd) 
 {
 	int rs_data;
 	int rt_data;
@@ -455,7 +455,7 @@ int and (int rs, int rt, int rd)
 	//printf("PC: %p\n", PC);
     return rd_data;
 }
-int xor (int rs, int rt, int rd) 
+int xor_1 (int rs, int rt, int rd) 
 {
    	int rs_data;
 	int rt_data;
@@ -573,7 +573,7 @@ int xor (int rs, int rt, int rd)
 	//printf("PC: %p\n", PC);
     return rd_data;
 }
-int nor (int rs, int rt, int rd) 
+int nor_1 (int rs, int rt, int rd) 
 {
     int rs_data;
 	int rt_data;
@@ -1094,7 +1094,7 @@ int bne (int rs, int rt, int rd)
 
     if (rs_data != rt_data)
 		PC = PC + rd_data; //?????? allign ??????
-	printf("PC: %d\n", PC);
+	printf("PC: %x\n", PC);
 	//printf("PC: %p\n", PC);
 	//PC = PC + 1;//???????????????
 	//return *PC; //????????
@@ -1127,6 +1127,7 @@ int ldh (int addr)
 	PC = PC + 2;
 	//PC = PC + 1;
 	//printf("PC: %p\n", PC);
+	printf("memory[%x] = %x", addr, memory[addr]);
 	return memory[addr];
 }
  int sth (int addr) 
@@ -1136,6 +1137,7 @@ int ldh (int addr)
 	PC = PC + 2;
 	//PC = PC + 1;
 	//printf("PC: %p\n", PC);
+	printf("memory[%x] = %x", addr, memory[addr]);
 	return memory[addr];
 }
  int jmp (int addr)
@@ -1144,6 +1146,7 @@ int ldh (int addr)
 	//PC = PC + 1;
 	//printf("PC: %p\n", PC);
 	//return *PC;//?????????????
+	printf("PC: %x\n", PC);
 	return PC;//?????????????
 }
 int jal (int addr)
@@ -1153,6 +1156,8 @@ int jal (int addr)
 	//PC = PC + 1;//????????????
     //printf("PC: %p\n", PC);
 	//return *PC;//?????????????
+	printf("reg_LR: %x\n", reg_LR);
+	printf("PC: %x\n", PC);
 	return PC;//?????
 }
 
@@ -1221,6 +1226,7 @@ int jr (int addr_rs)
 int jalr (int addr_rs)
 {	
 	reg_LR = PC + 2;
+	printf("reg_LR: %x\n", reg_LR);
 	switch(addr_rs){                 
 			case 0x0 : PC = reg_A;
 					   printf ("PC: %x\n",PC);
