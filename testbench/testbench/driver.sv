@@ -47,7 +47,7 @@ class driver;
       dr_int.stb_in = 1'b1;
       for (int i = 1; i < rand_delay; i++) begin 
         @(posedge dr_control.clk); 
-        dr_int.data_in = sec_instr.create_trans;
+        // dr_int.data_in = sec_instr.create_trans;
       end
    endtask
 //   
@@ -56,6 +56,7 @@ class driver;
         dr_int.data_in = 0;
         
     endtask
+
 
 endclass
 
@@ -104,7 +105,7 @@ endclass
         @(posedge dr_control.clk)
         
          end
-    
+ 
  
  endtask 
 

@@ -8,10 +8,10 @@ package model;
     import "DPI-C" function checkmemory(int);
     import "DPI-C" function add(int,int,int);
     import "DPI-C" function addi(int,int,int);
-    import "DPI-C" function or(int,int,int);
-    import "DPI-C" function and(int,int,int);
-    import "DPI-C" function xor(int,int,int);
-    import "DPI-C" function nor(int,int,int);
+    import "DPI-C" function or_1(int,int,int);
+    import "DPI-C" function and_1(int,int,int);
+    import "DPI-C" function xor_1(int,int,int);
+    import "DPI-C" function nor_1(int,int,int);
     import "DPI-C" function sll(int,int,int);
     import "DPI-C" function rot(int,int,int);
     import "DPI-C" function bne(int,int,int);
@@ -23,7 +23,7 @@ package model;
     import "DPI-C" function jal(int);
     import "DPI-C" function jr(int);
     import "DPI-C" function jalr(int);
-    import "DPI-C" function nop;
+    import "DPI-C" function nop();
 
 
     
