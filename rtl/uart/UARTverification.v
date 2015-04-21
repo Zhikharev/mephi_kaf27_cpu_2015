@@ -39,10 +39,14 @@ module UARTverification(
     output [7:0] rx_byte2, 
     output is_receiving2, 
     output is_transmitting2, 
-    output recv_error2 
+    output recv_error2,
+	 
+	 output reg [15:0] dout
     );
 	 
-	 
+	 localparam idle = 2'b00,
+	            load_h = 2'b01,
+					load_l = 2'b10;
 
 uart uart1 (
     .clk(clk), 
@@ -71,6 +75,54 @@ uart uart2 (
     .is_transmitting(is_transmitting2), 
     .recv_error(recv_error2)
     );
+	 
+reg [1:0] state_reg;
+reg [1:0] state_next;
+reg [5:0] count;
+initial count = 0;
+reg flag;	 
+always@(posedge clk)
+   begin
+	    if (rst) begin
+		            state_reg <= idle;
+					 end
+       else state_reg <= state_next;
+	end
+always@(posedge received2)
+   begin
+	     if (flag)
+          count <= count + 1'b1;
+	  if (count == 3)
+	     count <= 0;
+	end
+	
+always@*
+   begin
+	   state_next = state_reg;
+		case (state_reg)
+		   idle: begin
+			         if (rx_byte2 == 8'b10000000) begin
+						                                 flag = 1;
+						                                 state_next = load_h;
+															  end
+			      end
+			load_h: begin
+			         if (count == 2)
+						   begin
+							  dout [15:8] = rx_byte2;
+							  state_next = load_l;
+							end
+						end
+			load_l: begin
+			          if (count == 3)
+						    begin
+							   dout [7:0] = rx_byte2;
+                        state_next = idle;
+								flag = 0;
+                       end
+                 end							  
+		endcase
+	end
 	 
 	
 endmodule

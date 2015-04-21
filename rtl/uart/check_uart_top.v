@@ -50,6 +50,8 @@ module check_uart_top(
 	 wire wr_clk_cmt;
 	 wire rd_clk_cmt;
 	 wire [15:0] din;
+	 
+	 reg [15:0] instr;
 		
 	clk instance_name
    (.CLK_IN1(clk),      
@@ -82,25 +84,29 @@ module check_uart_top(
   .full(full), // output full
   .empty(empty) // output empty
 );
-	 assign din = rx_byte;				
+	 assign din = loc_din;				
 	// assign lb_byte = dout;
 	 
 reg [1:0] state_reg;
 reg [1:0] state_next;
 reg [5:0] count;	 
-initial count = 0;
+  initial count = 0;
 
-reg [9:0] addr_beg;
-reg [19:10] addr_end;
+reg [10:0] addr_beg;
+  initial addr_beg = 11'b10000000000;
+reg [21:11] addr_end;
+  initial addr_end = 11'b11111111111;
 reg  status;
 reg  start;
 reg  ready;
 reg [15:0] data;
-reg [25:16] addr;
+reg [26:16] addr;
 reg  finish;
 
+reg flag;
+reg [15:0] loc_din;
 	 
-always@(posedge clk)
+always@(posedge clk_cmt)
    begin
 	    if (rst) begin
 		            state_reg <= idle;
@@ -120,7 +126,8 @@ always@(posedge clk)
 	
 always@(posedge received)
    begin
-     count <= count + 1'b1;
+	  if (flag)
+        count <= count + 1'b1;
 	  if (count == 3)
 	     count <= 0;
 	end
@@ -131,22 +138,24 @@ always@*
 		case (state_reg)
 		   idle: begin
 			         if (rx_byte == 8'b10000000) begin
+						                                 flag = 1;
 						                                 state_next = load_h;
 															  end
 			      end
 			load_h: begin
 			         if (count == 2)
 						   begin
-							  din [15:8] = rx_byte;
+							  loc_din [15:8] = rx_byte;
 							  state_next = load_l;
 							end
 						end
 			load_l: begin
 			          if (count == 3)
 						    begin
-							   din [7:0] = rx_byte;
+							   loc_din [7:0] = rx_byte;
                         state_next = idle;
-                       end
+								flag = 0;
+                      end
                  end							  
 		endcase
 	end
