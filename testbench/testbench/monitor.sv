@@ -19,12 +19,11 @@ class monitor;
         forever begin
             inst = new;
             inst = mon_int.data_in;
-            inst.decode_inst;
             model_controler;
             @(posedge mon_control.clk)
         end
-    function model_control (bit[15:0] inst)
-        //call model's functions
+    function model_control (trans inst)
+        
     endfunction
         
     endtask

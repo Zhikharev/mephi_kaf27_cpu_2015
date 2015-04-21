@@ -5,11 +5,11 @@ class environment
    virtual wishbone inst_cpu;
    virtual wishbone data_cpu;
    virtual control cont_cpu;
-   driver dr;
-   scorebord sb;
+   driver drv;
+   //scorebord sb;
    monitor mon;  
-   mailbox #(trans) mb_dr;
-   mailbox #(trans)mb_mon;      
+   mailbox #(trans) mb_dr2sb;
+   mailbox #(trans) mb_mon2sb;      
         
    function new(virtual  wishbone inst_cpu, virtual wishbone data_cpu); 
       this wishbone = inst_cpu;
@@ -21,8 +21,10 @@ class environment
     
    function built () 
       $display("Enviroment: build is started. %0t",$time);
-       // не понимаю как сделать блок built         
-      
+       mb_dr2sb =new();
+       mb_mon2sb = new();
+       drv = new(inst_cpu,cont_cpu,md_dr2sb);
+       mon = new(inst_cpu,cont_cpu,md_mon2sb);
        $display("Enviroment: build is complited. %0t",$time);        
               
    endfunction
@@ -30,6 +32,7 @@ class environment
    function reset ();
       $display("Enviroment : reset is turned on. %0t",$time);
       cont_cpu.reset <= 1;
+      @(cont_cpu.clk);
       repeat(5) @(posedge cont_cpu clk);
       inst_cpu.adr_out <=0;
       inst_cpu.adr_in <= 0;
@@ -63,7 +66,7 @@ class environment
       fork 
          drv.start;
          mon.start;
-         sb.start;
+         //sb.start;
       join_any
       $display("Enviroment : run is done. %0t", $time);
 
@@ -72,14 +75,14 @@ class environment
 
      task wait_end () begin
          $display("Enviroment : wait is on. %0t", $time);
-         repeat(10000) @(cont_cpu.clk);
+         repeat(1000) @(cont_cpu.clk);
          $display("Enviroment : wait is done. %0t", $time);
         
      end
 
         function void report ();
-            $display()
-               // не знаю что писать в функции report  
+            $display("ENVIROMENT : report is on %0t",$time);
+                 
        endfunction
 
 

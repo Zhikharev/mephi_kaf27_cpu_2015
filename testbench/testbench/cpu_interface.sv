@@ -39,7 +39,7 @@ interface control (input clk);
         logic reset;        
 endinterface 
 
-interface inner_if (input clk, input rst)
+interface inner_if (input clk, input rst);
     logic [31:0] register[0:15];
     logic [31:0] pc;
 endinterface
