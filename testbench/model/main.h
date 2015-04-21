@@ -33,9 +33,6 @@ extern int addr_reg;
 extern int memory[];
 extern FILE  *f;
 
-DPI_LINK_DECL DPI_DLLESPEC test_sv_c_communication(int);
-
-
 DPI_LINK_DECL DPI_DLLESPEC openfile();
 DPI_LINK_DECL DPI_DLLESPEC int readinstr();
 DPI_LINK_DECL DPI_DLLESPEC decode(int);
