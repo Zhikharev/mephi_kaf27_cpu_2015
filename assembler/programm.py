@@ -278,52 +278,29 @@ def translateStInstr(instruction):
     result += addr[0] + addr
     return result
 
-
-"""def translateJmpInstr(instruction):
-    instruct_data = instruction.split(" ")
+def translateJmpInstr(instruction):
+    instruct_data = instruction.split(' ')
     if len(instruct_data) != 2:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '101100'
-    result +=  getNumStr(instruct_data[1], 10)
+    addr = label[instruct_data[1]]
+    addr = getNumStr(str(addr), 10)
+    result += addr
     return result
 
-def translateJalInstr(instruction):
-    instruct_data = instruction.split(" ")
-    if len(instruct_data) != 2:
-        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Неверное количество аргументов.'
-        ERROR(error_string)
-
-    result = '101101'
-    result +=  getNumStr(instruct_data[1], 10)
-    return result
-
-def translateJrInstr(instruction, registers):
-    instruct_data = instruction.split(" ")
+def translateJrInstr(instruction):
+    instruct_data = instruction.split(' ')
     if len(instruct_data) != 2:
         error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
     result = '101110'
-    result += '000000'
-    result += findRegisterAddress(instruct_data[1], registers)
+    result += '000000' + findRegisterAddress(instruct_data[1])
     return result
-
-def translateJalrInstr(instruction, registers):
-    instruct_data = instruction.split(" ")
-    if len(instruct_data) != 2:
-        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
-        error_string += '. Неверное количество аргументов.'
-        ERROR(error_string)
-
-    result = '101111'
-    result += '000000'
-    result += findRegisterAddress(instruct_data[1], registers)
-    return result"""
 
 def translateNopInstr(instruction):
     instruct_data = instruction.split(" ")
@@ -431,7 +408,7 @@ def parseTextLines():
             line = line.split(':')
             # Условие если метка на отдельной строке
             if len(line)==2 and line[1] == '' :
-                label[line[0]] = codeEndAddr
+                label[line[0].upper()] = codeEndAddr
                 # Удаляет строку с назаванием метки
                 codeLines = codeLines[:count] + codeLines[count + 1:]
                 continue;
@@ -490,8 +467,17 @@ def parseTextLines():
         elif line.startswith('ST'):
             code += translateStInstr(line)
 
+        elif line.startswith('JMP'):
+            code += translateJmpInstr(line)
+
+        elif line.startswith('JR'):
+            code += translateJrInstr(line)
+
         elif line.startswith('NOP'):
             code += translateNopInstr(line)
+
+        else:
+            ERROR('Инструкция не найдена. Ошибка в строке: ' + line)
 
 
 def parseSetLines():
@@ -528,6 +514,8 @@ def parseDefLines():
                     ERROR('Ошибка в блоке .def')
     else:
         print('.def not included in fileByDirectives')
+
+
 
 def parseFile():
     readRegisters()
