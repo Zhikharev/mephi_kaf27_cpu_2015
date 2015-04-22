@@ -6,36 +6,47 @@
 //////////
 
 
-interface wishbone (input clk);
-        logic   [15:0]  adr_out;
+interface wishbone_if (input clk,input rst);
+        logic   [15:0]  adr_out;//use
         logic   [15:0]  adr_in;
-        logic   [15:0]  data_in;
-        logic   [15:0]  data_out;
-        logic           we;     //low read high write 
-        logic           ack_in ;
-        logic           ack_out;
+        logic   [15:0]  data_in;//use
+        logic   [15:0]  data_out;//use
+        logic           we_out;  //low read high write 
+        logic   [15:0]  instr_in;//use
+        logic           akn_in ;//use
+        logic           akn_out;
         logic   [3:0]   sel_out;
-        //logic   [3:0]   seb_in;
         logic           stb_in;
-        logic           stb_out;
+        logic           stb_out;//use
         logic           cyc_out;
         
-        /*
-        clocking cb@(posedge clk);
+        
+        clocking drv@(posedge clk);
+                output akn_in;
+                output instr_in;
+                output data_in;
+                input stb_out;
+                input adr_out;
+                input data_out;
+                input we_out;        
+                output rst;
+        endclocking  
+        clocking mon@(posedge clk);
                 input adr_in;
                 input data_in;
-                input ack_in;
-                inout we;
+                input akn_in;
+                input we_out;
                 input sel_out;
-                output adr_out;
-                output data_out;
-                output ack_out;
+                input adr_out;
+                input data_out;
+                input akn_out;
+                input rst;
         endclocking  
-        */     
+            
         
 endinterface
 
-interface control (input clk);
+interface control_if (input clk);
         logic reset;        
 endinterface 
 

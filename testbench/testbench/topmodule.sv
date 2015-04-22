@@ -4,6 +4,7 @@
 `timescale 1ns/10ps
 module testbench ();
         bit clk = 0;
+        bit gl_res =0;        
         
         
     //generetor clk   
@@ -11,10 +12,10 @@ module testbench ();
         forever #10 clk=~clk;
     end
                
-    wishbone instraction(clk);
-    wishbone data(clk);
-    control control(clk);
-    inner_if inner_intf(clk, control.reset);
+    control control_intf(clk);
+    wishbone_if output_cpu_intf(clk,control_intf.reset);
+    wishbone_if input_cpu_intf(clk,control_intf.reset);
+    inner_if inner_intf(clk, control_intf.reset);
 
     /*
     TODO
@@ -22,17 +23,20 @@ module testbench ();
     */
               
     cpu dut(
-        .CLK_I(control.clk),
-        .RST_I(control.reset),
-        .ADR_I(data.adr_in),
-        .ADR_O(data.adr_out),
-        .DAT_I(data.data_in),
-        .DAT_O(data.data_out)         
-    ); 
+        .AKN_I(input_cpu_intf.akn_in),
+        .INSTR_I(input_cpu_intf.instr_in),
+        .DAT_I(input_cpu_intf.data_in),
+        .STB_O(output_cpu_intf.stb_out),
+        .DAT_O(output_cpu_intf.data_out),
+        .WE_O(output_cpu_intf.we_out),
+        .ADR_O(output_cpu_intf.adr_out),
+        .CLK_I(control_intf.clk),
+        .RST_I(control_intf.reset)
+            ); 
 
     initial begin
         $display("START TEST");
-        model::test_sv_c_communication(5);
+        //model::test_sv_c_communication(5);
         #100;
         $finish();
     end

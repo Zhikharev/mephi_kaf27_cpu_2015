@@ -63,33 +63,52 @@ class trans;
       bit[15:0] inst;
       if(this.op_type()) begin
          inst[3:0] = opcode[3:0];
+         
          if(opcode == ADDI)begin
              inst[7:4] = imm;
              inst[11:8] = rt;
              inst[15:12] = rd;
+            decoded_inst = {opcode,imm,rt,rd};
          end
          else begin
             inst[7:4]=rs;
             inst[11:8]=rt;
              inst[15:12]=rd;
+            decoded_inst = {opcode,rs,rt,rd};
          end
    
       end
 
-      else begin
+      else begin 
       inst[5:0] = opcode;
          if(opcode inside {JR, JALR})begin
-         inst[11:6]=0;
-         inst[15:12]=rs;
+         inst[9:8]=0;
+         inst[3:0]=0;
+         inst[7:4]=rs;
+         decoded_inst = {opcode,rs};
          end
          else begin
          inst[15:6]=addr;
+         decoded_inst = {opcode,inst};
          end
       end
       return inst;
    endfunction
-    
-    function decode_inst (bit[15:0] inst);
+   
+   function void print ();
+        if(opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE}); 
+        $display(": instraction is %0s , rs(%0s), rt(%0s), rd(%0s)",opcode.name(),rs.name(),rt.name(),rd.name());
+        if(opcode inside{ADDI});
+        $display(": instaraction is %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", opcode.name(), imm,imm, rt.name(), rd.name());
+        if(opcode inside{LDL,LDH,STL,STH,JMP,JAL});
+        $display(": instraction is %0s, addr(%0h(%0d))", opcode.name(), addr, addr);            
+        if(opcode inside{JR, JALR});
+        $display(": instraction is %0s , rs(%0s)", opcode.name(), rs.name());
+   endfunction     
+  
+endclass
+
+/*  function decode_inst (bit[15:0] inst);
         opcod_t opcode;
         reg_t rs;
         reg_t rd;
@@ -132,9 +151,7 @@ class trans;
            
     endfunction
 
-   
-
-endclass
+   */
 
 
 `endif
