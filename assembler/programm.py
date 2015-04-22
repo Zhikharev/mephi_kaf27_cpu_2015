@@ -40,11 +40,11 @@ def ERROR (error_string):
 def getNumStr(num, length):
     i = 0
     if num.startswith('0X'): # Проверяем на 16-ю систему счисления
-        i = int(num, 16)
+        i = int(num[2:], 16)
         i = bin(i)
 
     elif num.startswith('0B'): # Проверяем на 2-ю систему счисления
-        i = int(num, 2)
+        i = int(num[2:], 2)
         i = bin(i)
 
     else: # Если не то не другое, значит 10-я система счисления
