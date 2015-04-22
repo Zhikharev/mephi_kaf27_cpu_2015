@@ -1,4 +1,5 @@
 import ctypes
+from struct import *
 # Адресс файла с кодом на ассемблере
 parsingFile = open("trycode.as", 'r')
 # Файл разделенный на блоки директивами
@@ -13,13 +14,12 @@ regLinks = {}
 dataLinks = {}
 # Список, в который добавим регистры
 registers = []
-# Адрес в памяти с которого начинается запись программы
-memStartAddr = 0
 # Адрес в памяти на котором заканчивается память занимаемая программой
 codeEndAddr = 0
 dataEndAddr = 0
 # Колличество байт на которое идет выравнивание
 align = 2
+
 data = ''
 code = ''
 
@@ -255,12 +255,12 @@ def translateLdInstr(instruction):
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
-    result = '10010'
+    result = '100100'
     addr = getNumStr(instruct_data[1], 10)
-    result += addr[0] + addr
-    result += '10011'
+    result += addr
+    result += '100110'
     addr = getNumStr(str(int(addr, 2) + align), 10)
-    result += addr[0] + addr
+    result += addr
     return result
 
 def translateStInstr(instruction):
@@ -270,12 +270,12 @@ def translateStInstr(instruction):
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
-    result = '10100'
+    result = '101000'
     addr = getNumStr(instruct_data[1], 10)
-    result += addr[0] + addr
-    result += '10101'
+    result += addr
+    result += '101010'
     addr = getNumStr(str(int(addr, 2) + align), 10)
-    result += addr[0] + addr
+    result += addr
     return result
 
 def translateJmpInstr(instruction):
@@ -291,6 +291,19 @@ def translateJmpInstr(instruction):
     result += addr
     return result
 
+def translateJalInstr(instruction):
+    instruct_data = instruction.split(' ')
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101101'
+    addr = label[instruct_data[1]]
+    addr = getNumStr(str(addr), 10)
+    result += addr
+    return result
+
 def translateJrInstr(instruction):
     instruct_data = instruction.split(' ')
     if len(instruct_data) != 2:
@@ -299,7 +312,18 @@ def translateJrInstr(instruction):
         ERROR(error_string)
 
     result = '101110'
-    result += '000000' + findRegisterAddress(instruct_data[1])
+    result += '00' + findRegisterAddress(instruct_data[1]) + '0000'
+    return result
+
+def translateJalrInstr(instruction):
+    instruct_data = instruction.split(' ')
+    if len(instruct_data) != 2:
+        error_string = 'Обнаружена ошибка при переводе строки: ' + instruction
+        error_string += '. Неверное количество аргументов.'
+        ERROR(error_string)
+
+    result = '101111'
+    result += '00' + findRegisterAddress(instruct_data[1]) + '0000'
     return result
 
 def translateNopInstr(instruction):
@@ -318,7 +342,7 @@ def translateNopInstr(instruction):
 
     return result
 
-# Функция для разделения фала на блоки по директивам
+# Функция для разделения файла на блоки по директивам
 def setDirectivesList():
     global parsingFile
     global fileByDirects
@@ -354,13 +378,14 @@ def setDirectivesList():
 
         else:
             if current != '':
-                if len(line) > 0:
+                if len(line) > 1:
                     fileByDirects[current] += line
 
-            elif len(line) > 0:
+            elif len(line) > 1:
                 current = '.none'
                 fileByDirects[current] = line
 
+# Функция обработки директивы .data
 def parseDataLines():
     global codeEndAddr
     global fileByDirects
@@ -416,6 +441,14 @@ def parseTextLines():
             elif len(line) == 2 and line[1] != '':
                 label[line[0]] = codeEndAddr
                 line = line[1]
+                if line.upper().startswith('LD') or line.upper().startswith('ST'):
+                    codeEndAddr += 2
+
+                elif line.upper().startswith('NOP') and len(line.split(' ')) == 2:
+                    line = line.split(' ')
+                    num = int(line[1][1:-1])
+                    codeEndAddr += (num - 1)*2
+
                 codeEndAddr += 2
                 codeLines[count] = line.strip() + '\n'
                 continue;
@@ -427,6 +460,14 @@ def parseTextLines():
                 ERROR(error_string)
 
         else:
+            if line.upper().startswith('LD') or line.upper().startswith('ST'):
+                codeEndAddr += 2
+
+            elif line.upper().startswith('NOP') and len(line.split(' ')) == 2:
+                line = line.split(' ')
+                num = int(line[1][1:-1])
+                codeEndAddr += (num - 1)*2
+
             codeEndAddr += 2
 
         count += 1
@@ -470,8 +511,14 @@ def parseTextLines():
         elif line.startswith('JMP'):
             code += translateJmpInstr(line)
 
+        elif line.startswith('JAL'):
+            code += translateJalInstr(line)
+
         elif line.startswith('JR'):
             code += translateJrInstr(line)
+
+        elif line.startswith('JALR'):
+            code += translateJalrInstr(line)
 
         elif line.startswith('NOP'):
             code += translateNopInstr(line)
@@ -515,8 +562,6 @@ def parseDefLines():
     else:
         print('.def not included in fileByDirectives')
 
-
-
 def parseFile():
     readRegisters()
     setDirectivesList()
@@ -526,4 +571,9 @@ def parseFile():
 
 parseFile()
 print(code)
-print(len(code))
+
+
+file = open('file.bin','wb')
+
+d = pack(str(len(code))+'s', bytes(code, 'UTF-8'))
+file.write(d)
