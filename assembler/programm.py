@@ -578,9 +578,10 @@ print(code)
 d = pack(str(len(code))+'s', bytes(code, 'UTF-8'))
 file.write(d)'''
 
-file = open('file.bin','wb')
-cur = 0
+file = open('file','wb')
+file.write(bytes(code, 'UTF-8'))
+'''cur = 0
 while cur < len(code):
-    d = pack('>I', int(code[cur:cur+4],2))
+    d = pack(b'=I', int(code[cur:cur+4],2))
     file.write(d)
-    cur+=4
+    cur+=4'''
