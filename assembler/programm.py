@@ -573,15 +573,10 @@ parseFile()
 print(code)
 
 
-'''file = open('file.bin','wb')
-
-d = pack(str(len(code))+'s', bytes(code, 'UTF-8'))
-file.write(d)'''
-
 file = open('file','wb')
-file.write(bytes(code, 'UTF-8'))
-'''cur = 0
-while cur < len(code):
-    d = pack(b'=I', int(code[cur:cur+4],2))
-    file.write(d)
-    cur+=4'''
+for sym in code:
+    if sym == '0':
+        file.write(b'\x00')
+
+    else:
+        file.write(b'\x01')
