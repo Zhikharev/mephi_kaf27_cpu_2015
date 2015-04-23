@@ -59,7 +59,7 @@ class trans;
       return opcode inside{ADD,ADDI,OR,AND,XOR,NOR,SLL,ROT,BNE,NOP};
    endfunction
 
-   function bit[15:0] create_trans();
+   function bit[15:0] pack ();
       bit[15:0] inst;
       if(this.op_type()) begin
          inst[3:0] = opcode[3:0];
@@ -108,6 +108,9 @@ class trans;
   
 endclass
 
+
+
+`endif
 /*  function decode_inst (bit[15:0] inst);
         opcod_t opcode;
         reg_t rs;
@@ -154,4 +157,3 @@ endclass
    */
 
 
-`endif
