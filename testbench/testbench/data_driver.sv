@@ -1,7 +1,7 @@
 `ifndef DATA_DRIVER
 `define DATA_DRIVER
 class data_driver;
-    virtual wishbone_if vif;
+   /* virtual wishbone_if vif;
     bit[15:0] data;
     bit[9:0] addr;
     
@@ -9,7 +9,7 @@ class data_driver;
         this.vif= vif;
     
     endfunction
-
+*/
     
 endclass
 

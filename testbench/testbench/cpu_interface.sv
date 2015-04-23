@@ -54,5 +54,7 @@ endinterface
 interface inner_if (input clk, input rst);
     logic [31:0] register[0:15];
     logic [31:0] pc;
+    logic [15:0] mon2mon;
+    logic [15:0] data_mon2data_drv; // spare interface
 endinterface
 `endif
