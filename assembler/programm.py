@@ -573,7 +573,14 @@ parseFile()
 print(code)
 
 
-file = open('file.bin','wb')
+'''file = open('file.bin','wb')
 
 d = pack(str(len(code))+'s', bytes(code, 'UTF-8'))
-file.write(d)
+file.write(d)'''
+
+file = open('file.bin','wb')
+cur = 0
+while cur < len(code):
+    d = pack('>I', int(code[cur:cur+4],2))
+    file.write(d)
+    cur+=4
