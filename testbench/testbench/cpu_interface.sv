@@ -23,13 +23,14 @@ interface wishbone_if (input clk,input rst);
         
         clocking drv@(posedge clk);
                 output akn_in;
-                output instr_in;
+                input instr_in;//this mast be input or nothig work
                 output data_in;
                 input stb_out;
                 input adr_out;
                 input data_out;
                 input we_out;        
                 output rst;
+                input clk;//it must be declared or nothing work
         endclocking  
         clocking mon@(posedge clk);
                 input adr_in;
