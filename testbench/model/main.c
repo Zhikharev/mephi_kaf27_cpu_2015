@@ -1,33 +1,65 @@
 //main
-#include <stdio.h>
-#include "model.h"
+#include "main.h"
 
-FILE  *f;
+OPENFILE(){
+
+	printf ("Opening a file : ");
+    //f = fopen ("prog.bin","rb");
+    f = fopen ("prog2.bin","rb");
+	//f = fopen ("file.bin","rb");
+    if(f == NULL)
+	{
+		printf("ERROR opening file\n");
+		return -1;
+	}
+    else 
+	{
+		printf(" All right\n");
+		return 0;
+	}
+}
+
+int READINSTR (){
+	int buffer[2];
+	int g = 0;
+
+	printf ("Set the position at the beginning of the file\n ");
+
+	if (fseek (f, PC, SEEK_SET) == 0)
+		printf ("Done\n");
+	else
+		printf ("ERROR\n");
+
+	printf("PC: %x\n",PC);
+
+	while (g < 2) {
+		buffer[g] = fgetc (f);
+		printf ("F: buffer[%d]: %x\n", g, buffer[g]);
+		if (buffer[g] == EOF)
+		{
+			if ( feof (f) != 0)
+				printf ("Reading the file finished\n");
+			else
+				printf ("ERROR\n");
+		}
+		g++;
+	}
+	buffer[0] = buffer[0] << 8;
+	printf ("F: buffer[0]: %x\n", buffer[0]);
+	instr = buffer[0] | buffer[1];
+	printf ("F: instr: 0x%04x\n",instr);
+    return (instr);
+}
+
 main()
 {
-	int instr;
-	//int *PC;
-	int addr;
 	int k = 0;
-	int i = 0;
-	int memory[1024];
-	int t = 0;
-
-	for(addr = 0; addr < 1024; addr++)
-		{
-			memory[addr] = t;
-			printf("%x ",memory[addr]);
-			t++;
-		}
-
-	//PC = &instr;
-	openfile();
+	INITMEMORY();
+	OPENFILE();
 	while(!feof(f)){ 
 
-		instr = readinstr();
-		decode(instr);
-		checkmemory(addr);
-		//printf("Value at the address PC: %x\n", *PC); 
+		instr = READINSTR();
+		DECODE(instr);
 		k++;
 	}
 	printf ("Close file\n");

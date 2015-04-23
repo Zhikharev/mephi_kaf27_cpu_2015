@@ -1,103 +1,11 @@
 //model_cpu
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-#include "svdpi.h"
 #include "model.h"
-
-int reg_A = 1; // Register for storing hashsum
-int reg_B = 2;
-int reg_C = 3;
-int reg_D = 4;
-int reg_E = 5;
-int reg_F = 6;
-int reg_G = 7;
-int reg_H = 8;
-int reg_W = 9; // Register for storing words
-int reg_K = 10; // Register for storing constants
-int reg_MR = 11;// Memory Register
-int reg_LR = 12; // Link Register
-int reg_zero = 0; // Register for storing zero
-int reg_t0 = 13; // Register for storing temporary variables
-int reg_t1 = 14;
-int reg_t2 = 15;
-int PC;
-//int *PC;
-int memory[1024]; 
-int instr;
-int i = 0;
-int REG;
-int addr_reg;
-
-int opcode;
-int rs;
-int rt;
-int rd;
-int imm;   
-int Mtype;
-int addr;
-int addr_rs;
 
 test_sv_c_communication(int var) {
     printf("C: var is %d", var);
 }
 
-//Fetch
-FILE *f;
-openfile(){
-
-	printf ("Opening a file : ");
-    //f = fopen ("prog1.bin","rb");
-    f = fopen ("prog2.bin","rb");
-    if(f == NULL)
-	{
-		printf("ERROR opening file\n");
-		return -1;
-	}
-    else 
-	{
-		printf(" All right\n");
-		return 0;
-	}
-}
-
-int readinstr (){
-	int buffer[2];
-	int g = 0;
-
-	printf ("Set the position at the beginning of the file\n ");
-	if (fseek (f, i, SEEK_SET) == 0)
-		printf ("Done\n");
-	else
-		printf ("ERROR\n");
-
-	printf ("i: %i\n",i);
-	//printf("PC %6p\n", PC);
-	printf("PC: %x\n",PC);
-
-	while (g < 2) {
-		buffer[g] = fgetc (f);
-		printf ("F: buffer[%d]: %x\n", g, buffer[g]);
-		if (buffer[g] == EOF)
-		{
-			if ( feof (f) != 0)
-				printf ("Reading the file finished\n");
-			else
-				printf ("ERROR\n");
-		}
-		g++;
-	}
-	buffer[0] = buffer[0] << 8;
-	printf ("F: buffer[0]: %x\n", buffer[0]);
-	instr = buffer[0]  | buffer[1];
-	printf ("F: instr: 0x%04x\n",instr);
-	i = i + 2;
-	printf ("i: %d\n",i);
-    return (instr);
-}
-
-decode(int instr){ 
+DECODE(int instr){ 
 	printf ("D: instr: 0x%04x\n",instr);
 	opcode = (instr >> 12);
 	printf ("D: opcode: %x\n",opcode);
@@ -117,80 +25,80 @@ decode(int instr){
 	printf ("D: Mrs: %x\n",addr_rs);
 
 	switch (opcode) {
-			case 0x0 : add(rs, rt, rd); 
-					   printf ("add\n");
+			case 0x0 : printf ("add\n");
+					   ADD(rs, rt, rd);   
 					break;
-			case 0x1 : addi(imm, rt, rd); 
-					   printf ("addi\n");
+			case 0x1 : printf ("addi\n");
+				       ADDI(imm, rt, rd); 					  
 					break;
-			case 0x2 : or_1(rs, rt, rd);
-				       printf ("or\n");
+			case 0x2 : printf ("or\n");
+					   OR(rs, rt, rd);		    
 					break; 
-			case 0x3 : and_1(rs, rt, rd);
-				       printf ("and\n");
+			case 0x3 : printf ("and\n");
+					   AND(rs, rt, rd);		      
 					break;
-			case 0x4 : xor_1(rs, rt, rd);
-					   printf ("xor\n");
+			case 0x4 : printf ("xor\n");
+					   XOR(rs, rt, rd);					   
 					break;
-			case 0x5 : nor_1(rs, rt, rd);
-					   printf ("nor\n");
+			case 0x5 : printf ("nor\n");
+					   NOR(rs, rt, rd);					   
 					break;
-			case 0x6 : sll(rs, rt, rd);
-					   printf ("sll\n");
+			case 0x6 : printf ("sll\n");
+					   SLL(rs, rt, rd);				  
 					break;
-			case 0x7 : rot(rs, rt, rd);
-				       printf ("rot\n");
+			case 0x7 : printf ("rot\n");
+					   ROT(rs, rt, rd);				       
 					break;
-			case 0x8 : bne(rs, rt, rd);
-					   printf ("bne\n");
+			case 0x8 : printf ("bne\n");
+					   BNE(rs, rt, rd);					   
 					break;
 			case 0x9 : switch (Mtype) {
-							case 0: ldl(addr);
-									printf ("ldl\n");
+							case 0: printf ("ldl\n");
+									LDL(addr);								
 								break;
-							case 1: ldl(addr);
-									printf ("ldl\n");
+							case 1: printf ("ldl\n");
+									LDL(addr);								
 								break;
-							case 2: ldh(addr);
-									printf ("ldh\n");
+							case 2: printf ("ldh\n");
+									LDH(addr);								
 								break;
-							case 3: ldh(addr);
-									printf ("ldh\n");
+							case 3: printf ("ldh\n");
+									LDH(addr);									
 								break;
 					   }
 					break;
 			case 0xA : switch (Mtype) {
-							case 0: stl(addr);
-									printf ("stl\n");
+							case 0: printf ("stl\n");
+									STL(addr);									
 								break;
-							case 1: stl(addr);
-									printf ("stl\n");
+							case 1: printf ("stl\n");
+									STL(addr);									
 								break;
-							case 2: sth(addr);
-									printf ("sth\n");
+							case 2: printf ("sth\n");
+									STH(addr);									
 								break;
-							case 3: sth(addr);
-									printf ("sth\n");
+							case 3: printf ("sth\n");
+									STH(addr);									
 								break;
 					   } 
 					break;
 			case 0xB : switch (Mtype) {
-							case 0: jmp(addr);
-									printf ("jmp\n");
+							case 0: printf ("jmp\n");
+									JMP(addr);									
 								break;
-							case 1: jal(addr);
-									printf ("jal\n");
+							case 1: printf ("jal\n");
+									JAL(addr);									
 								break;
-							case 2: jr(addr_rs);
-									printf ("jr\n");
+							case 2: printf ("jr\n");
+									JR(addr_rs);									
 								break;
-							case 3: jalr(addr_rs);
-									printf ("jarl\n");
+							case 3: printf ("jarl\n");
+									JALR(addr_rs);									
 								break;
 					   }
 					break;
 			case 0xC : printf ("nop\n");
-					break;// nop     
+					break;  
 			default: printf ("This operation doesn't exist\n");
 					 return 0;
 					break;		
@@ -198,7 +106,79 @@ decode(int instr){
 	return 1;
 }
 
-int checkreg(int addr_reg)
+int SETREG (int addr_reg, int data_reg)
+{
+	switch(rd){
+			case 0x0 : reg_A = data_reg;
+					   printf("reg_A %x\n", reg_A);
+					   return reg_A;
+					break;
+			case 0x1 : reg_B = data_reg;
+				       printf("reg_B %x\n", reg_B);
+					   return reg_B;
+					break;
+			case 0x2 : reg_C = data_reg;
+					   printf("reg_C %x\n", reg_C);
+					   return reg_C;
+					break;
+			case 0x3 : reg_D = data_reg;
+				       printf("reg_D %x\n", reg_D);
+					   return reg_D;
+					break;	
+			case 0x4 : reg_E = data_reg;
+				       printf("reg_E %x\n", reg_E);
+					   return reg_E;
+					break;
+			case 0x5 : reg_F = data_reg;
+				       printf("reg_F %x\n", reg_F);
+					   return reg_F;
+					break;
+			case 0x6 : reg_G = data_reg;
+				       printf("reg_G %x\n", reg_G);
+					   return reg_G;
+					break;
+			case 0x7 : reg_H = data_reg;
+				       printf("reg_H %x\n", reg_H);
+					   return reg_H;
+					break;
+			case 0x8 : reg_W = data_reg;
+				       printf("reg_W %x\n", reg_W);
+					   return reg_W;
+					break;
+			case 0x9 : reg_K = data_reg;
+		        	   printf("reg_K %x\n", reg_K);
+					   return reg_K;
+					break;	
+			case 0xA : reg_MR = data_reg;
+				       printf("reg_MR %x\n", reg_MR);
+					   return reg_MR;
+					break;
+			case 0xB : reg_LR = data_reg;
+				       printf("reg_LR %x\n", reg_LR);
+					   return reg_LR;
+					break;
+			case 0xC : reg_zero = data_reg;
+				       printf("reg_zero %x\n", reg_zero);
+					   return reg_zero;
+					break;
+			case 0xD : reg_t0 = data_reg;
+				       printf("reg_t0 %x\n", reg_t0);
+					   return reg_t0;
+					break;
+			case 0xE : reg_t1 = data_reg;
+				       printf("reg_t1 %x\n", reg_t1);
+					   return reg_t1;
+					break;
+			case 0xF : reg_t2 = data_reg;
+				       printf("reg_t2 %x\n", reg_t2);
+					   return reg_t2;
+					break;
+			default : return 0;
+					break;
+		}
+}
+
+int GETREG(int addr_reg)
 {
 	int REG;
 	switch(addr_reg){
@@ -256,7 +236,30 @@ int checkreg(int addr_reg)
 	return REG;				
 }
 
-int checkmemory(int addr)
+int INITMEMORY()
+{
+	int t = 0;
+	printf("Memory: ");
+	for(addr = 0; addr < 1024; addr++)
+		{
+			memory[addr] = t;
+			printf("%x ",memory[addr]);
+			t++;
+		}
+	return memory[addr];
+}
+
+//Function for set memory from TB
+/*
+IMPORTMEMORY() 
+{  	
+	printf("C: Set memory from TB: ");
+	SETMEMORY(); 
+	printf("%x", memory[addr]);
+} 
+*/
+
+int GETMEMORY(int addr)
 {	
 	return memory[addr];
 }
