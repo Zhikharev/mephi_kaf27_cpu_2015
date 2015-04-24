@@ -5,11 +5,15 @@ class environment
    virtual wishbone_if  inst_cpu_intf;
    virtual wishbone_if  data_cpu_intf;
    virtual control_if   cont_cpu_intf;
-   driver drv_inst;
-   //scorebord sb;
-   inst_monitor mon_inst;  
+   instr_monitor mon_inst;  
+   instr_driver instr_drv;
+   data_monitor data_mon;
+   data_driver data_drv;
    mailbox #(trans) mb_dr2sb;
-   mailbox #(trans) mb_mon2sb;      
+   mailbox #(trans) mb_imon2sb;
+   mailbox #(trans) mb_dmon2sb;
+   mailbox #(bit[15:0]) mb_dr2dr;
+   mailbox #(bit[15:0]) mb_mon2mon;
         
    function new(virtual  wishbone_if inst_cpu_intf, virtual wishbone_if data_cpu_intf, virtual control_if cont_cpu_intf); 
       this.inst_cpu_intf = inst_cpu_intf;
@@ -19,10 +23,13 @@ class environment
         
    function void build(); 
       $display("Enviroment: build is started. %0t",$time);
-       mb_dr2sb =new();
-       mb_mon2sb = new();
-       drv_inst = new(inst_cpu_intf,md_dr2sb);
-       mon_inst = new(inst_cpu_intf,md_mon2sb);
+       mb_idr2sb =new();
+       mb_imon2sb = new();
+       mb_dmon2sb = new();
+       instr_mon(instr_cpu_intf,mb_mon2mon,mb_imon2sb);
+       data_mon(data_cpu_intf,mb_mon2mon,mb_dmon2sb);
+       data_drv(data_cpu_intf,mb_dr2dr);
+       inst_drv(inst_cpu_intf,mb_idr2sb,mb_dr2dr);
        $display("Enviroment: build is complited. %0t",$time);        
    endfunction
 
@@ -68,7 +75,7 @@ class environment
 
     task wait_for_end() begin
          $display("Enviroment : wait is on. %0t", $time);
-         repeat(1000) @(cont_cpu_intf.clk);
+         repeat(100) @(cont_cpu_intf.clk);
          $display("Enviroment : wait is done. %0t", $time);
         
     endtask
