@@ -11,7 +11,7 @@ class inst_driver;
     function new (virtual wishbone_if vif, mailbox #(trans) mb_dr2sb);
         this.vif = vif;
         if (mb_dr2sb == null) begin
-            $display("DRIVER : ERROR mail box is empty");
+            $display("DRIVER : ERROR mailbox is null");
         end
         else begin
             this.mb_dr2sb = mb_dr2sb;
@@ -21,7 +21,31 @@ class inst_driver;
     task strart();
         trans sec_instr;
         int delay;
-        int carring_cycle=0;
+        int carring_cycle = 0;
+        do begin
+            @(vif.drv.clk);
+            if(!vif.rst) begin
+                if(vif.drv.stb_out) begin
+                    $cast(sec_instr,instr);
+                    sec_instr.randomize();
+                    std :: randomize(delay) with {delay >= 0 && delay < 5;};       
+                    repeat(delay) @(vif.drv);
+                    send_instr(sec_instr);
+                    carring_cycle = carring_cycle + 1;
+                    $display("CARRING CYCLE %0d",carring_cycle);
+                    sec_instr.print;
+                end
+                else begin
+                    clear_intf();
+                end
+            end
+            else begin
+                reset_intf();
+            end
+        end
+        while(carring_cycle != cycles)
+        
+/*        
         do begin
             @(vif.drv.clk);
             if(vif.drv.rst) begin
@@ -45,23 +69,24 @@ class inst_driver;
             end
         end
         while(carring_cycle == cycles);
+*/
     endtask
     
     
     task send_instr (trans item);
-        vif.drv.instr_in = item.pack;     
+        vif.drv.ack_in <= 1'b1;
+        vif.drv.instr_in <= item.pack;  
+        // TODO Set all other signals
     endtask
-  
-  
-  
-  
-  
-  
-  
 
+    task reset_intf();
+        // TODO
+    end
 
-
-
+    task clear_intf();
+        // TODO
+    end
+ 
 
 endclass
 
