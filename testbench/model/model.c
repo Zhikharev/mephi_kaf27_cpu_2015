@@ -1,8 +1,9 @@
 //model_cpu
 #include "model.h"
 
-test_sv_c_communication(int var) {
-    printf("C: var is %d", var);
+void test_sv_c_communication(int arg) {
+	printf("Hello from C!\n");
+    printf("C: var is %d\n", arg);
 }
 
 DECODE(int instr){ 

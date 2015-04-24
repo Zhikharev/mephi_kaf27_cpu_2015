@@ -2,9 +2,9 @@
 `define ENVIRONMENT
 
 class environment
-   virtual wishbone_if inst_cpu_intf;
-   virtual wishbone_if data_cpu_intf;
-   virtual control_if cont_cpu_intf;
+   virtual wishbone_if  inst_cpu_intf;
+   virtual wishbone_if  data_cpu_intf;
+   virtual control_if   cont_cpu_intf;
    driver drv_inst;
    //scorebord sb;
    inst_monitor mon_inst;  
@@ -17,7 +17,7 @@ class environment
       this.cont_cpu_intf = cont_cpu_intf;
    endfunction
         
-   function built () 
+   function void build(); 
       $display("Enviroment: build is started. %0t",$time);
        mb_dr2sb =new();
        mb_mon2sb = new();
@@ -26,7 +26,7 @@ class environment
        $display("Enviroment: build is complited. %0t",$time);        
    endfunction
 
-   function reset ();
+   function void reset();
           $display("Enviroment : reset is turned on. %0t",$time);
           cont_cpu_intf.reset <= 1;
           @(cont_cpu_intf.clk);
@@ -56,7 +56,7 @@ class environment
           $display("Enviroment : reset was be commited. %0t",$time);
     endfunction
 
-    task start ();
+    task start();
       $display("Enviroment : start is on. %0t", $time);
       fork 
          drv.start;
@@ -66,18 +66,17 @@ class environment
       $display("Enviroment : start is done. %0t", $time);
    endtask
 
-    task wait_for_end () begin
+    task wait_for_end() begin
          $display("Enviroment : wait is on. %0t", $time);
          repeat(1000) @(cont_cpu_intf.clk);
          $display("Enviroment : wait is done. %0t", $time);
         
     endtask
 
-    task run ()
+    task run();
         reset();
         start();
         wait_for_end
-    
     endtask       
 
     

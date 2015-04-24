@@ -1,9 +1,10 @@
 package model;
 
-	import "DPI-C" function void test_sv_c_communication(input int val);
-	import "DPI-C" function void openfile();
-	import "DPI-C" function readinstr();
-	import "DPI-C" function decode(int);
+	import "DPI-C" function void test_sv_c_communication(input int arg);
+
+	import "DPI-C" function DECODE(int);
+
+/*
 	import "DPI-C" function checkreg(int);
     import "DPI-C" function checkmemory(int);
     import "DPI-C" function add(int,int,int);
@@ -24,8 +25,7 @@ package model;
     import "DPI-C" function jr(int);
     import "DPI-C" function jalr(int);
     import "DPI-C" function nop();
+*/
 
-
-    
     
 endpackage

@@ -40,7 +40,7 @@ int addr;
 int addr_rs;
 
 DPI_LINK_DECL DPI_DLLESPEC IMPORTMEMORY();
-DPI_LINK_DECL DPI_DLLESPEC test_sv_c_communication(int);
+DPI_LINK_DECL DPI_DLLESPEC void test_sv_c_communication(int arg);
 DPI_LINK_DECL DPI_DLLESPEC DECODE(int);
 DPI_LINK_DECL DPI_DLLESPEC int SETREG(int, int);
 DPI_LINK_DECL DPI_DLLESPEC int GETREG(int);

@@ -12,10 +12,10 @@ module testbench ();
         forever #10 clk=~clk;
     end
                
-    control control_intf(clk);
+    control_if  control_intf(clk);
     wishbone_if output_cpu_intf(clk,control_intf.reset);
     wishbone_if input_cpu_intf(clk,control_intf.reset);
-    inner_if inner_intf(clk, control_intf.reset);
+    inner_if    inner_intf(clk, control_intf.reset);
 
     /*
     TODO
@@ -32,12 +32,13 @@ module testbench ();
         .ADR_O(output_cpu_intf.adr_out),
         .CLK_I(control_intf.clk),
         .RST_I(control_intf.reset)
-            ); 
+    ); 
 
     initial begin
         $display("START TEST");
-        //model::test_sv_c_communication(5);
+        model::test_sv_c_communication(5);
         #100;
+        $display("END TEST");
         $finish();
     end
 
