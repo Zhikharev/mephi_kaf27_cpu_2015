@@ -19,7 +19,17 @@ int ADDI (int imm, int rt, int rd)
 {	
 	int rt_data;
 	int rd_data;
+	int a;
 
+	a = imm >> 3;
+	printf("a = %x\n", a);
+
+	switch (a){
+		case 1: imm = imm | 0xFFF0;
+			break;
+		case 0: imm = imm & 0x000F;
+			break;
+	}
 	rt_data = GETREG(rt);
 	rd_data = imm + rt_data;
 	SETREG(rd, rd_data);
