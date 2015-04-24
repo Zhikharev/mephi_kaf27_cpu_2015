@@ -574,9 +574,16 @@ print(code)
 
 
 file = open('file','wb')
+cur = 0
+while cur < len(code):
+    d = pack('>I', int(code[cur:cur+4],2))
+    file.write(d)
+    cur+=4
+
+'''file = open('file','wb')
 for sym in code:
     if sym == '0':
         file.write(b'\x00')
 
     else:
-        file.write(b'\x01')
+        file.write(b'\x01')'''
