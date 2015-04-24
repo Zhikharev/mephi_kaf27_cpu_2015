@@ -1,8 +1,9 @@
 # Exports
-export LM_LICENSE_FILE=/opt/questasim_v6.6c/license.dat
-
+#export LM_LICENSE_FILE=/opt/questasim_v6.6c/license.dat
+export LM_LICENSE_FILE=/opt/questasim_v6/license.dat
 # Environment variables
-MTI_HOME = /opt/questasim_v6.6c/questasim
+#MTI_HOME = /opt/questasim_v6.6c/questasim
+MTI_HOME = /opt/questasim_v6/questasim
 
 # Main path variables
 HOME       := $(shell pwd)
@@ -35,6 +36,7 @@ sim:
 	cd $(RUN);                     \
 	vsim  -novopt                  \
 		  -l $(TESTNAME).log       \
+		  $(MODEL_VSIM_OPT)        \
 		  -sv_seed $(SEED)         \
 		  -do 'run -all'           \
 		  -l run.log               \
