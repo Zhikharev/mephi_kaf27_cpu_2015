@@ -41,7 +41,11 @@ module UARTverification(
     output is_transmitting2, 
     output recv_error2,
 	 
-	 output reg [15:0] dout
+	 
+	 
+	 input rd_en,
+	 input wr_clk,
+	 output [15:0] rd_data
     );
 	 
 	 localparam idle = 2'b00,
@@ -76,15 +80,29 @@ uart uart2 (
     .recv_error(recv_error2)
     );
 	 
+	 
+wire wr_en;	
+wire full;
+wire empty;
+wire almost_full;
+ 
+reg [15:0] dout;
+wire [15:0] loc_d;
+
+assign loc_d = dout; 	 
+	 
 reg [1:0] state_reg;
 reg [1:0] state_next;
 reg [5:0] count;
-initial count = 0;
-reg flag;	 
+reg flag;
+reg loc_wr_en;	 
+
+
 always@(posedge clk)
    begin
 	    if (rst) begin
 		            state_reg <= idle;
+						count <= 0;
 					 end
        else state_reg <= state_next;
 	end
@@ -104,6 +122,7 @@ always@*
 			         if (rx_byte2 == 8'b10000000) begin
 						                                 flag = 1;
 						                                 state_next = load_h;
+																	loc_wr_en = 0;
 															  end
 			      end
 			load_h: begin
@@ -119,10 +138,24 @@ always@*
 							   dout [7:0] = rx_byte2;
                         state_next = idle;
 								flag = 0;
+								loc_wr_en = 1;
                        end
                  end							  
 		endcase
 	end
+	assign wr_en = loc_wr_en;
+	afifo fifo (
+    .wr_clk(wr_clk), 
+    .rst(rst), 
+    .wr_en(wr_en), 
+    .wr_data(loc_d), 
+    .rd_en(rd_en), 
+    .rd_clk(clk), 
+    .rd_data(rd_data), 
+    .full(full), 
+    .empty(empty), 
+    .almost_full(almost_full)
+    );
 	 
 	
 endmodule

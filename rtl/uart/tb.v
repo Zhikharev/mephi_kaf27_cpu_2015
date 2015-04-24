@@ -4,7 +4,7 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   23:23:31 04/10/2015
+// Create Date:   22:30:51 04/24/2015
 // Design Name:   UARTverification
 // Module Name:   C:/Xilinx/UARTverification/tb.v
 // Project Name:  UARTverification
@@ -32,6 +32,8 @@ module tb;
 	reg [7:0] tx_byte1;
 	reg transmit2;
 	reg [7:0] tx_byte2;
+	reg rd_en;
+	reg wr_clk;
 
 	// Outputs
 	wire tx1;
@@ -46,6 +48,7 @@ module tb;
 	wire is_receiving2;
 	wire is_transmitting2;
 	wire recv_error2;
+	wire [15:0] rd_data;
 
 	// Instantiate the Unit Under Test (UUT)
 	UARTverification uut (
@@ -67,30 +70,43 @@ module tb;
 		.rx_byte2(rx_byte2), 
 		.is_receiving2(is_receiving2), 
 		.is_transmitting2(is_transmitting2), 
-		.recv_error2(recv_error2)
+		.recv_error2(recv_error2), 
+		.rd_en(rd_en), 
+		.wr_clk(wr_clk), 
+		.rd_data(rd_data)
 	);
 
-		initial begin 
-	          clk = 0;
-				   forever begin
-					         #20 clk = ~clk;
-							  end
-				end
+initial forever #20 clk = ~clk;
+initial forever #50 wr_clk = ~wr_clk;
+initial begin
 
-	initial begin
-		
-		rst = 0;
+      clk = 0;
+		rst = 1;
 		transmit1 = 0;
-		tx_byte1 = 8'b00000011;
-
-		repeat(5)
-		   begin
-	         transmit1 = 1;
-            @(posedge received2)
-		         tx_byte1 = tx_byte1 + 1'b1;
-			end;
+		tx_byte1 = 0;
+		rd_en = 0;
+		wr_clk = 0;
 		
-	end
-      
+		#30;
+		rst = 0;
+		transmit1 = 1;
+		
+		@(posedge received2);
+		tx_byte1 = 8'b00000000;
+		@(posedge received2);
+		tx_byte1 = 8'b10000000;
+		@(posedge received2);
+		tx_byte1 = 8'b00001111;
+		@(posedge received2);
+		tx_byte1 = 8'b11110000;
+		@(posedge received2);
+		tx_byte1 = 8'b10000000;
+		@(posedge received2);
+		tx_byte1 = 8'b00000000;
+		@(posedge received2);
+		tx_byte1 = 8'b11111111;
+		@(posedge received2);
+		rd_en = 1;
+     end
 endmodule
 
