@@ -3,20 +3,28 @@
 
 class data_monitor;
     virtual wishbone_if vif;
-    virtual inner_if vif_m2m;
-    mailbox #(trans) mb_mon2sb;
+    mailbox #(bit[15:0]) mb_mon2mon;
+    mailbox #(trans) mb_dmon2sb;
+    
      
-    function new (virtual wishbone_if vif,virtual inner_if vif_m2m, mailbox #(trans) mb_mon2sb);
+    function new (virtual wishbone_if vif, mailbox #(bit[15:0]) mb_mon2mon, mailbox #(trans) mb_dmon2sb);
         this.vif = vif;
-        this.vif_m2m = vif_m2m;
-        if (mb_mon2sb == null) begin
-			$display("Monitor : Error - mailbox mb_mon2sb is empty");
-			//$finish;
+        if (mb_dmon2sb == null) begin
+			$display("INSTR MONITOR : Error - mailbox mb_mon2sb is empty");
 		end
 		else begin
-			this.mb_mon2sb = mb_mon2sb;
+			this.mb_dmon2sb = mb_dmon2sb;
         end
+        if(mb_mon2mon == null)begin
+            $display("INST MONITOR : ERROR - mailbox mb_mon2mon is empty");
+        end
+        else begin
+            this.mb_mon2mon = mb_mon2mon;
+        end
+        
     endfunction
+   
+   
     
     task adr_cont();
         bit[9:0] addr_out;
@@ -31,28 +39,42 @@ class data_monitor;
                         addr_out = vif.mon.adr_out;
                         if(addr_out == store_wotcher())begin
                             //model :: SATMEM(addr_out)
+                             if(vif.mon.we_out == 1) begin
+                            
+                             end
+                             else begin
+                                $display("DATA MONITOR : ERROR we_out is null ,%0t", $time);                           
+                             end
+
                         end      
                         else begin
-                             $display("DATA MONITOR : ERROR mismaches betwine addreses");
+                             $display("DATA MONITOR : ERROR mismaches betwine addreses ,%0t", $time);
+                                if(vif.mon.we_out == 1) begin
+                            
+                                end
+                                else begin
+                                  $display("DATA MONITOR : ERROR we_out is null ,%0t", $time);                           
+                                end
+
                         end
-                      end
+                    end
                 end
                 
             end         
          end   
     endtask
 
-    function store_wotcher ();
+    function  store_wotcher ();
         bit[9:0] addr;
-        bit [15:0] instr;
+        bit [15:0] instr = mb_mon2mon.get(instr);
         //this.instr=instr;
-        instr = vif_m2m.mon2mon;
         if(instr[5:0] == 6'b101001 && 6'b101011) begin
             addr = instr[15:6];
             return addr;
         end
         else begin
-           // return 0;
+            addr = 0;// can't jast write return 0
+            return addr;
         end
     endfunction
 
