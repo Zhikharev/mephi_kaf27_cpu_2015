@@ -1,5 +1,5 @@
 import ctypes
-from struct import *
+import io
 # Адресс файла с кодом на ассемблере
 parsingFile = open("trycode.as", 'r')
 # Файл разделенный на блоки директивами
@@ -576,14 +576,7 @@ print(code)
 file = open('file','wb')
 cur = 0
 while cur < len(code):
-    d = pack('>I', int(code[cur:cur+4],2))
-    file.write(d)
-    cur+=4
-
-'''file = open('file','wb')
-for sym in code:
-    if sym == '0':
-        file.write(b'\x00')
-
-    else:
-        file.write(b'\x01')'''
+    c = int(code[cur:cur+8], 2)
+    file.write(bytes(chr(c), 'iso8859-1'))
+    cur += 8
+    
