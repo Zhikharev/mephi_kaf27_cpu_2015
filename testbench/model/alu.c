@@ -23,8 +23,8 @@ int ADDI (int imm, int rt, int rd)
 
 	a = imm >> 3;
 	printf("a = %x\n", a);
-
-	switch (a){
+	switch (a)
+	{
 		case 1: imm = imm | 0xFFF0;
 			break;
 		case 0: imm = imm & 0x000F;
@@ -190,4 +190,8 @@ int JALR (int addr_rs)
 	PC = GETREG(addr_rs);
 	return PC;
 }
-
+//???????
+NOP()
+{
+	PC = PC + 2;
+}

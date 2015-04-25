@@ -22,10 +22,29 @@ int instr;
 int addr;
 int memory[1024];
 FILE  *f;
+int k = 0;
 
 int INITMEMORY();
 OPENFILE();
 int READINSTR();
 DECODE(int);
+STATISTICS();
 
-
+int COUNT_ADD; 
+int COUNT_ADDI;
+int COUNT_OR;
+int COUNT_AND;
+int COUNT_XOR;
+int COUNT_NOR;
+int COUNT_SLL;
+int COUNT_ROT;
+int COUNT_BNE;
+int COUNT_LDL;
+int COUNT_LDH;
+int COUNT_STL;
+int COUNT_STH;
+int COUNT_JMP;
+int COUNT_JAL;
+int COUNT_JR;
+int COUNT_JALR;
+int COUNT_NOP;
