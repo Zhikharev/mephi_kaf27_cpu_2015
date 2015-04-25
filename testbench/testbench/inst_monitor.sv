@@ -1,7 +1,7 @@
 `ifndef MONITOR_INST
 `define MONITOR_INST
 
-class instr_monitort;
+class instr_monitor;
     virtual wishbone_if vif;
     mailbox #(trans) mb_imon2sb;
     mailbox #(bit[15:0]) mb_mon2mon;
@@ -9,7 +9,7 @@ class instr_monitort;
     function new (virtual wishbone_if vif,mailbox #(bit[15:0]) mb_mon2mon, mailbox #(trans) mb_imon2sb);
         this.vif = vif;
         if (mb_imon2sb == null) begin
-			$display("Monitor : Error - mailbox mb_mon2sb is empty");
+			$display("INST MONITOR : ERROR - mailbox mb_mon2sb is empty");
 			//$finish;
 		end
 		else begin
@@ -20,18 +20,19 @@ class instr_monitort;
             
         end
         this.mb_mon2mon = mb_mon2mon;
+    
     endfunction
     
     task get_trans();
         bit[15:0] instr;
         forever begin
             @(vif.mon);
-            if(!vif.mon.rst) begin
+            if(!vif.rst) begin
                 if(vif.mon.akn_in) begin
                     instr = vif.mon.data_in;
                     mb_mon2mon.put(instr);
                     //model :: DECODE(instr);//somesing does't work                
-                    // load_wotcher(instr);
+                    //load_wotcher(instr);
                     
                 end
                 
@@ -39,15 +40,19 @@ class instr_monitort;
          end   
     endtask
 
-   /*
-    task load_wotcher(bit[15:0] item);
+    task run();
+        get_trans();
+    endtask
+   
+   /* task load_wotcher(bit[15:0] item);
         if(item inside{6'b100100,6'b100111})begin
             //vif.mon.data_in = mode :: GETMEM(instr[15:6]) //or send to dr2mon int
             
         end
     
     endtask
-*/
+    
+  */
 
 
 
