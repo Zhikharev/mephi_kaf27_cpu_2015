@@ -18,9 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module check_uart_top(
-    input clk, 
-    input rst, 
+module IO_Hub(
+    input clk_i, 
+    input rst_i, 
     input rx, 
     output tx, 
     input transmit, 
@@ -36,7 +36,16 @@ module check_uart_top(
 	 input rd_en,
 	 output [15:0] dout,
 	 output full, 
-	 output empty
+	 output empty,
+	 
+	 input ack_i,
+	 input stb_i,
+	 input [15:0] addr_i,
+	 input [15:0] dat_i,
+	 output ack_o,
+	 output stb_o,
+	 output [15:0] addr_o,
+	 output [15:0] dat_o
 	  );
 	  
 	  
@@ -51,16 +60,15 @@ module check_uart_top(
 	 wire rd_clk_cmt;
 	 wire [15:0] din;
 	 
-	 reg [15:0] instr;
-		
+	
 	clk instance_name
-   (.CLK_IN1(clk),      
+   (.CLK_IN1(clk_i),      
     .CLK_OUT1(clk_cmt),     
     .CLK_OUT2(rd_clk_cmt), 
     .CLK_OUT3(wr_clk_cmt));  
 	  
     uart uart_1 (
-       .clk(clk_cmt), //clk_cmt
+       .clk_i(clk_cmt), //clk_cmt
        .rst(rst), 
        .rx(rx), 
        .tx(tx), 
@@ -86,42 +94,47 @@ module check_uart_top(
 );
 	 assign din = loc_din;				
 	// assign lb_byte = dout;
-	 
+	
+reg [31:0] registers [0:1];
+	
 reg [1:0] state_reg;
 reg [1:0] state_next;
 reg [5:0] count;	 
-  initial count = 0;
+  
 
-reg [10:0] addr_beg;
-  initial addr_beg = 11'b10000000000;
-reg [21:11] addr_end;
-  initial addr_end = 11'b11111111111;
-reg  status;
-reg  start;
-reg  ready;
-reg [15:0] data;
-reg [26:16] addr;
-reg  finish;
+wire [10:0] ctrl0_addr_beg;
+wire [21:11] ctrl0_addr_end;
+reg  ctrl0_status;
+reg  ctrl0_start;
+reg  ctrl0_ready;
+
+assign addr_beg = 11'b10000000000;
+assign addr_end = 11'b11111111111;
+
+reg [15:0] ctrl1_data;
+reg [26:16] ctrl1_addr;
+reg  ctrl1_finish;
 
 reg flag;
 reg [15:0] loc_din;
 	 
 always@(posedge clk_cmt)
    begin
-	    if (rst) begin
-		            state_reg <= idle;
-						status <= 0;
-			      	start <= 0;
-				      ready <= 0;
-				      data <= 0;
-		        		addr <= 0;
-				      finish <= 0;
-					 end
-       else state_reg <= state_next;
-		 if (rx_byte == 8'b01000000)
-    		  status <= 1'b1;
-	    if (rx_byte == 8'b00100000)
-           ready <= 1'b1;	
+	  if (rst) begin
+		  state_reg <= idle;
+		  status <= 0;
+		  start <= 0;
+		  ready <= 0;
+		  data <= 0;
+		  addr <= 0;
+		  finish <= 0;
+		  count <= 0;
+				end
+     else state_reg <= state_next;
+	  if (rx_byte == 8'b01000000)
+    	 status <= 1'b1;
+	  if (rx_byte == 8'b00100000)
+        ready <= 1'b1;	
 	end
 	
 always@(posedge received)
@@ -137,25 +150,23 @@ always@*
 	   state_next = state_reg;
 		case (state_reg)
 		   idle: begin
-			         if (rx_byte == 8'b10000000) begin
-						                                 flag = 1;
-						                                 state_next = load_h;
-															  end
+			    if (rx_byte == 8'b10000000) begin
+					flag = 1;
+				   state_next = load_h;
+														 end
 			      end
 			load_h: begin
-			         if (count == 2)
-						   begin
-							  loc_din [15:8] = rx_byte;
-							  state_next = load_l;
-							end
+			     if (count == 2) begin
+					   loc_din [15:8] = rx_byte;
+						state_next = load_l;
+					               end
 						end
 			load_l: begin
-			          if (count == 3)
-						    begin
-							   loc_din [7:0] = rx_byte;
-                        state_next = idle;
-								flag = 0;
-                      end
+			     if (count == 3) begin
+					   loc_din [7:0] = rx_byte;
+                  state_next = idle;
+					   flag = 0;
+                              end
                  end							  
 		endcase
 	end

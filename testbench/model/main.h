@@ -24,8 +24,5 @@ int memory[1024];
 FILE  *f;
 
 int INITMEMORY();
-OPENFILE();
-int READINSTR();
 DECODE(int);
-
-
+STATISTICS();

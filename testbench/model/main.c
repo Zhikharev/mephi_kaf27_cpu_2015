@@ -5,8 +5,8 @@ OPENFILE(){
 
 	printf ("Opening a file : ");
     //f = fopen ("prog.bin","rb");
-    f = fopen ("prog2.bin","rb");
-	//f = fopen ("file.bin","rb");
+    //f = fopen ("prog2.bin","rb");
+	f = fopen ("file2","rb");
     if(f == NULL)
 	{
 		printf("ERROR opening file\n");
@@ -53,20 +53,18 @@ int READINSTR (){
 
 main()
 {
-	int k = 0;
 	INITMEMORY();
 	OPENFILE();
 	while(!feof(f)){ 
 
 		instr = READINSTR();
 		DECODE(instr);
-		k++;
 	}
 	printf ("Close file\n");
 	if ( fclose (f) == EOF)
 		printf ("ERROR\n");
 	else printf ("Done\n");
-	
+
 	printf("***************************\n");
 	printf("reg_A %x\n", reg_A);
 	printf("reg_B %x\n", reg_B);
@@ -87,5 +85,5 @@ main()
 	printf("PC %x\n", PC);
 	printf("****************************\n");
 
-	printf("The number of instructions: k = %d\n", k-1);
+	STATISTICS();
 }

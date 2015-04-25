@@ -1,7 +1,7 @@
 import ctypes
 import io
 # Адресс файла с кодом на ассемблере
-parsingFile = open("trycode.as", 'r')
+parsingFile = open("trycode2.as", 'r')
 # Файл разделенный на блоки директивами
 fileByDirects = {}
 # Метки и их адреса
@@ -573,10 +573,22 @@ parseFile()
 print(code)
 
 
-file = open('file','wb')
+file = open('file2','wb')
 cur = 0
 while cur < len(code):
     c = int(code[cur:cur+8], 2)
     file.write(bytes(chr(c), 'iso8859-1'))
     cur += 8
-    
+
+flag = '1' * 16
+cur = 0
+while cur < len(flag):
+    c = int(flag[cur:cur+8], 2)
+    file.write(bytes(chr(c), 'iso8859-1'))
+    cur += 8
+
+cur = 0
+while cur < len(data):
+    c = int(data[cur:cur+8], 2)
+    file.write(bytes(chr(c), 'iso8859-1'))
+    cur += 8
