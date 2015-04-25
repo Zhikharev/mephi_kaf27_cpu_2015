@@ -17,7 +17,7 @@ DECODE(int instr){
 	Mtype = ((instr & 0x0C00) >> 10);
 	addr = (instr & 0x03FF);
 	addr_rs = (instr & 0x03FF);
-
+	k++;
 	switch (opcode) {
 			case 0x0 : printf ("add\n");
 					   printf ("D: rs: %x\n",rs);
@@ -167,13 +167,8 @@ DECODE(int instr){
 					   NOP();
 					   COUNT_NOP++;
 					break;  
-			/*case 0xf: if ((rs = 0xf) & (rt = 0xf) & (rd = 0xf))
-					  {
-						  printf("End of instructions");
-						  //????????????????
-					  }
-					break;*/
 			default: printf ("This operation doesn't exist\n");
+					 PC = PC + 2;
 					 return 0;
 					break;		
 			}
@@ -338,3 +333,45 @@ int GETMEMORY(int addr)
 	return memory[addr];
 }
 
+STATISTICS()
+{	
+	printf("The number of all instructions: %d\n\n", k-1);
+
+	if (COUNT_ADD != 0)
+		printf("The number of instructions ADD: %d\n", COUNT_ADD); 
+	if (COUNT_ADDI != 0)
+		printf("The number of instructions ADDI: %d\n", COUNT_ADDI);
+	if (COUNT_OR != 0)
+		printf("The number of instructions OR: %d\n", COUNT_OR);
+	if (COUNT_AND != 0)
+		printf("The number of instructions AND: %d\n", COUNT_AND);
+	if (COUNT_XOR != 0)
+		printf("The number of instructions XOR: %d\n", COUNT_XOR);
+	if (COUNT_NOR != 0)
+		printf("The number of instructions NOR: %d\n", COUNT_NOR);
+	if (COUNT_SLL != 0)
+		printf("The number of instructions SLL: %d\n", COUNT_SLL);
+	if (COUNT_ROT != 0)
+		printf("The number of instructions ROT: %d\n", COUNT_ROT);
+	if (COUNT_BNE != 0)
+		printf("The number of instructions BNE: %d\n", COUNT_BNE);
+	if (COUNT_LDL != 0)
+		printf("The number of instructions LDL: %d\n", COUNT_LDL);
+	if (COUNT_LDH != 0)
+		printf("The number of instructions LDH: %d\n", COUNT_LDH);
+	if (COUNT_STL != 0)
+		printf("The number of instructions STL: %d\n", COUNT_STL);
+	if (COUNT_STH != 0)
+		printf("The number of instructions STH: %d\n", COUNT_STH);
+	if (COUNT_JMP != 0)
+		printf("The number of instructions JMP: %d\n", COUNT_JMP);
+	if (COUNT_JAL != 0)
+		printf("The number of instructions JAL: %d\n", COUNT_JAL);
+	if (COUNT_JR != 0)
+		printf("The number of instructions JR: %d\n", COUNT_JR);
+	if (COUNT_JALR != 0)
+		printf("The number of instructions JALR: %d\n", COUNT_JALR);
+	if (COUNT_NOP != 0)
+		printf("The number of instructions NOP: %d\n", COUNT_NOP);
+	
+}
