@@ -7,7 +7,7 @@ class instr_driver;
     trans instr;
     mailbox #(trans) mb_idr2sb;
     mailbox #(bit[15:0]) mb_dr2dr;
-    int cycles;
+    int cycles = 5;
     
     
     function new (virtual wishbone_if vif, mailbox #(trans) mb_idr2sb, mailbox #(bit[15:0]) md_dr2dr);
@@ -22,17 +22,16 @@ class instr_driver;
             $display("DATA DRIVER : ERROR mailbox dr2dr is empty");
         end
         else begin
-          //  this.md_dr2dr = mb_dr2dr;
-          // something is wrong in above line
+            this.mb_dr2dr = mb_dr2dr;
         end
     endfunction 
 
-    task strart();
+    task run();
         trans sec_instr;
         int delay;
         int carring_cycle = 0;
         do begin
-            @(vif.drv.clk);
+            @(vif.drv);
             if(!vif.rst) begin
                 if(vif.drv.stb_out) begin
                     $cast(sec_instr,instr);
@@ -59,22 +58,19 @@ class instr_driver;
     
     task send_instr (trans item);
         vif.drv.akn_in <= 1'b1;
-        vif.drv.instr_in <= item.pack;  
-        //vif.drv.data_in <= md_dr2dr.get(instr);
-        //there is a mistake in above line
-        // TODO Set all other signals
+        vif.drv.data_in <= item.pack;  
     endtask
 
     task reset_intf();
         vif.drv.akn_in <= 0;
-        vif.drv.instr_in <= 0;
         vif.drv.data_in <= 0;
-        // TODO
     endtask
 
     task clear_intf();
-        //I don't know whot write there
-        // TODO
+        bit[15:0] data;
+        std :: randomize(data); 
+        vif.drv.akn_in <= 0;
+        vif.drv.data_in <= data;
     endtask
  
 

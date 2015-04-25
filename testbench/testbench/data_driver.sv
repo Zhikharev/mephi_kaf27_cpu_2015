@@ -23,12 +23,17 @@ class data_driver;
    
    task start();
        forever begin
-            bit[15:0] instr = mb_dr2dr.get(instr);
+            bit[15:0] instr;
+            mb_dr2dr.try_get(instr);
             if(instr[6:0] inside{6'b100100/*LDL*/,6'b100111/*LDH*/})begin
                 load_wotcher(instr);
             end
        end 
 
+   endtask
+   
+   task run();
+        start();
    endtask 
 endclass
 
