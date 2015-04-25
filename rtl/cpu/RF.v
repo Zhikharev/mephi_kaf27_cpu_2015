@@ -37,9 +37,11 @@ reg [31:0] registers [0:15] ; // Сам регист. файл
 reg [31:0] out_reg1;          // выходной рег.1
 reg [31:0] out_reg2;          // выходной рег.2
 reg [31:0] out_reg3;
+reg [31:0] data_in_h;
+reg [31:0] data_in_l;
 integer i;
 
-  always@(posedge clk)
+  always@(posedge clk,posedge reset)
 begin
   if(reset)
     begin
@@ -50,22 +52,21 @@ begin
 	 end
   else
    begin
-     if(~we)
+     assign data_in_h = {data_in[31:16],out_reg3[15:0]};
+     assign data_in_l = {out_reg3[31:16],data_in[15:0]};
+
+	  if(~we)
        begin	                   
 			out_reg1 <= registers[reg_port1];
          out_reg2	<= registers[reg_port2];	
 			out_reg3 <= registers[write_reg];
        end
      else 
-       begin		
-		   out_reg1 <= out_reg1;
-     	   out_reg2 <= out_reg2;
-			out_reg3 <= out_reg3;
-            if(RF_HL)
-			      registers[write_reg[31:16]] <= data_in ;
+       begin	
+           if(RF_HL)		 
+			      registers[write_reg] <= data_in_h ;
             else
-			      registers[write_reg[15:0]] <= data_in ;
-  				
+			      registers[write_reg] <= data_in_l ;  				
        end		   
 	end
 end
@@ -73,4 +74,6 @@ end
 assign reg_out1 = out_reg1;
 assign reg_out2 = out_reg2;
 assign reg_out3 = out_reg3;
+//assign data_in_h = {outreg_3[31:16]+data_in[31:16],outreg[15:0]};
+//assign data_in_l = {outreg_3[31:16],outreg_3[15:0]+data_in[15:0]};
 endmodule
