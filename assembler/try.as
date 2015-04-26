@@ -1,0 +1,6 @@
+.text
+st sd
+ld pf
+.data
+sd 0xC
+pf 0xF
