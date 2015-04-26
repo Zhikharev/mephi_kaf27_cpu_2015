@@ -53,7 +53,11 @@ module RF_test;
 		.reg_out2(reg_out2), 
 		.reg_out3(reg_out3)
 	);
-
+initial begin
+   forever begin
+	 #10 clk = ~clk;
+   end
+end
 	initial begin
 		// Initialize Inputs
 		clk = 0;
@@ -66,11 +70,80 @@ module RF_test;
 		we = 0;
 
 		// Wait 100 ns for global reset to finish
-		#100;
+		
         
 		// Add stimulus here
+#10;
+reset = 1;
+#20; 
+reset = 0;
+#20;
+we = 0;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b0000;
+
+#40;
+RF_HL = 0;
+we = 1;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b0001;
+data_in = 32'hffffffff;	
+
+#40;
+we = 0;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b0001;
+
+#40;
+RF_HL = 1;
+we = 1;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b0001;
+data_in = 32'hffffffff;	
+
+#40;
+we = 0;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b0001;
+
+
+#40;
+RF_HL = 1;
+we = 1;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b1001;
+data_in = 32'haaaaaaaa;	
+
+#120;
+we=0;	
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;
+write_reg = 4'b1001;
+
+#40;
+RF_HL = 0;
+we = 1;
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;	
+write_reg = 4'b1001;
+data_in = 32'haaaaaaaa;	
+
+#40;
+we=0;	
+reg_port1 = 4'b0001;
+reg_port2 = 4'b1001;
+write_reg = 4'b1001;
+
 
 	end
+
+	
       
 endmodule
 

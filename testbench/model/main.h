@@ -23,6 +23,10 @@ int addr;
 int memory[1024];
 FILE  *f;
 
-int INITMEMORY();
-DECODE(int);
-STATISTICS();
+int init_memory();
+decode(int);
+allreg();
+statistics();
+write_results();
+//set_verbosity(int);
+;
