@@ -22,12 +22,13 @@
 module UC(
 input clk,
 input [15:0] instr,
+input ack,
 input ZERO,                  // ZERO FLAG
 output RF_HL,                // «¿œ»—‹ ¬ HIGH/LOW ¬ –‘
 output RESULT_HL,            //«¿œ»—‹ ¬ MEM HIGL/LOW
 output [1:0] PC_DIRECT_CH,   // ¬€¡Œ– Õ¿ ¬’Œƒ≈ DIRECT
 output STB_O,                //–¿«–≈ÿ¿≈“ ¬≈ƒŒÃŒÃ” ”—“–Œ…—“¬” –¿¡Œ“¿“‹
-output [5:0] ALU_SHIFT,      // «Õ¿◊≈Õ»≈ —ƒ¬»√¿
+output [3:0] ALU_SHIFT,      // «Õ¿◊≈Õ»≈ —ƒ¬»√¿
 output WRITE_CH,	           // ¬€¡Œ– ¿ƒ–≈—¿ Õ¿ «¿œ»—‹ ¬ –‘
 output RESULT_CH,            // ¬€¡Œ– –≈«”À‹“¿“¿ œŒ—À≈ ¿À”
 output [3:0] WRITE_ADDR,     //  ¿ƒ–≈— Õ¿ «¿œ»—‹ ¬ –‘
@@ -38,10 +39,11 @@ output [31:0] ALU_DATAIN,    // ƒ¿ÕÕ€≈ Õ¿ ¬’Œƒ ¿À”
 output [3:0] READ_ADDR,      // ¿ƒ–≈— ƒÀﬂ ◊“≈Õ»ﬂ »« –‘
 output READ_CH,              //  ¬€¡Œ– ¿ƒ–≈—¿ ƒÀﬂ ◊“≈Õ»ﬂ »« –‘
 output RF_WE,                // –¿«–≈ÿ≈Õ»≈ Õ¿ «¿œ»—‹ ¬ –‘
-output RF_DATAIN             // ¬€¡Œ– ƒ¿ÕÕ€ ƒÀﬂ «¿œ»—» ¬ –‘
+output [1:0] RF_DATAIN            // ¬€¡Œ– ƒ¿ÕÕ€ ƒÀﬂ «¿œ»—» ¬ –‘
+//output DAT_O_CH              // ¬€¡Œ– ƒ¿ÕÕ€’ ƒÀﬂ «¿œ»—» ¬ MEM
     );
-reg [3:0] op;
-reg [1:0] mtype;
+wire [3:0] op;
+wire [1:0] mtype;
 
    localparam ADD =  4'b0000;
    localparam ADDI = 4'b0001;
@@ -60,219 +62,372 @@ reg [1:0] mtype;
 
 
  //
-reg STB_O;
-reg [3:0] ALU_SHIFT;
-reg WRITE_CH;
-reg RESULT_CH;
-reg [3:0] WRITE_ADDR;
-reg [1:0] PC_MUX;
-reg MEM_WE;
-reg [2:0] ALU_CONTROL;
-reg ALU_DATAIN;
-reg RF_WE;
-reg [1:0] RF_DATAIN;
-reg READ_CH;
-reg [3:0] READ_ADDR;
-reg [1:0] PC_DIRECT_CH;
-reg RF_HL;
-reg RESULT_HL;
+reg STB_O_1;
+reg [3:0] ALU_SHIFT_1;
+reg WRITE_CH_1;
+reg RESULT_CH_1;
+reg [3:0] WRITE_ADDR_1;
+reg [1:0] PC_MUX_1;
+reg MEM_WE_1;
+reg [2:0] ALU_CONTROL_1;
+reg [31:0] ALU_DATAIN_1;
+reg RF_WE_1;
+reg [1:0] RF_DATAIN_1;
+reg READ_CH_1;
+reg [3:0] READ_ADDR_1;
+reg [1:0] PC_DIRECT_CH_1;
+reg RF_HL_1;
+reg RESULT_HL_1;
+
+assign STB_O = STB_O_1;
+assign ALU_SHIFT = ALU_SHIFT_1;
+assign WRITE_CH = WRITE_CH_1;
+assign RESULT_CH = RESULT_CH_1;
+assign WRITE_ADDR = WRITE_ADDR_1;
+assign PC_MUX = PC_MUX_1;
+assign MEM_WE = MEM_WE_1;
+assign ALU_CONTROL = ALU_CONTROL_1;
+assign ALU_DATAIN = ALU_DATAIN_1;
+assign RF_WE = RF_WE_1;
+assign RF_DATAIN = RF_DATAIN_1;
+assign READ_CH = READ_CH_1;
+assign READ_ADDR = READ_ADDR_1;
+assign PC_DIRECT_CH = PC_DIRECT_CH_1;
+assign RF_HL = RF_HL_1;
+assign RESULT_HL = RESULT_HL_1;
+
+
+
+assign op = instr[15:12];
+assign mtype = instr[11:10];
 
 always@*
    begin
-assign op = instr[15:12];
-assign mtype = instr[11:10];
    case(op)
    			     ADD :
    begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =0;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =0;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
    end							  
 	               ADDI :
-   begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =0;
-ALU_DATAIN =1;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+   begin	
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =0;
+ALU_DATAIN_1 =1;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
 				OR :
 	begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL = 001;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 = 3'b001;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
             
 				AND :
 	begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =010;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b010;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
             
 				XOR :
 	begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =011;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b011;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
             
 				NOR :
    begin
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =100;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b100;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
 				SLL :
    begin
-ALU_SHIFT  = instr[7:4];
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =101;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+ALU_SHIFT_1  = instr[7:4];
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b101;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
 				ROT :
    begin
-ALU_SHIFT  = instr[7:4];
-WRITE_CH =1;
-RESULT_CH =1;
-PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =110;
-ALU_DATAIN =0;
-RF_WE =1;
-RF_DATAIN =1;
-READ_CH =1;
+	STB_O_1 =1;
+	
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+
+ALU_SHIFT_1  = instr[7:4];
+WRITE_CH_1 =1;
+RESULT_CH_1 =1;
+PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b110;
+ALU_DATAIN_1 =0;
+RF_WE_1 =1;
+RF_DATAIN_1 =1;
+READ_CH_1 =1;
 	end	
 				BNE :
    begin
-WRITE_CH =1;
+	
+   RESULT_CH_1 =1;
+	RF_DATAIN_1 =0;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+	
+WRITE_CH_1 =1;
 if(ZERO)
- PC_MUX =01;
+ PC_MUX_1 =2'b01;
 else
- PC_MUX =10;
-MEM_WE =0;
-ALU_CONTROL =111;
-ALU_DATAIN =0;
-RF_WE =0;
-READ_CH =1;
-PC_DIRECT_CH =1;
+ PC_MUX_1 =2'b10;
+MEM_WE_1 =0;
+ALU_CONTROL_1 =3'b111;
+ALU_DATAIN_1 =0;
+RF_WE_1 =0;
+READ_CH_1 =1;
+PC_DIRECT_CH_1 =2'b01;
 	end	
 				LD :
    begin
-WRITE_CH=0;
-WRITE_ADDR=4'b1010;
-PC_MUX=10;
-MEM_WE=0;
-RF_WE=1;
-RF_DATAIN=0;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_ADDR_1=0;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;   
+	RESULT_CH_1 =1;
+	ALU_CONTROL_1 =3'b111;
+	ALU_DATAIN_1 =0;
+	READ_CH_1 =1;
+
+	RESULT_HL_1=0;
+WRITE_CH_1=0;
+WRITE_ADDR_1=4'b1010;
+if(ack)
+PC_MUX_1=2'b10;
+else
+PC_MUX_1=2'b00;
+MEM_WE_1=0;
+RF_WE_1=1;
+RF_DATAIN_1=0;
      if(mtype)
-        RF_HL=1;///
+        RF_HL_1=1;///
 	  else
-	     RF_HL =0;///
+	     RF_HL_1 =0;///
 	end	
 				ST :
    begin
-RESULT_CH=0;
-PC_MUX=10;
-MEM_WE=1;
-RF_WE=0;
-READ_CH=0;
-READ_ADDR=1010;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_CH_1=0;
+	ALU_CONTROL_1 =3'b111;
+	ALU_DATAIN_1 =0;
+	RF_DATAIN_1=0;
+
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	
+RESULT_CH_1=0;
+PC_MUX_1=2'b10;
+MEM_WE_1=1;
+RF_WE_1=0;
+READ_CH_1=0;
+READ_ADDR_1=4'b1010;
 if(mtype)
- RESULT_HL=1;
+ RESULT_HL_1=1;
 else
- RESULT_HL=0;
+ RESULT_HL_1=0;
 	end	
  				    JMP :
    begin
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;	
+	ALU_CONTROL_1 =3'b111;
+	ALU_DATAIN_1 =0;	
+	READ_ADDR_1=0;
+	RF_HL_1=0;
+   RESULT_HL_1=0;	
  case(mtype)
 			 2'b00:
      begin
-PC_MUX=01;
-MEM_WE=0;
-RF_WE=0;
-PC_DIRECT_CH=01;
+	  WRITE_CH_1=0;
+     WRITE_ADDR_1=0;
+	  RESULT_CH_1=0;
+	  RF_DATAIN_1=0;
+     READ_CH_1=0;
+
+PC_MUX_1=01;
+MEM_WE_1=0;
+RF_WE_1=0;
+PC_DIRECT_CH_1=2'b01;
 	  end	
 				2'b01 :
      begin
-WRITE_CH=0;
-WRITE_ADDR=1011;
-PC_MUX=1;
-MEM_WE=0;
-RF_WE=1;
-RF_DATAIN=10;
-PC_DIRECT_CH=1;
+	  
+	  RESULT_CH_1=0;	
+	  READ_CH_1=0;
+
+WRITE_CH_1=0;
+WRITE_ADDR_1=4'b1011;
+PC_MUX_1=1;
+MEM_WE_1=0;
+RF_WE_1=1;
+RF_DATAIN_1=2'b10;
+PC_DIRECT_CH_1=1;
 	  end	
 				2'b10 :
      begin
-RESULT_CH=0;
-PC_MUX=1;
-MEM_WE=0;
-RF_WE=0;
-READ_CH=1;
-PC_DIRECT_CH=0;
+	  WRITE_CH_1=0;
+     WRITE_ADDR_1=0;
+	  RF_DATAIN_1=0;
+
+RESULT_CH_1=0;
+PC_MUX_1=1;
+MEM_WE_1=0;
+RF_WE_1=0;
+READ_CH_1=1;
+PC_DIRECT_CH_1=0;
 	  end	
 				2'b11:
      begin
-WRITE_CH=0;
-RESULT_CH=0;
-WRITE_ADDR=1011;
-PC_MUX=1;
-MEM_WE=0;
-RF_WE=1;
-RF_DATAIN=10;
-READ_CH=1;
-PC_DIRECT_CH=0;
+WRITE_CH_1=0;
+RESULT_CH_1=0;
+WRITE_ADDR_1=4'b1011;
+PC_MUX_1=1;
+MEM_WE_1=0;
+RF_WE_1=1;
+RF_DATAIN_1=2'b10;
+READ_CH_1=1;
+PC_DIRECT_CH_1=0;
 	  end	
  endcase
    end
  				   NOP :
    begin
-PC_MUX=0;
-MEM_WE=0;
-RF_WE=0;
+	STB_O_1 =1;
+	ALU_SHIFT_1=0;
+	WRITE_CH_1=0;
+	WRITE_ADDR_1=0;
+	ALU_CONTROL_1 =3'b111;
+	ALU_DATAIN_1 =0;
+	RF_DATAIN_1=0;
+	READ_CH_1=1;
+	READ_ADDR_1=0;
+	PC_DIRECT_CH_1=0;
+	RF_HL_1=0;
+	RESULT_HL_1=0;
+  
+   PC_MUX_1=0;
+   MEM_WE_1=0;
+   RF_WE_1=0;
 	end	
 			
+	default : 
+	   begin
+PC_MUX_1=0;
+MEM_WE_1=0;
+RF_WE_1=0;
+	end
 	
 	
 	
