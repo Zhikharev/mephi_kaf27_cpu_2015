@@ -16,7 +16,9 @@ module testbench ();
     wishbone_if output_cpu_intf(clk,control_intf.reset);
     wishbone_if input_cpu_intf(clk,control_intf.reset);
     inner_if    inner_intf(clk, control_intf.reset);
-
+    
+    cpu_no_ld_st_test cpu_no_ldst(input_cpu_intf,output_cpu_intf,control_intf);
+    
     /*
     TODO
     assign inner_intf.pc = dut.pc;
@@ -24,7 +26,7 @@ module testbench ();
               
     cpu dut(
         .AKN_I(input_cpu_intf.akn_in),
-        .INSTR_I(input_cpu_intf.instr_in),
+        .INSTR_I(input_cpu_intf.data_in),
         .DAT_I(input_cpu_intf.data_in),
         .STB_O(output_cpu_intf.stb_out),
         .DAT_O(output_cpu_intf.data_out),
@@ -34,13 +36,14 @@ module testbench ();
         .RST_I(control_intf.reset)
     ); 
 
-    initial begin
+   initial begin
         $display("START TEST");
         model::test_sv_c_communication(5);
-        #100;
+        //#100;
         $display("END TEST");
-        $finish();
+       // $finish();
     end
+
 
 endmodule
 

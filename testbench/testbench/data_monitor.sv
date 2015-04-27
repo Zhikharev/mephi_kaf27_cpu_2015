@@ -55,6 +55,7 @@ class data_monitor;
 
     
     task run();
+        $display("DATA MONITOR IS RAN %0t", $time);
         adr_cont();
     endtask
 

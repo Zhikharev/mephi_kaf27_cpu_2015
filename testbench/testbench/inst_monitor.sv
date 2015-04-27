@@ -9,18 +9,15 @@ class instr_monitor;
     function new (virtual wishbone_if vif,mailbox #(bit[15:0]) mb_mon2mon, mailbox #(trans) mb_imon2sb);
         this.vif = vif;
         if (mb_imon2sb == null) begin
-			$display("INST MONITOR : ERROR - mailbox mb_mon2sb is empty");
-			//$finish;
+			$display("INSTR MONITOR : ERROR - mailbox mb_mon2sb is empty");
 		end
 		else begin
 			this.mb_imon2sb = mb_imon2sb;
         end
         if(mb_mon2mon == null)begin
-            $display("INST MONITOR : ERRRO - mailbox mb_mon2mon is empty");
-            
+            $display("INSTR MONITOR : ERRRO - mailbox mb_mon2mon is empty");
         end
         this.mb_mon2mon = mb_mon2mon;
-    
     endfunction
     
     task get_trans();
@@ -31,16 +28,16 @@ class instr_monitor;
                 if(vif.mon.akn_in) begin
                     instr = vif.mon.data_in;
                     mb_mon2mon.put(instr);
-                    //model :: DECODE(instr);//somesing does't work                
+                    model :: DECODE(instr);                
                     //load_wotcher(instr);
                     
                 end
-                
             end         
          end   
     endtask
 
     task run();
+        $display("INSTR MONITOR IS RAN :%0t", $time);
         get_trans();
     endtask
    
@@ -51,11 +48,6 @@ class instr_monitor;
         end
     
     endtask
-    
-  */
-
-
-
+*/    
 endclass
-
 `endif

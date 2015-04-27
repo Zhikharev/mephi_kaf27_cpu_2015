@@ -1,31 +1,31 @@
 package model;
 
-	import "DPI-C" function void test_sv_c_communication(input int arg);
-
+	import "DPI-C" function void test_sv_c_communication(input int val);
+	import "DPI-C" function void OPENFILE();
+	import "DPI-C" function READINSTRACTION();
 	import "DPI-C" function DECODE(int);
+	import "DPI-C" function CHEKREG(int);
+    import "DPI-C" function CHECKMEMORY(int);
+    import "DPI-C" function ADD(int,int,int);
+    import "DPI-C" function ADDI(int,int,int);
+    import "DPI-C" function OR(int,int,int);
+    import "DPI-C" function AND(int,int,int);
+    import "DPI-C" function XOR(int,int,int);
+    import "DPI-C" function NOR(int,int,int);
+    import "DPI-C" function SLL(int,int,int);
+    import "DPI-C" function ROT(int,int,int);
+    import "DPI-C" function BNE(int,int,int);
+    import "DPI-C" function LDL(int);
+    import "DPI-C" function LDH(int);
+    import "DPI-C" function STL(int);
+    import "DPI-C" function STH(int);
+    import "DPI-C" function JMP(int);
+    import "DPI-C" function JAL(int);
+    import "DPI-C" function JR(int);
+    import "DPI-C" function JARL(int);
+    import "DPI-C" function NOP();
 
-/*
-	import "DPI-C" function checkreg(int);
-    import "DPI-C" function checkmemory(int);
-    import "DPI-C" function add(int,int,int);
-    import "DPI-C" function addi(int,int,int);
-    import "DPI-C" function or_1(int,int,int);
-    import "DPI-C" function and_1(int,int,int);
-    import "DPI-C" function xor_1(int,int,int);
-    import "DPI-C" function nor_1(int,int,int);
-    import "DPI-C" function sll(int,int,int);
-    import "DPI-C" function rot(int,int,int);
-    import "DPI-C" function bne(int,int,int);
-    import "DPI-C" function ldl(int);
-    import "DPI-C" function ldh(int);
-    import "DPI-C" function stl(int);
-    import "DPI-C" function sth(int);
-    import "DPI-C" function jmp(int);
-    import "DPI-C" function jal(int);
-    import "DPI-C" function jr(int);
-    import "DPI-C" function jalr(int);
-    import "DPI-C" function nop();
-*/
 
+    
     
 endpackage

@@ -13,13 +13,13 @@ class instr_driver;
     function new (virtual wishbone_if vif, mailbox #(trans) mb_idr2sb, mailbox #(bit[15:0]) md_dr2dr);
         this.vif = vif;
         if (mb_idr2sb == null) begin
-            $display("DRIVER : ERROR mailbox is null");
+            $display("INST DRIVER : ERROR mailbox is null");
         end
         else begin
             this.mb_idr2sb = mb_idr2sb;
         end
         if(mb_dr2dr == null) begin
-            $display("DATA DRIVER : ERROR mailbox dr2dr is empty");
+            $display("INST DRIVER : ERROR mailbox dr2dr is empty");
         end
         else begin
             this.mb_dr2dr = mb_dr2dr;
@@ -27,6 +27,7 @@ class instr_driver;
     endfunction 
 
     task run();
+        //$display("INSTR MONITOR IS RAN : %0t ", $time);
         trans sec_instr;
         int delay;
         int carring_cycle = 0;
@@ -42,6 +43,7 @@ class instr_driver;
                     carring_cycle = carring_cycle + 1;
                     $display("CARRING CYCLE %0d",carring_cycle);
                     sec_instr.print;
+                    mb_dr2dr.try_put(sec_instr.pack);
                 end
                 else begin
                     clear_intf();
@@ -58,7 +60,8 @@ class instr_driver;
     
     task send_instr (trans item);
         vif.drv.akn_in <= 1'b1;
-        vif.drv.data_in <= item.pack;  
+        vif.drv.data_in <= item.pack;
+          
     endtask
 
     task reset_intf();
@@ -73,33 +76,9 @@ class instr_driver;
         vif.drv.data_in <= data;
     endtask
  
+ 
 
 endclass
 
 `endif
-/*        
-        do begin
-            @(vif.drv.clk);
-            if(vif.drv.rst) begin
-                @(vif.drv.clk);
-            end
-            else begin
-                if(vif.drv.stb_out) begin
-                    @(vif.drv.clk);
-                end
-                else begin
-                    sec_instr.randomize;
-                    $cast(sec_instr,instr);
-                    std :: randomize(delay) with {delay >= 0 && delay <5;};       
-                    repeat(delay) @(vif.drv.clk);
-                    carring_cycle = carring_cycle +1;
-                    $display("CARRING CYCLE %0d",carring_cycle);
-                    sec_instr.print;
-                    send_instr(sec_instr);
-                        
-                end
-            end
-        end
-        while(carring_cycle == cycles);
-*/
 
