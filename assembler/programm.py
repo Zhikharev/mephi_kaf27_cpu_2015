@@ -1,7 +1,7 @@
 import ctypes
 import io
 # Адресс файла с кодом на ассемблере
-parsingFile = open("trycode2.as", 'r')
+parsingFile = open("try.as", 'r')
 # Файл разделенный на блоки директивами
 fileByDirects = {}
 # Метки и их адреса
@@ -256,7 +256,12 @@ def translateLdInstr(instruction):
         ERROR(error_string)
 
     result = '100100'
-    addr = getNumStr(instruct_data[1], 10)
+    addr = instruct_data[1]
+    if addr in dataLinks:
+        addr = dataLinks[addr]
+        addr = str(addr)
+
+    addr = getNumStr(addr, 10)
     result += addr
     result += '100110'
     addr = getNumStr(str(int(addr, 2) + align), 10)
@@ -271,7 +276,12 @@ def translateStInstr(instruction):
         ERROR(error_string)
 
     result = '101000'
-    addr = getNumStr(instruct_data[1], 10)
+    addr = instruct_data[1]
+    if addr in dataLinks:
+        addr = dataLinks[addr]
+        addr = str(addr)
+
+    addr = getNumStr(addr, 10)
     result += addr
     result += '101010'
     addr = getNumStr(str(int(addr, 2) + align), 10)
@@ -592,3 +602,5 @@ while cur < len(data):
     c = int(data[cur:cur+8], 2)
     file.write(bytes(chr(c), 'iso8859-1'))
     cur += 8
+print(flag)
+print(data)

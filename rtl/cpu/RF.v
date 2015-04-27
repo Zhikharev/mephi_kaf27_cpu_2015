@@ -37,9 +37,12 @@ reg [31:0] registers [0:15] ; // Сам регист. файл
 reg [31:0] out_reg1;          // выходной рег.1
 reg [31:0] out_reg2;          // выходной рег.2
 reg [31:0] out_reg3;
-reg [31:0] data_in_h;
-reg [31:0] data_in_l;
+wire [31:0] data_in_h;
+wire [31:0] data_in_l;
 integer i;
+
+assign data_in_h = {data_in[31:16],out_reg3[15:0]};
+assign data_in_l = {out_reg3[31:16],data_in[15:0]};
 
   always@(posedge clk,posedge reset)
 begin
@@ -52,8 +55,7 @@ begin
 	 end
   else
    begin
-     assign data_in_h = {data_in[31:16],out_reg3[15:0]};
-     assign data_in_l = {out_reg3[31:16],data_in[15:0]};
+     
 
 	  if(~we)
        begin	                   
