@@ -30,7 +30,7 @@ class environment;
        mb_dr2dr =   new();
        instr_mon = new(instr_cpu_intf,mb_mon2mon,mb_imon2sb);
        data_mon =  new(data_cpu_intf,mb_mon2mon,mb_dmon2sb);
-       data_drv =  new(data_cpu_intf,mb_dr2dr);
+       data_drv =  new(instr_cpu_intf,data_cpu_intf,mb_dr2dr);
        instr_drv =  new(instr_cpu_intf,mb_idr2sb,mb_dr2dr);
        $display("Enviroment: build is complited. %0t",$time);        
    endfunction

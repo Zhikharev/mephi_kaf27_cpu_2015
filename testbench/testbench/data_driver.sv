@@ -1,11 +1,13 @@
 `ifndef DATA_DRIVER
 `define DATA_DRIVER
 class data_driver;
-    virtual wishbone_if vif;
+    virtual wishbone_if vif_instr;
+    virtual wishbone_if vif_data;
     mailbox #(bit[15:0]) mb_dr2dr; 
     
-    function new (virtual wishbone_if vif,mailbox #(bit[15:0]) mb_dr2dr);
-        this.vif= vif;
+    function new (virtual wishbone_if vif_instr, virtual wishbone_if vif_data, mailbox #(bit[15:0]) mb_dr2dr);
+        this.vif_instr= vif_instr;
+        this.vif_data = vif_data;
         this.mb_dr2dr = mb_dr2dr;    
     endfunction
 
@@ -16,16 +18,16 @@ class data_driver;
         bit[31:0] tmp;
         forever begin
             mb_dr2dr.try_get(instr);
-            check = vif.drv.data_in;
+            check = vif_instr.drv.data_in;
             if(instr[5:0] inside{5'b10010,5'b10011})begin
                 if(check[5:0] inside{5'b10010,5'b10011})begin
-                    addres = vif.drv.adr_out;
+                    addres = vif_data.drv.adr_out;
                     //tmp = model :: GETMEM(addres);
                     if(instr[5:0] == 5'b10010)begin
-                       // vif.drv.SMT = tmp[15:0];
+                        //vif_data.drv.data_in = tmp[15:0];
                     end 
                     if(instr[5:0] == 5'b10011)begin
-                        // vif.drv.SMT == tmp[31:16];
+                        // vif_data.drv.data_in == tmp[31:16];
                     end
                 end
                 else begin
@@ -42,10 +44,10 @@ class data_driver;
         bit[9:0] addres;
         forever begin
             mb_dr2dr.try_get(instr);
-            check = vif.drv.data_in;
+            check = vif_instr.drv.data_in;
             if(instr[5:0] inside{5'b10100,5'b10101})begin
                 if(check[5:0] inside{5'b10100,10101})begin
-                    addres = vif.drv.adr_out;
+                    addres = vif_data.drv.adr_out;
                     // how to divide on low high??????????
                 end
                 else begin
