@@ -410,9 +410,9 @@ def parseDataLines():
             line = line.split(' ')
             line = [l.strip() for l in line]
             if len(line) == 2:
-                data += getNumStr(line[1].upper(), align * 8)
+                data += getNumStr(line[1].upper(), align * 16)
                 dataLinks[line[0].upper()] = dataEndAddr
-                dataEndAddr += align
+                dataEndAddr += align * 2
 
             else:
                 error_string = 'Ошибка в блоке .data'
