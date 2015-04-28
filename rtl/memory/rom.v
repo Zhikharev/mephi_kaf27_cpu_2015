@@ -1,33 +1,24 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    22:03:47 03/26/2015 
-// Design Name: 
-// Module Name:    rom 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+/*
+###########################################################
+#
+# Author:
+#
+# Project: MEPHI CPU
+# Filename: rom.v
+# Descriptions:
+#
+###########################################################
+*/
 module rom
 #(
-	parameter PC_W = 30
+	parameter AW = 16
 )
 	
 (
-	input sys_clk,
-	input sys_rst,
-	input [PC_W-1:0] rom_pc,
-	output [15:0] rom_instrution
+	input               sys_clk,
+	input               sys_rst,
+	input   [AW-1:0]    addr_i,
+	output  [15:0]      data_o
 );
 
 	reg [15:0] rom [0:6];
@@ -43,15 +34,13 @@ module rom
 		 	rom[5] <= 16'b1011000000000000; 
 		 	rom[6] <= 16'b1011100000001110;
 		end
-		/*
 		else begin
 			rom <= rom;
 		end
-		*/
 	end
 
-	assign addr = rom_pc >> 1;
-	assign rom_instrution = rom[addr];
+	assign addr = addr_i >> 1;
+	assign data_o = rom[addr];
 /*
 assign rom_instruction = ({16{pc == 30'h00000000}} & 16'b0101110011001101) |
                          ({16{pc == 30'h00000002}} & 16'b0001010011001110) |
