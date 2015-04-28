@@ -5,14 +5,14 @@
 // Engineer:
 //
 // Create Date:   08:59:19 04/23/2015
-// Design Name:   PC
-// Module Name:   C:/Documents and Settings/CU/PC_test.v
+// Design Name:   pc
+// Module Name:   C:/Documents and Settings/CU/pc_test.v
 // Project Name:  CU
 // Target Device:  
 // Tool versions:  
 // Description: 
 //
-// Verilog Test Fixture created by ISE for module: PC
+// Verilog Test Fixture created by ISE for module: pc
 //
 // Dependencies:
 // 
@@ -22,32 +22,32 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module PC_test;
+module pc_test;
 
 	// Inputs
 	reg clk;
 	reg reset;
-	reg [1:0] PC_MUX;
-	reg [1:0] PC_DIRECT_CH;
-	reg [31:0] PC_rd;
-	reg [31:0] RESULT;
+	reg [1:0] pc_mux;
+	reg [1:0] pc_direct_ch;
+	reg [31:0] pc_rd;
+	reg [31:0] result;
 	reg [15:0] instr;
 
 	// Outputs
-	wire [9:0] PC;
-	wire [9:0] PC_2;
+	wire [9:0] pc;
+	wire [9:0] pc_2;
 
 	// Instantiate the Unit Under Test (UUT)
-	PC uut (
+	pc uut (
 	   .reset(reset),
 		.clk(clk), 
-		.PC_MUX(PC_MUX), 
-		.PC_DIRECT_CH(PC_DIRECT_CH), 
-		.PC_rd(PC_rd), 
-		.RESULT(RESULT), 
+		.pc_mux(pc_mux), 
+		.pc_direct_ch(pc_direct_ch), 
+		.pc_rd(pc_rd), 
+		.result(result), 
 		.instr(instr), 
-		.PC(PC), 
-		.PC_2(PC_2)
+		.pc(pc), 
+		.pc_2(pc_2)
 	);
 
 initial begin
@@ -59,10 +59,10 @@ end
 	initial begin
 		// Initialize Inputs
 		clk = 0;
-		PC_MUX = 0;
-		PC_DIRECT_CH = 0;
-		PC_rd = 0;
-		RESULT = 0;
+		pc_mux = 0;
+		pc_direct_ch = 0;
+		pc_rd = 0;
+		result = 0;
 		instr = 0;
 
 		// Wait 100 ns for global reset to finish
@@ -72,24 +72,24 @@ reset = 1;
 #20;
 reset = 0;		
 #20;
-PC_MUX = 2'b10;        
+pc_mux = 2'b10;        
 #20;
-PC_MUX = 2'b10;        
+pc_mux = 2'b10;        
 #20;
-PC_MUX = 2'b00;        
-#20;
-instr = 16'b0000101111111111;
-PC_MUX = 2'b01;        
-PC_DIRECT_CH = 2'b01;
+pc_mux = 2'b00;        
 #20;
 instr = 16'b0000101111111111;
-PC_MUX = 2'b01;     
-RESULT = 32'hFFFF;   
-PC_DIRECT_CH = 2'b00;
+pc_mux = 2'b01;        
+pc_direct_ch = 2'b01;
 #20;
 instr = 16'b0000101111111111;
-PC_MUX = 2'b01;        
-PC_DIRECT_CH = 2'b10;
+pc_mux = 2'b01;     
+result = 32'hFFFF;   
+pc_direct_ch = 2'b00;
+#20;
+instr = 16'b0000101111111111;
+pc_mux = 2'b01;        
+pc_direct_ch = 2'b10;
 
 
 

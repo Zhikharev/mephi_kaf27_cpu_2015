@@ -1,23 +1,14 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    20:21:00 03/22/2015 
-// Design Name: 
-// Module Name:    shift 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+/*
+###########################################################
+#
+# Author: Khaltahchyan Daniel 
+#
+# Project: MEPHI CPU
+# Filename: TOP.v
+# Descriptions:
+# 	
+###########################################################
+*/
 module shift(
 input clk,
 input [31:0] sr1,       // Что нужно сдвинуть

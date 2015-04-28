@@ -26,47 +26,47 @@ module UC_test;
 
 	// Inputs
 	reg [15:0] instr;
-	reg ZERO;
+	reg zero;
    reg clk;
 	// Outputs
-	wire RF_HL;
-	wire RESULT_HL;
-	wire [1:0] PC_DIRECT_CH;
-	wire STB_O;
-	wire [5:0] ALU_SHIFT;
-	wire WRITE_CH;
-	wire RESULT_CH;
-	wire [3:0] WRITE_ADDR;
-	wire [1:0] PC_MUX;
-	wire MEM_WE;
-	wire [2:0] ALU_CONTROL;
-	wire [31:0] ALU_DATAIN;
-	wire [3:0] READ_ADDR;
-	wire READ_CH;
-	wire RF_WE;
-	wire RF_DATAIN;
+	wire rf_hl;
+	wire result_hl;
+	wire [1:0] pc_direct_ch;
+	wire stb_o;
+	wire [5:0] alu_shift;
+	wire write_ch;
+	wire result_ch;
+	wire [3:0] write_addr;
+	wire [1:0] pc_mux;
+	wire mem_we;
+	wire [2:0] alu_control;
+	wire [31:0] alu_datain;
+	wire [3:0] read_addr;
+	wire read_ch;
+	wire rf_we;
+	wire rf_datain;
 
 	// Instantiate the Unit Under Test (UUT)
 	UC uut (
 	   .clk(clk),
 		.instr(instr), 
-		.ZERO(ZERO), 
-		.RF_HL(RF_HL), 
-		.RESULT_HL(RESULT_HL), 
-		.PC_DIRECT_CH(PC_DIRECT_CH), 
-		.STB_O(STB_O), 
-		.ALU_SHIFT(ALU_SHIFT), 
-		.WRITE_CH(WRITE_CH), 
-		.RESULT_CH(RESULT_CH), 
-		.WRITE_ADDR(WRITE_ADDR), 
-		.PC_MUX(PC_MUX), 
-		.MEM_WE(MEM_WE), 
-		.ALU_CONTROL(ALU_CONTROL), 
-		.ALU_DATAIN(ALU_DATAIN), 
-		.READ_ADDR(READ_ADDR), 
-		.READ_CH(READ_CH), 
-		.RF_WE(RF_WE), 
-		.RF_DATAIN(RF_DATAIN)
+		.zero(zero), 
+		.rf_hl(rf_hl), 
+		.result_hl(result_hl), 
+		.pc_direct_ch(pc_direct_ch), 
+		.stb_o(stb_o), 
+		.alu_shift(alu_shift), 
+		.write_ch(write_ch), 
+		.result_ch(result_ch), 
+		.write_addr(write_addr), 
+		.pc_mux(pc_mux), 
+		.mem_we(mem_we), 
+		.alu_control(alu_control), 
+		.alu_datain(alu_datain), 
+		.read_addr(read_addr), 
+		.read_ch(read_ch), 
+		.rf_we(rf_we), 
+		.rf_datain(rf_datain)
 	);
 
 	initial begin
@@ -77,7 +77,7 @@ module UC_test;
 initial begin		
 		// Initialize Inputs
 		instr = 0;
-		ZERO = 0;
+		zero = 0;
 
 		// Wait 100 ns for global reset to finish
 		#100;

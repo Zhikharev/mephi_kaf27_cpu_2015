@@ -1,27 +1,18 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    10:13:03 03/28/2015 
-// Design Name: 
-// Module Name:    proverka 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+/*
+###########################################################
+#
+# Author: Khaltahchyan Daniel 
+#
+# Project: MEPHI CPU
+# Filename: TOP.v
+# Descriptions:
+# 	
+###########################################################
+*/
 module RF(
 input clk,
 input reset,
-input RF_HL,
+input rf_hl,
 input [3:0] reg_port1,  // порт для  адреса рег1
 input [3:0] reg_port2,  // порт для  адреса рег2
 input [3:0] write_reg,  // порт для адреса записи в рф
@@ -65,7 +56,7 @@ begin
        end
      else 
        begin	
-           if(RF_HL)		 
+           if(rf_hl)		 
 			      registers[write_reg] <= data_in_h ;
             else
 			      registers[write_reg] <= data_in_l ;  				

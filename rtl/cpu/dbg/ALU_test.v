@@ -4,10 +4,10 @@
 // Company: 
 // Engineer:
 //
-// Create Date:   11:58:52 04/23/2015
+// Create Date:   11:57:11 03/27/2015
 // Design Name:   alu
-// Module Name:   C:/Documents and Settings/CU/ALU_test.v
-// Project Name:  CU
+// Module Name:   C:/alu/alu_test.v
+// Project Name:  alu
 // Target Device:  
 // Tool versions:  
 // Description: 
@@ -22,7 +22,7 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module ALU_test;
+module alu_test;
 
 	// Inputs
 	reg clk;
@@ -34,7 +34,8 @@ module ALU_test;
 	// Outputs
 	wire [31:0] rd;
 	wire zeroflag;
-
+   //wire [31:0] reg_sr1;
+	
 	// Instantiate the Unit Under Test (UUT)
 	alu uut (
 		.clk(clk), 
@@ -42,19 +43,22 @@ module ALU_test;
 		.sr2(sr2), 
 		.os(os), 
 		.shift(shift), 
+	//	.rot(rot), 
 		.rd(rd), 
+	//	.reset(reset),
+	//	.reg_sr1(reg_sr1),
 		.zeroflag(zeroflag)
 	);
+
 
 	initial begin
 		// Initialize Inputs
 		clk = 0;
-		sr1 = 0;
-		sr2 = 0;
 		os = 0;
 		shift = 0;
-
-		forever begin
+		sr1 = 0;
+		sr2 = 0;
+   forever begin
 	    #10 clk = ~clk;
 		 end
 	end
@@ -88,7 +92,6 @@ os = 3'b111;
 		// Add stimulus here
 
 	end
-      
       
 endmodule
 
