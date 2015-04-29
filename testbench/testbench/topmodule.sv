@@ -21,20 +21,26 @@ module testbench ();
     
     /*
     TODO
-    assign inner_intf.pc = dut.pc;
+    assign inner_intf.pc = dut.unit.pc_1;
     */
-              
-    cpu dut(
-        .AKN_I(input_cpu_intf.akn_in),
-        .INSTR_I(input_cpu_intf.data_in),
-        .DAT_I(input_cpu_intf.data_in),
-        .STB_O(output_cpu_intf.stb_out),
-        .DAT_O(output_cpu_intf.data_out),
-        .WE_O(output_cpu_intf.we_out),
-        .ADR_O(output_cpu_intf.adr_out),
-        .CLK_I(control_intf.clk),
-        .RST_I(control_intf.reset)
-    ); 
+       
+    cpu_top dut (
+        .sys_clk        (clk), 
+        .sys_rst        (control_intf.reset),
+        .data_data_o    (output_cpu_intf.data_out),
+        .data_data_i    (output_cpu_intf.data_in),
+        .data_addr_o    (output_cpu_intf.adr_out),
+        .data_stb_o     (output_cpu_intf.stb_out),
+        .data_we_o      (output_cpu_intf.we_out),
+        .data_ack_i     (output_cpu_intf.ack_in),
+        .instr_data_i   (input_cpu_intf.data_in),
+        .instr_addr_o   (input_cpu_intf.adr_out),
+        .instr_stb_o    (input_cpu_intf.stb_out),
+        .instr_we_o     (input_cpu_intf.we_out),
+        .instr_ack_i    (input_cpu_intf.ack_in)
+
+    );
+
 
    initial begin
         $display("START TEST");

@@ -11,7 +11,8 @@
 # 	
 ###########################################################
 */
-module TOP_MODULE_CPU(
+
+module cpu_top(
 input sys_clk, 
 input sys_rst,
 
