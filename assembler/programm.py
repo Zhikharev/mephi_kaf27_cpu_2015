@@ -255,7 +255,7 @@ def translateLdInstr(instruction):
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
-    result = '100100'
+    result = '100110'
     addr = instruct_data[1]
     if addr in dataLinks:
         addr = dataLinks[addr]
@@ -263,7 +263,7 @@ def translateLdInstr(instruction):
 
     addr = getNumStr(addr, 10)
     result += addr
-    result += '100110'
+    result += '100100'
     addr = getNumStr(str(int(addr, 2) + align), 10)
     result += addr
     return result
@@ -275,7 +275,7 @@ def translateStInstr(instruction):
         error_string += '. Неверное количество аргументов.'
         ERROR(error_string)
 
-    result = '101000'
+    result = '101010'
     addr = instruct_data[1]
     if addr in dataLinks:
         addr = dataLinks[addr]
@@ -283,7 +283,7 @@ def translateStInstr(instruction):
 
     addr = getNumStr(addr, 10)
     result += addr
-    result += '101010'
+    result += '101000'
     addr = getNumStr(str(int(addr, 2) + align), 10)
     result += addr
     return result
@@ -403,7 +403,7 @@ def parseDataLines():
     global data
     global align
     global dataLinks
-    dataEndAddr = codeEndAddr + 2
+    dataEndAddr = codeEndAddr
     if '.data' in fileByDirects:
         dataLines = fileByDirects['.data'].splitlines()
         for line in dataLines:
@@ -547,7 +547,7 @@ def parseSetLines():
             if len(line) > 0:
                 line = line.split(' ')
                 if len(line) == 2:
-                    variables[line[0]] = int(line[1])
+                    variables[line[0]] = int(getNumStr(line[1], 4), 2)
 
                 else:
                     ERROR('Ошибка в блоке .set')
@@ -590,17 +590,10 @@ while cur < len(code):
     file.write(bytes(chr(c), 'iso8859-1'))
     cur += 8
 
-flag = '1' * 16
-cur = 0
-while cur < len(flag):
-    c = int(flag[cur:cur+8], 2)
-    file.write(bytes(chr(c), 'iso8859-1'))
-    cur += 8
-
 cur = 0
 while cur < len(data):
     c = int(data[cur:cur+8], 2)
     file.write(bytes(chr(c), 'iso8859-1'))
     cur += 8
-print(flag)
+
 print(data)
