@@ -1,4 +1,4 @@
-#include "main.h"
+#include "model.h"
 //*************************************************
 // Author: Svetlana Makarova 
 // Project: MEPHI CPU
@@ -10,13 +10,13 @@
 open_file(){
 
     char string[16];
-    printf("Please set program file\n");
+	printf("F: Please set program file\n");
     scanf("%s", string);
     f = fopen(string, "rb");
-	printf ("Opening a file : ");
+	printf ("F: Opening a file : ");
     if(f == NULL)
 	{
-		printf("ERROR opening file\n");
+		printf(" ERROR opening file\n");
 		return -1;
 	}
     else 
@@ -30,12 +30,10 @@ int read_instr(){
 	int buffer[2];
 	int g = 0;
 
-	printf ("Set the position at the beginning of the file\n ");
-
 	if (fseek (f, PC, SEEK_SET) == 0)
-		printf ("Done\n");
+		printf ("F: Done\n");
 	else
-		printf ("ERROR\n");
+		printf ("F: ERROR\n");
 
 	printf("PC: %x\n",PC);
 
@@ -60,16 +58,17 @@ main()
 {	
 	init_memory();
 	open_file();
+	printf ("F: Set the position at the beginning of the file\n ");
 	while(!feof(f)){ 
 
 		instr = read_instr();
-		decode(instr);
+		decode(instr,0);
 	}
 	printf ("Close file\n");
 	if ( fclose (f) == EOF)
 		printf ("ERROR\n");
 	else printf ("Done\n");
-	allreg();
-	statistics();
+	allreg(0);
+	statistics(0);
 	write_results();
 }

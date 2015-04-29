@@ -402,15 +402,10 @@ int init_memory()
 	return memory[addr];
 }
 
-//Function for set memory from TB
-/*
-import_memory() 
-{  	
-	printf("C: Set memory from TB: ");
-	set_memory(); 
-	printf("%x", memory[addr]);
-} 
-*/
+int set_memory(int addr, int data)
+{
+	memory[addr] = data;
+}
 
 int get_memory(int addr)
 {	
@@ -486,12 +481,6 @@ statistics(int verbosity)
 			printf("The number of instructions NOP: %d\n", COUNT_NOP);
 	}
 }
-/*
-set_verbosity(int verbosity)
-{	
-	printf("If you want to include the logical conclusion press 0, else 1\n");
-	scanf("%d", &verbosity);
-}*/
 
 write_results()
 {	FILE  *fo;

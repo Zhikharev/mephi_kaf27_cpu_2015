@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "svdpi.h"
+#include "stdlib.h"
 
 #ifndef INCLUDED_CHIPKK
 #define INCLUDED_CHIPKK
@@ -28,6 +29,7 @@ int reg_t1;
 int reg_t2;
 int PC;
 int memory[1024];
+FILE  *f;
 
 int instr;
 int opcode;
@@ -58,17 +60,16 @@ int COUNT_JR;
 int COUNT_JALR;
 int COUNT_NOP;
 int k;
-
+int verbosity; //If you want to include the logical conclusion enter 0, else 1
 
 DPI_LINK_DECL DPI_DLLESPEC void test_sv_c_communication(int arg);
-DPI_LINK_DECL DPI_DLLESPEC decode(int, int);
+DPI_LINK_DECL DPI_DLLESPEC decode(int, int);         //int instr, int verbosity
 DPI_LINK_DECL DPI_DLLESPEC int init_memory();
-DPI_LINK_DECL DPI_DLLESPEC import_memory();
-DPI_LINK_DECL DPI_DLLESPEC set_memory();
-DPI_LINK_DECL DPI_DLLESPEC int get_memory(int);
-DPI_LINK_DECL DPI_DLLESPEC int SETREG(int, int);
-DPI_LINK_DECL DPI_DLLESPEC int GETREG(int);
-DPI_LINK_DECL DPI_DLLESPEC int ADD(int, int, int); 
+DPI_LINK_DECL DPI_DLLESPEC set_memory(int, int);     //int addr, int data
+DPI_LINK_DECL DPI_DLLESPEC int get_memory(int);      //int addr
+DPI_LINK_DECL DPI_DLLESPEC int SETREG(int, int);     //int addr_reg, int data_reg
+DPI_LINK_DECL DPI_DLLESPEC int GETREG(int);          //int addr_reg
+DPI_LINK_DECL DPI_DLLESPEC int ADD(int, int, int);   //int rs, int rt, int rd
 DPI_LINK_DECL DPI_DLLESPEC int ADDI (int, int, int);
 DPI_LINK_DECL DPI_DLLESPEC int OR (int, int, int);
 DPI_LINK_DECL DPI_DLLESPEC int AND (int, int, int);
@@ -77,18 +78,16 @@ DPI_LINK_DECL DPI_DLLESPEC int NOR (int, int, int);
 DPI_LINK_DECL DPI_DLLESPEC int SLL (int, int, int);
 DPI_LINK_DECL DPI_DLLESPEC int ROT (int, int, int);
 DPI_LINK_DECL DPI_DLLESPEC int BNE (int, int, int);
-DPI_LINK_DECL DPI_DLLESPEC int LDL (int);
+DPI_LINK_DECL DPI_DLLESPEC int LDL (int);            //int addr
 DPI_LINK_DECL DPI_DLLESPEC int LDH (int);
 DPI_LINK_DECL DPI_DLLESPEC int STL (int);
 DPI_LINK_DECL DPI_DLLESPEC int STH (int);
 DPI_LINK_DECL DPI_DLLESPEC int JMP (int);
 DPI_LINK_DECL DPI_DLLESPEC int JAL (int);
-DPI_LINK_DECL DPI_DLLESPEC int JR (int);
-DPI_LINK_DECL DPI_DLLESPEC int JALR (int);
+DPI_LINK_DECL DPI_DLLESPEC int JR (int);             //int addr_rs
+DPI_LINK_DECL DPI_DLLESPEC int JALR (int);           //int addr_rs
 DPI_LINK_DECL DPI_DLLESPEC NOP();
-DPI_LINK_DECL DPI_DLLESPEC allreg(int);
-DPI_LINK_DECL DPI_DLLESPEC statistics(int);
-DPI_LINK_DECL DPI_DLLESPEC int verbosity;
-//DPI_LINK_DECL DPI_DLLESPEC set_verbosity(int);
+DPI_LINK_DECL DPI_DLLESPEC allreg(int);              //int verbosity
+DPI_LINK_DECL DPI_DLLESPEC statistics(int);          //int verbosity
 DPI_LINK_DECL DPI_DLLESPEC write_results();
 #endif 
