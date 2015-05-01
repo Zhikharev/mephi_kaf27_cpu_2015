@@ -51,8 +51,6 @@ class environment;
          data_mon.run;
          instr_drv.run;
          instr_mon.run;
-
-         //sb.start;
       join_any
       $display("Enviroment : start is done. %0t", $time);
    endtask

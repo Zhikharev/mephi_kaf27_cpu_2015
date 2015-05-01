@@ -6,11 +6,11 @@ class instr_driver;
     virtual wishbone_if vif;
     trans instr;
     mailbox #(trans) mb_idr2sb;
-    mailbox #(bit[15:0]) mb_dr2dr;
+    mailbox #(trans) mb_dr2dr;
     int cycles = 5;
     
     
-    function new (virtual wishbone_if vif, mailbox #(trans) mb_idr2sb, mailbox #(bit[15:0]) md_dr2dr);
+    function new (virtual wishbone_if vif, mailbox #(trans) mb_idr2sb, mailbox #(trans) md_dr2dr);
         this.vif = vif;
         if (mb_idr2sb == null) begin
             $display("INST DRIVER : ERROR mailbox is null");
@@ -27,7 +27,7 @@ class instr_driver;
     endfunction 
 
     task run();
-        //$display("INSTR MONITOR IS RAN : %0t ", $time);
+        //$display("INST_DRIVER IS RAN");
         trans sec_instr;
         int delay;
         int carring_cycle = 0;
@@ -43,7 +43,7 @@ class instr_driver;
                     carring_cycle = carring_cycle + 1;
                     $display("CARRING CYCLE %0d",carring_cycle);
                     sec_instr.print;
-                    mb_dr2dr.try_put(sec_instr.pack);
+                    mb_dr2dr.try_put(sec_instr);
                 end
                 else begin
                     clear_intf();

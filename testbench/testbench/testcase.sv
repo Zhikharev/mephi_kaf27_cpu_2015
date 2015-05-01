@@ -35,7 +35,13 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
     
 endprogram
 
+/*
+[amnt_inst] bit[15:0] mem_instr;
+$fopen(asm_instr.bin,rb);
+$readmemb(asm_instr.bin,mem_instr);
 
+
+*/
 
 
 

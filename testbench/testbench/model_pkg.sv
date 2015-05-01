@@ -1,12 +1,11 @@
 package model;
 
 	import "DPI-C" function void test_sv_c_communication(input int val);
-	import "DPI-C" function void OPENFILE();
-	import "DPI-C" function READINSTRACTION();
-	import "DPI-C" function DECODE(int);
-	import "DPI-C" function CHEKREG(int);
-    import "DPI-C" function CHECKMEMORY(int);
-    import "DPI-C" function ADD(int,int,int);
+	import "DPI-C" function  decode(int,int);//int instr, int verbosity
+	import "DPI-C" function init_memory();
+    import "DPI-C" function set_memory(int,int);//addr data
+    import "DPI-C" function get_memory(int); //addr 
+    import "DPI-C" function ADD(int,int,int);//rs rt rd
     import "DPI-C" function ADDI(int,int,int);
     import "DPI-C" function OR(int,int,int);
     import "DPI-C" function AND(int,int,int);
@@ -24,7 +23,10 @@ package model;
     import "DPI-C" function JR(int);
     import "DPI-C" function JARL(int);
     import "DPI-C" function NOP();
-
+    import "DPI-C" function aiireg(int); //int verbosity
+    import "DPI-C" function statistic(int); //int verbosity 
+    import "DPI-C" function write_resalt();
+ 
 
     
     
