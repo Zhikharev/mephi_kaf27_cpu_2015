@@ -17,6 +17,7 @@ endclass
 
 program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf, control_if cont_cpu_intf);
     
+    bit[15:0]instr[$];
     environment env;
     reduced_trans r_trans;
    
@@ -28,20 +29,18 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         env.run;              
    
         $display("TESTCASE : DONE  %0t", $time);
-        $finish;
+        //$finish;
    end
-   
-    
-    
+        /*
+        $fopen("instr.bin");
+        if(!file_avib)begin
+            $display("TESCASE : ERROR can not find file instr.bin");
+        end
+        else begin
+            $readmemb("instr.bin",instr);
+        end    
+        */
 endprogram
-
-/*
-[amnt_inst] bit[15:0] mem_instr;
-$fopen(asm_instr.bin,rb);
-$readmemb(asm_instr.bin,mem_instr);
-
-
-*/
 
 
 
