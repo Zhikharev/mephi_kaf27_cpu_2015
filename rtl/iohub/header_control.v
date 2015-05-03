@@ -21,10 +21,10 @@
 module header_control(
    input clk_i,
    input rst_i,
-	input [8:0] rx_byte,
+	input [7:0] rx_byte,
 	input received,
-	input we_i,
-	input stb_i,
+	input io_we_i,
+	input io_stb_i,
 	
 	output [15:0] din	
     );
@@ -69,7 +69,7 @@ always@(posedge received)
 always@*
    begin
 	   state_next = state_reg;
-	   if ((we_i)&&(stb_i)) 
+	   if ((io_we_i)&&(io_stb_i)) 
 		   begin
 	      	case (state_reg)
 		        idle: begin

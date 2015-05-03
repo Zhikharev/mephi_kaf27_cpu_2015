@@ -23,6 +23,7 @@ module transmitting_FSM(
 	 input rst_i,
 	 input [15:0] dout2,
 	 input is_transmitting,
+	 input ready,
 	 
 	 output [7:0] tx_byte
     );
@@ -64,8 +65,9 @@ always@(negedge is_transmitting)
 	   end	  
 	  
 always@*
-   begin
-	   state_next = state_reg;
+  begin
+	 state_next = state_reg;
+	 if (ready)
 	   begin
 	     case (state_reg)
 		     tr_h: begin

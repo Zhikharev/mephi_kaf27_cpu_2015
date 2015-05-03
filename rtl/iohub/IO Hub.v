@@ -24,16 +24,16 @@ module IO_Hub(
     input rx, 
     output tx, 
 	 
-	 input ack_i,
-	 input stb_i,
-	 input [15:0] addr_i,
-	 input [15:0] dat_i,
-	 input we_i,
-	 output ack_o,
-	 output stb_o,
-	 output [15:0] addr_o,
-	 output [15:0] dat_o,
-	 output we_o
+	 input io_ack_i,
+	 input io_stb_i,
+	 input [15:0] io_addr_i,
+	 input [15:0] io_dat_i,
+	 input io_we_i,
+	 output io_ack_o,
+	 output io_stb_o,
+	 output [15:0] io_addr_o,
+	 output [15:0] io_dat_o,
+	 output io_we_o
 	  );
 	  
 	// DECLARATION OF WIRES FOR UART INSTANCE
@@ -62,7 +62,10 @@ wire [15:0] dout2;
 wire full2; 
 wire empty2;
 
-	  
+
+wire ready;
+assign ready = ((ctrl0_ready) ? 1'b1 : 1'b0); // flag to transmit from Atlys to PC
+  
     uart uart_1 (
        .clk(clk_i), //clk_cmt
        .rst(rst_i), 
@@ -93,7 +96,7 @@ wire empty2;
   .rst(rst_i), // input rst
   .wr_clk(rd_clk), // input wr_clk
   .rd_clk(wr_clk), // input rd_clk
-  .din(dat_i), // input [15 : 0] din
+  .din(io_dat_i), // input [15 : 0] din
   .wr_en(wr_en2), // input wr_en
   .rd_en(rd_en2), // input rd_en
   .dout(dout), // output [15 : 0] dout
@@ -106,8 +109,8 @@ header_control hc (
     .rst_i(rst_i), 
     .rx_byte(rx_byte), 
 	 .received(received),
-	 .we_i(we_i),
-	 .stb_i(stb_i),
+	 .io_we_i(io_we_i),
+	 .io_stb_i(io_stb_i),
     .din(din)
     );
 
@@ -116,8 +119,10 @@ transmitting_FSM tFSM (
     .rst_i(rst_i), 
     .dout2(dout2), 
     .is_transmitting(is_transmitting), 
+    .ready(ready), 
     .tx_byte(tx_byte)
-    );				
+    );
+		
 
       // DECLARATION OF REGISTERS	
 reg [1:0] state_reg;
@@ -155,34 +160,35 @@ always@(posedge clk_i or posedge rst_i)
     	      ctrl0_status <= 1'b1;
 	      if (rx_byte == 8'b00100000)
             ctrl0_ready <= 1'b1;
-		   if ((we_i)&&(stb_i)) 
+		   if ((io_we_i)&&(io_stb_i)) 
 		      begin
-			      case (addr_i)
+			      case (io_addr_i)
 				      2: begin
-					       ctrl0_start <= dat_i [8];
+					       ctrl0_start <= io_dat_i [8];
 					   	end
 				   	6: begin
-						    ctrl1_finish <= dat_i [13];
-						    ctrl1_addr <= addr_i;
+						    ctrl1_finish <= io_dat_i [13];
+						    ctrl1_addr <= io_addr_i;
 					      end
 					   4: begin
-					       ctrl1_data <= dat_i;
+					       ctrl1_data <= io_dat_i;
 					   	end
 				  endcase
 		      end
 		  end
 	 end
+	 
 
      // READ LOGIC
 
-assign dat_o = ((stb_i) && (~we_i) && (addr_i == 0)) ? {ctrl0_addr_end [15:11], ctrl0_addr_beg} :
-               ((stb_i) && (~we_i) && (addr_i == 2)) ? {7'b0000000, ctrl0_ready, ctrl0_start, ctrl0_status, ctrl0_addr_end [21:16]} :
-					((stb_i) && (~we_i) && (addr_i == 4)) ? ctrl1_data: {4'b0000, ctrl1_finish, ctrl1_addr};
+assign io_dat_o = ((io_stb_i) && (~io_we_i) && (io_addr_i == 0)) ? {ctrl0_addr_end [15:11], ctrl0_addr_beg} :
+               ((io_stb_i) && (~io_we_i) && (io_addr_i == 2)) ? {7'b0000000, ctrl0_ready, ctrl0_start, ctrl0_status, ctrl0_addr_end [21:16]} :
+					((io_stb_i) && (~io_we_i) && (io_addr_i == 4)) ? ctrl1_data: {4'b0000, ctrl1_finish, ctrl1_addr};
 
-//assign dat_o = ( {16{ ((stb_i) && (~we_i) && (addr_i == 0) ) }} ) && {ctrl0_addr_end [15:11], ctrl0_addr_beg} || 
-  //  ( {16{ ((stb_i) && (~we_i) && (addr_i == 2) ) }} ) && {7'b0000000, ctrl0_ready, ctrl0_start, ctrl0_status, ctrl0_addr_end [21:16]}
+//assign io_dat_o = ( {16{ ((io_stb_i) && (~io_we_i) && (io_addr_i == 0) ) }} ) && {ctrl0_addr_end [15:11], ctrl0_addr_beg} || 
+  //  ( {16{ ((io_stb_i) && (~io_we_i) && (io_addr_i == 2) ) }} ) && {7'b0000000, ctrl0_ready, ctrl0_start, ctrl0_status, ctrl0_addr_end [21:16]}
      
-assign ack_o = stb_i;
+assign io_ack_o = io_stb_i;
 	 
 	 
 endmodule
