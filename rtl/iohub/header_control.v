@@ -1,23 +1,14 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    20:56:51 04/27/2015 
-// Design Name: 
-// Module Name:    transmitting_FSM 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+/*
+###########################################################
+#
+# Author: Valeriy Glazkov
+#
+# Project: MEPHI CPU
+# Filename: header_control.v
+# Descriptions:
+# 	Peforms data transfer from PC to Atlys.
+###########################################################
+*/
 module header_control(
    input clk_i,
    input rst_i,

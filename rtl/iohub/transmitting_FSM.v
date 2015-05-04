@@ -1,23 +1,14 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    21:31:13 04/29/2015 
-// Design Name: 
-// Module Name:    transmitting_FSM 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+/*
+###########################################################
+#
+# Author: Valeriy Glazkov
+#
+# Project: MEPHI CPU
+# Filename: transmitting_FSM.v
+# Descriptions:
+# 	Peforms data transfer from Atlus to PC.
+###########################################################
+*/
 module transmitting_FSM(
     input clk_i,
 	 input rst_i,
