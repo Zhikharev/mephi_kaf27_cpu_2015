@@ -15,6 +15,10 @@ module transmitting_FSM(
 	 input [15:0] dout2,
 	 input is_transmitting,
 	 input ready,
+	 input io_stb_o,
+	 input io_we_o,
+	 input wr_en2,
+	 input rd_en2,
 	 
 	 output [7:0] tx_byte
     );
@@ -28,6 +32,12 @@ reg state_next;
 reg state_reg;
 reg count;
 reg flag;
+reg loc_wr_en2;
+reg loc_rd_en2;
+
+assign wr_en2 = loc_wr_en2;
+assign rd_en2 = loc_rd_en2;
+
 always@(posedge clk_i or posedge rst_i)
    begin
 	   begin
@@ -38,6 +48,8 @@ always@(posedge clk_i or posedge rst_i)
      else 
 	     begin
 	       state_reg <= state_next;
+			 if ((io_stb_o)&&(io_we_o))
+			    loc_wr_en2 <= 1'b1;
         end
 	   end
 	  end
@@ -67,6 +79,7 @@ always@*
 							  flag = 1;
 						     state_next = tr_l;
 							  tx_dat = dout2 [15:8];
+							  loc_rd_en2 = 0;
 							end
 						end
 				tr_l: begin 
@@ -75,6 +88,7 @@ always@*
 							  flag = 0;
 						     state_next = tr_h;
 							  tx_dat = dout2 [7:0];
+							  loc_rd_en2 = 1;
 							end
 						end
 		  endcase

@@ -16,6 +16,8 @@ module header_control(
 	input received,
 	input io_we_i,
 	input io_stb_i,
+	input wr_en,
+	input rd_en,
 	
 	output [15:0] din	
     );
@@ -29,7 +31,8 @@ reg [1:0] state_next;
 reg [5:0] count;	 
 reg flag;
 reg [15:0] loc_din;
-
+reg loc_wr_en;
+reg loc_rd_en;
 
 
 always@(posedge clk_i or posedge rst_i)
@@ -41,6 +44,8 @@ always@(posedge clk_i or posedge rst_i)
      else 
 	     begin
 	       state_reg <= state_next;
+			 if ((io_we_i)&&(io_stb_i))
+			   loc_rd_en <= 1;
         end		  
 	end
 	
@@ -60,15 +65,14 @@ always@(posedge received)
 always@*
    begin
 	   state_next = state_reg;
-	   if ((io_we_i)&&(io_stb_i)) 
-		   begin
-	      	case (state_reg)
-		        idle: begin
-			       if (rx_byte == 8'b10000000) begin
-				    flag = 1;
-				    state_next = load_h;
+	      case (state_reg)
+		      idle: begin
+			     if (rx_byte == 8'b10000000) begin
+				  flag = 1;
+				  state_next = load_h;
+			     loc_wr_en = 0;
 					 end
-			      end
+			     end
 		    	 load_h: begin
 			      if (count == 2) begin
 					      loc_din [15:8] = rx_byte;
@@ -80,12 +84,14 @@ always@*
 					     loc_din [7:0] = rx_byte;
                     state_next = idle;
 					     flag = 0;
+						  loc_wr_en = 1;
                     end
                  end							  
 		endcase
-	  end
 	end
-
+	
+assign rd_en = loc_rd_en;
+assign wr_en = loc_wr_en;
 assign din = loc_din;
 
 endmodule

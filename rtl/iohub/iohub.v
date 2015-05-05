@@ -102,7 +102,9 @@ header_control hc (
 	 .received(received),
 	 .io_we_i(io_we_i),
 	 .io_stb_i(io_stb_i),
-    .din(din)
+    .din(din),
+	 .wr_en(wr_en),
+	 .rd_en(rd_en)
     );
 
 transmitting_FSM tFSM (
@@ -111,7 +113,11 @@ transmitting_FSM tFSM (
     .dout2(dout2), 
     .is_transmitting(is_transmitting), 
     .ready(ready), 
-    .tx_byte(tx_byte)
+    .tx_byte(tx_byte),
+	 .io_stb_o(io_stb_o),
+	 .io_we_o(io_we_o),
+	 .wr_en2(wr_en2),
+	 .rd_en2(rd_en2)
     );
 		
 
