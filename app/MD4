@@ -1,0 +1,195 @@
+#загрузка сообщения???
+
+.text
+# определение длины сообщения lenght = 448(mod512)???
+#???
+
+# расширение сообщения message
+
+#рассчитать нужное количество нулей zero
+#??????
+
+SLL message, message, 1
+ADDI message, message, 1
+SLL message, message, zero
+
+#добавление длины
+SLL message, message, 64
+OR message, message, lenght #рассмиотреть случай, где lenght > 2^64
+
+
+.def
+message $T0 
+lenght $T1
+zero $T2 
+
+#инициализация буфера
+.text
+ADDI $A, $A, 0x01234567
+ADDI $B, $B, 0x89abcdef
+ADDI $C, $C, 0xfedcba98
+ADDI $D, $D, 0x76543210
+
+#обработка сообщения блоками по 16 слов
+#цикл???
+
+
+ADD AA, AA, $A
+ADD BB, BB, $B
+ADD CC, CC, $C
+ADD DD, DD, $D
+
+.def
+AA $E
+BB $F
+CC $G
+DD $H
+
+.text
+
+#после каждого перехода нужно снова инициализировать A,B,C,D или записывать их в другие регистра???
+
+# 1 РАУНД # СДЕЛАТЬ ЦИКЛОМ X[I], I = I + 4
+ 
+# a = (a + F(b,c,d) + X[k]) <<< s        
+# a = (a + ((b & c) | (~b & d)) + X[k]) rol s
+# a = (a  + (d ^ (b & (c ^ d))) + X[k]) rol s
+
+XOR $C, $C, $D
+AND $B, $B, $C
+XOR $D, $B, $D
+ADD $A, $A, $D
+ADD $A, $A, X[0] #????????????????
+ROT $A, $A, 3
+
+# d = (d  + (c ^ (a & (b ^ c))) + X[k]) rol s
+
+XOR $B, $B, $C
+AND $A, $A, $B
+XOR $C, $A, $C
+ADD $D, $D, $C
+ADD $D, $D, X[1] #????????????????
+ROT $D, $D, 7
+
+# c = (c  + (b ^ (d & (a ^ b))) + X[k]) rol s
+
+XOR $A, $A, $B
+AND $D, $D, $A
+XOR $B, $D, $B
+ADD $C, $C, $B
+ADD $C, $C, X[2] #????????????????
+ROT $C, $C, 11
+
+# b = (b  + (a ^ (c & (d ^ a))) + X[k]) rol s
+
+XOR $D, $D, $A
+AND $C, $C, $D
+XOR $A, $C, $A
+ADD $B, $B, $A
+ADD $B, $B, X[3] #????????????????
+ROT $B, $B, 19
+
+
+# 2 РАУНД  # СДЕЛАТЬ ЦИКЛОМ X[I], I = I + 1
+
+# a = (a + F(b,c,d) + X[k] + 5A827999H) <<< s 
+# a = (a + ((b & c) | (b & d)|(c & d)) + X[k] + 5A827999H) rol s
+# a = (a + ((b & c) | (d & (b | c))) + X[k] + 5A827999H) rol s
+
+ADDI $T2, $T2, 0
+ADD $T2, $T2, $B #перезапишем данные в регистр T0
+OR $T2, $T2, $C
+AND $D, $D, $T2
+AND $C, $C, $B
+OR $C, $T2, $C
+ADD $A, $A, $C
+ADDI $A, $A, 5A827999H
+ADD $A, $A, X[0] #??????????????????
+ROT $A, $A, 3
+
+# d = (d + ((a & b) | (c & (a | b))) + X[k] + 5A827999H) rol s
+
+ADDI $T2, $T2, 0
+ADD $T2, $T2, $A #перезапишем данные в регистр T0
+OR $T2, $T2, $B
+AND $C, $C, $T2
+AND $B, $B, $A
+OR $B, $T2, $B
+ADD $D, $D, $B
+ADDI $D, $D, 5A827999H
+ADD $D, $D, X[4] #??????????????????
+ROT $D, $D, 5
+
+# c = (c + ((d & a) | (b & (d | a))) + X[k] + 5A827999H) rol s
+
+ADDI $T2, $T2, 0
+ADD $T2, $T2, $D #перезапишем данные в регистр T0
+OR $T2, $T2, $A
+AND $B, $B, $T2
+AND $A, $A, $D
+OR $A, $T2, $A
+ADD $C, $C, $A
+ADDI $C, $C, 5A827999H
+ADD $C, $C, X[8] #??????????????????
+ROT $C, $C, 9
+
+# b = (b + ((c & d) | (a & (c | d))) + X[k] + 5A827999H) rol s
+
+ADDI $T2, $T2, 0
+ADD $T2, $T2, $C #перезапишем данные в регистр T0
+OR $T2, $T2, $D
+AND $A, $A, $T2
+AND $D, $D, $C
+OR $D, $T2, $D
+ADD $B, $B, $D
+ADDI $B, $B, 5A827999H
+ADD $B, $B, X[12] #??????????????????
+ROT $B, $B, 13
+
+
+# 3 РАУНД  # СДЕЛАТЬ ЦИКЛОМ X[I], I = I + 2
+
+# a = (a + F(b,c,d) + X[k] + 6ED9EBA1H) <<< s 
+# a = (a + (b ^ c ^ d) + X[k] + 6ED9EBA1H) rol s
+
+XOR $B, $B, $C
+XOR $D, $B, $D
+ADD $A, $A, $D
+ADDI $A, $A, 6ED9EBA1H
+ADD $A, $A, X[0] #??????????????????
+ROT $A, $A, 3
+
+# d = (d + (a ^ b ^ c) + X[k] + 6ED9EBA1H) rol s
+
+XOR $A, $A, $B
+XOR $C, $A, $C
+ADD $D, $D, $C
+ADDI $D, $D, 6ED9EBA1H
+ADD $D, $D, X[8] #??????????????????
+ROT $D, $D, 9
+
+# c = (c + (d ^ a ^ b) + X[k] + 6ED9EBA1H) rol s
+
+XOR $D, $D, $A
+XOR $B, $D, $B
+ADD $C, $C, $B
+ADDI $C, $C, 6ED9EBA1H
+ADD $C, $C, X[4] #??????????????????
+ROT $C, $C, 11
+
+# b = (b + (c ^ d ^ a) + X[k] + 6ED9EBA1H) rol s
+
+XOR $C, $C, $D
+XOR $A, $C, $A
+ADD $B, $B, $A
+ADDI $B, $B, 6ED9EBA1H
+ADD $B, $B, X[12] #??????????????????
+ROT $B, $B, 15
+
+
+ADD $A, $A, $AA
+ADD $B, $B, $BB
+ADD $C, $C, $CC
+ADD $D, $D, $DD
+
+# конец цикла?????

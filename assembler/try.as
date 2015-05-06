@@ -1,6 +1,13 @@
 .text
-st sd
-ld pf
+add $a, $3, $zero
+addi $1, $2, p1
+ld res
 .data
-sd 0xC
-pf 0xF
+res 455
+.text
+addi $MR, $MR, sum
+st res
+nop (5)
+.set
+p1 8
+sum 12

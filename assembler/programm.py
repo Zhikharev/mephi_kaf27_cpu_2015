@@ -583,7 +583,7 @@ parseFile()
 print(code)
 
 
-file = open('file2','wb')
+file = open('full','wb')
 cur = 0
 while cur < len(code):
     c = int(code[cur:cur+8], 2)
@@ -596,4 +596,18 @@ while cur < len(data):
     file.write(bytes(chr(c), 'iso8859-1'))
     cur += 8
 
-print(data)
+file.close()
+file = open('text','wb')
+cur = 0
+while cur < len(code):
+    c = int(code[cur:cur+8], 2)
+    file.write(bytes(chr(c), 'iso8859-1'))
+    cur += 8
+
+file.close()
+file = open('data','wb')
+cur = 0
+while cur < len(data):
+    c = int(data[cur:cur+8], 2)
+    file.write(bytes(chr(c), 'iso8859-1'))
+    cur += 8

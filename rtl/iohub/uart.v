@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 // Documented Verilog UART
 // Copyright (C) 2010 Timothy Goddard (tim@goddard.net.nz)
 // Distributed under the MIT licence.
@@ -35,7 +34,7 @@ module uart(
     output recv_error // Indicates error in receiving packet.
     );
 
-parameter CLOCK_DIVIDE = 24; // clock rate (100Mhz) / baud rate (256000) / 16
+parameter CLOCK_DIVIDE = 1; // clock rate (100Mhz) / baud rate (256000) / 16
 
 // States for the receiving state machine.
 // These are just constants, not parameters to override.
