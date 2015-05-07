@@ -15,10 +15,11 @@ module transmitting_FSM(
 	 input [15:0] dout2,
 	 input is_transmitting,
 	 input ready,
-	 input io_stb_o,
-	 input io_we_o,
-	 input wr_en2,
-	 input rd_en2,
+	 output io_stb_o,
+	 output io_we_o,
+	 output io_ack_o,
+	 output wr_en2,
+	 output rd_en2,
 	 
 	 output [7:0] tx_byte
     );
@@ -34,6 +35,11 @@ reg count;
 reg flag;
 reg loc_wr_en2;
 reg loc_rd_en2;
+reg loc_stb;
+reg loc_we;
+
+assign io_stb_o = loc_stb;
+assign io_we_o = loc_we;
 
 assign wr_en2 = loc_wr_en2;
 assign rd_en2 = loc_rd_en2;
@@ -44,28 +50,27 @@ always@(posedge clk_i or posedge rst_i)
 	  if (rst_i) 
 	    begin
 		   state_reg <= tr_h;
+			count <= 0;
 		 end
      else 
 	     begin
 	       state_reg <= state_next;
-			 if ((io_stb_o)&&(io_we_o))
-			    loc_wr_en2 <= 1'b1;
+			 if (ready)
+			    begin
+				   loc_stb <= 1'b1;
+					loc_we <= 1'b1;
+			      loc_wr_en2 <= 1'b1;
+			    end
+			 if (is_transmitting)
+			    begin
+				    if (flag)
+                  count <= count + 1'b1;
+	             if (count == 1)
+	               count <= 0;
+				 end				    
         end
 	   end
-	  end
-	  
-always@(negedge is_transmitting)
-   begin
-	  if (rst_i)
-	     count <= 0;
-	  else 
-	    begin
-           if (flag)
-           count <= count + 1'b1;
-	      if (count == 1)
-	        count <= 0;
-		  end
-	   end	  
+	  end  
 	  
 always@*
   begin

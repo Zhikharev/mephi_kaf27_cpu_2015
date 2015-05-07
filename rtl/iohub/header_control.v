@@ -16,8 +16,8 @@ module header_control(
 	input received,
 	input io_we_i,
 	input io_stb_i,
-	input wr_en,
-	input rd_en,
+	output wr_en,
+	output rd_en,
 	
 	output [15:0] din	
     );
@@ -40,27 +40,23 @@ always@(posedge clk_i or posedge rst_i)
 	  if (rst_i) 
 	    begin
 		   state_reg <= idle;
+			count <= 0;
 		 end
      else 
 	     begin
 	       state_reg <= state_next;
 			 if ((io_we_i)&&(io_stb_i))
 			   loc_rd_en <= 1;
+			 if (received)
+			    begin
+				   if (flag)
+                 count <= count + 1'b1;
+	            if (count == 3)
+	              count <= 0;
+				 end
         end		  
 	end
 	
-always@(posedge received)
-   begin
-	  if (rst_i)
-	     count <= 0;
-	  else 
-	    begin
-	      if (flag)
-           count <= count + 1'b1;
-	      if (count == 3)
-	        count <= 0;
-		  end
-	   end
 	
 always@*
    begin
