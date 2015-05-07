@@ -34,7 +34,6 @@
 // supported by Xilinx, Mentor Graphics and Synplicity synthesis
 // tools. Ensure they are correct for your synthesis tool(s).
 
-`timescale 1ns/1ps
 
 module fifo(
   rst,
