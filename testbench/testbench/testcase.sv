@@ -26,7 +26,10 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         r_trans = new();            
         env = new(instr_cpu_intf,data_cpu_intf,cont_cpu_intf);
         env.build;
-        env.run;              
+        $cast(env.instr_drv.instr, r_trans);
+        env.run;
+        $display("test for queue");
+        //instr_driver.file_instr[0] = 2'd10;             
    
         $display("TESTCASE : DONE  %0t", $time);
         //$finish;

@@ -39,7 +39,7 @@ class environment;
        $display("Enviroment : reset is turned on. %0t",$time);
        cont_cpu_intf.reset <= 1;
        repeat(5) @(posedge cont_cpu_intf.clk);
-       cont_cpu_intf.reset <= 1;
+       cont_cpu_intf.reset <= 0;
        $display("Enviroment : reset was be commited. %0t",$time);
     
     endtask
@@ -49,8 +49,8 @@ class environment;
       fork 
          data_drv.run;
          data_mon.run;
-         instr_drv.run;
          instr_mon.run;
+         instr_drv.run;
       join_any
       $display("Enviroment : start is done. %0t", $time);
    endtask
@@ -59,7 +59,6 @@ class environment;
          $display("Enviroment : wait is on. %0t", $time);
          repeat(100) @(cont_cpu_intf.clk);
          $display("Enviroment : wait is done. %0t", $time);
-        
     endtask
 
     task run();

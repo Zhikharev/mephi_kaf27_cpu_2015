@@ -25,6 +25,7 @@ class instr_driver;
         else begin
             this.mb_dr2dr = mb_dr2dr;
         end
+        instr = new();
     endfunction 
 
     task random_instr();
@@ -42,8 +43,8 @@ class instr_driver;
                     send_instr(sec_instr);
                     carring_cycle = carring_cycle + 1;
                     $display("CARRING CYCLE %0d",carring_cycle);
-                    sec_instr.print;
-                    mb_dr2dr.try_put(sec_instr);
+                   // sec_instr.print;
+                    //mb_dr2dr.try_put(sec_instr);
                 end
                 else begin
                     clear_intf();
