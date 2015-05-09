@@ -28,11 +28,9 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         env.build;
         $cast(env.instr_drv.instr, r_trans);
         env.run;
-        $display("test for queue");
-        //instr_driver.file_instr[0] = 2'd10;             
+                 
    
         $display("TESTCASE : DONE  %0t", $time);
-        //$finish;
    end
         /*
         $fopen("instr.bin");
@@ -44,8 +42,16 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         end    
         */
 endprogram
-
-
+/*program test_decode();
+    bit[15:0] instr;
+    int i;
+    transaction trans;
+    repeat(20) begin
+        std :: randomize(instr) with {instr[3:0] !=4'b1101 && instr[3:0] !=4'b1110 && instr[3:0] !=4'b1111};
+        trans.decode(instr);
+        trans.d_print;
+    end   
+endprogram*/
 
 
 

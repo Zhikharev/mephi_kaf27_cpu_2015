@@ -42,8 +42,8 @@ class instr_driver;
                     repeat(delay) @(vif.drv);
                     send_instr(sec_instr);
                     carring_cycle = carring_cycle + 1;
-                    $display("CARRING CYCLE %0d",carring_cycle);
-                   // sec_instr.print;
+                    $display("CARRING CYCLE %0d was at %0t",carring_cycle,$time);
+                    sec_instr.print;
                     //mb_dr2dr.try_put(sec_instr);
                 end
                 else begin
@@ -88,7 +88,8 @@ class instr_driver;
     task send_instr (trans item);
         vif.drv.akn_in <= 1'b1;
         vif.drv.data_in <= item.pack;
-          
+        item.decode(vif.drv.data_in);        
+        item.d_print;  
     endtask
 
     task reset_intf();
@@ -112,6 +113,7 @@ class instr_driver;
         else begin
             $display("INSTR DRIVER : mode random is om");
             $display ("ammount of instractions is %0d", cycles);
+            $display ("YOU ARE WELCOME THE COOLES DECODE OF INSTRACTION IN THE WORLD___(mesedge from instr_driver_line 116)");
             random_instr;
         end
     endtask
