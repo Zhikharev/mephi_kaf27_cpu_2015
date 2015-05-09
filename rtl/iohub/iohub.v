@@ -104,8 +104,8 @@ header_control hc (
     .rst_i(rst_i), 
     .rx_byte(rx_byte), 
 	 .received(received),
-	 .io_we_i(io_we_i),
-	 .io_stb_i(io_stb_i),
+	 .io_we_i(io_we_o),
+	 .io_stb_i(io_stb_o),
     .din(din),
 	 .wr_en(wr_en),
 	 .rd_en(rd_en)
