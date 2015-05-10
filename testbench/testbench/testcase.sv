@@ -5,10 +5,35 @@
 class reduced_trans extends trans;
     constraint mem_const {
         //send instractions without store in memary
+        /*
         opcode != STH;
         opcode != STL;
         opcode != LDL;
         opcode != LDH;
+        */       
+
+        opcode != ADDI;
+        opcode != ADD;
+        opcode != NOR;
+        opcode != NOP;
+        opcode != ROT;
+        opcode != SLL;
+        opcode != XOR;
+        opcode != AND;
+        opcode != BNE;
+        opcode != OR;
+        opcode != NOP;
+
+        /*
+        opcode != LDL;
+        opcode != LDH;
+        opcode != STL;
+        opcode != STH;
+        opcode != JMP;
+        opcode != JAL;
+        opcode != JR;
+        opcode != JALR;
+        */
     }
     
 endclass    
