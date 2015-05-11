@@ -50,11 +50,18 @@ class trans;
    rand reg_t rd;
    rand reg_t rt;
    rand opcod_t opcode;
-   string decoded_inst;
    constraint reg_c {
     rd != zero;
     rt != zero;   
    }
+   //varibles of decode 
+   opcod_t d_opcode;
+   reg_t d_rs;
+   reg_t d_rd;
+   reg_t d_rt;
+   bit[9:0] d_addr;
+   bit[3:0] d_imm;
+   
    function bit op_type();
       return opcode inside{ADD,ADDI,OR,AND,XOR,NOR,SLL,ROT,BNE,NOP};
    endfunction
@@ -62,98 +69,154 @@ class trans;
    function bit[15:0] pack ();
       bit[15:0] inst;
       if(this.op_type()) begin
-         inst[3:0] = opcode[3:0];
-         
+         inst[15:12] = opcode[3:0];
          if(opcode == ADDI)begin
-             inst[7:4] = imm;
-             inst[11:8] = rt;
-             inst[15:12] = rd;
-            decoded_inst = {opcode,imm,rt,rd};
+             inst[11:8] = imm;
+             inst[8:4] = rt;
+             inst[3:0] = rd;
          end
          else begin
-            inst[7:4]=rs;
-            inst[11:8]=rt;
-             inst[15:12]=rd;
-            decoded_inst = {opcode,rs,rt,rd};
+            inst[11:8]=rs;
+            inst[8:4]=rt;
+            inst[3:0]=rd;
          end
-   
       end
-
       else begin 
-      inst[5:0] = opcode;
+      inst[15:10] = opcode;
          if(opcode inside {JR, JALR})begin
-         inst[9:8]=0;
-         inst[3:0]=0;
+         inst[8:0]=0;
          inst[7:4]=rs;
-         decoded_inst = {opcode,rs};
          end
          else begin
-         inst[15:6]=addr;
-         decoded_inst = {opcode,inst};
+         inst[9:0]=addr;
          end
       end
       return inst;
    endfunction
    
+   function decode (bit[15:0] instr);
+            int loc;
+            if(instr[15:12] inside{4'b1001,4'b1010,4'b1011}) begin
+                loc = instr[15:10];
+                d_opcode = opcod_t'(loc);
+                if(d_opcode inside{JR,JALR})begin
+                    loc = instr[7:4];
+                    d_rs = reg_t'(loc);
+                end
+                else begin
+                    d_addr = instr[9:0];      
+                end
+            end
+            else begin
+                loc = instr[15:12];
+                d_opcode = opcod_t'(loc);
+                if(d_opcode == ADDI) begin
+                    d_imm = instr[11:8];
+                    loc = instr[8:4];
+                    d_rt = reg_t'(loc);
+                    loc = instr[3:0];
+                    d_rd = reg_t'(loc);
+                end
+                else begin
+                    loc = instr[11:8];
+                    d_rs = reg_t'(loc);    
+                    loc = instr[8:4];
+                    d_rt = reg_t'(loc);
+                    loc = instr[3:0];
+                    d_rd = reg_t'(loc);
+                    
+                end
+            end
+    
+   endfunction
+   
    function void print ();
-        if(opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE}); 
-        $display(": instraction is %0s , rs(%0s), rt(%0s), rd(%0s)",opcode.name(),rs.name(),rt.name(),rd.name());
-        if(opcode inside{ADDI});
-        $display(": instaraction is %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", opcode.name(), imm,imm, rt.name(), rd.name());
-        if(opcode inside{LDL,LDH,STL,STH,JMP,JAL});
-        $display(": instraction is %0s, addr(%0h(%0d))", opcode.name(), addr, addr);            
-        if(opcode inside{JR, JALR});
-        $display(": instraction is %0s , rs(%0s)", opcode.name(), rs.name());
+        if(opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
+        $display(": instraction is ------------------------- %0s , rs(%0s), rt(%0s), rd(%0s)",opcode.name(),rs.name(),rt.name(),rd.name());
+        end
+        else begin
+            if(opcode inside{ADDI})begin
+             $display(": instaraction is ------------------------- %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", opcode.name(), imm,imm, rt.name(), rd.name());
+            end
+            else begin
+                if(opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
+                $display(": instraction is -------------------------- %0s, addr(%0h(%0d))", opcode.name(), addr, addr);            
+                end
+                else begin
+                    if(opcode inside{JR, JALR})begin
+                    $display(": instraction is -------------------------- %0s , rs(%0s)", opcode.name(), rs.name());
+                    end
+                    else begin
+                    $display("TRANSACTION(print method) : ERROR  instraction is not right");
+                    end
+                end
+            end          
+        end
    endfunction     
+  
+function void d_print ();
+        if(d_opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
+        $display(": decoded instraction is -----------------  %0s , rs(%0s), rt(%0s), rd(%0s)",d_opcode.name(),d_rs.name(),d_rt.name(),d_rd.name());
+        end
+        else begin
+            if(d_opcode inside{ADDI})begin
+             $display(": decoded instaraction is ----------------  %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", d_opcode.name(), d_imm,imm, d_rt.name(), d_rd.name());
+            end
+            else begin
+                if(d_opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
+                $display(": decoded instraction is -----------------  %0s, addr(%0h(%0d))", d_opcode.name(), d_addr, d_addr);            
+                end
+                else begin
+                    if(d_opcode inside{JR, JALR})begin
+                    $display(": decoded instraction is -----------------  %0s , rs(%0s)", d_opcode.name(), d_rs.name());
+                    end
+                    else begin
+                    $display("TRANSACTION(decode method) : ERROR  instraction is not right");
+                    end
+                end
+            end          
+        end
+   endfunction     
+  
+    
   
 endclass
 
-
-
+    
 `endif
-/*  function decode_inst (bit[15:0] inst);
-        opcod_t opcode;
-        reg_t rs;
-        reg_t rd;
-        reg_t rt;
-        bit[9:0] addr;
-        bit[3:0] imm;
-        this.imm = imm;
-        this.rs =rs;
-        this.rd =rd;
-        this.rt =rt;
-        this.opcode = opcode;
-        this.inst = inst;
-        if(inst[3:0] == 4'b1001) begin
-            opcode = inst[5:0];
-            if(opcode inside {JR,JALR}) begin
-              rs = inst[15:12]; 
-              decoded_inst = {opcode,rs};           
-            end    
+
+/* function decode (bit[15:0] instr);
+            int loc;
+            if(instr[3:0] inside{4'b1001,4'b1010,4'b1011}) begin
+                loc = instr[5:0];
+                d_opcode = opcod_t'(loc);
+                if(d_opcode inside{JR,JALR})begin
+                    loc = instr[7:4];
+                    d_rs = reg_t'(loc);
+                end
+                else begin
+                    d_addr = instr[15:6];      
+                end
+            end
             else begin
-                addr = inst[9:0];
-                decoded_inst = {opcode,addr};
+                loc = instr[3:0];
+                d_opcode = opcod_t'(loc);
+                if(d_opcode == ADDI) begin
+                    d_imm = instr[7:4];
+                    loc = instr[11:8];
+                    d_rt = reg_t'(loc);
+                    loc = instr[15:12];
+                    d_rd = reg_t'(loc);
+                end
+                else begin
+                    loc = instr[7:4];
+                    d_rs = reg_t'(loc);    
+                    loc = instr[11:8];
+                    d_rt = reg_t'(loc);
+                    loc = instr[15:12];
+                    d_rd = reg_t'(loc);
+                    
+                end
             end
-        end        
-        else begin
-            opcode = inst[3:0];
-            if(opcode == ADDI)begin
-             imm = inst[7:4]; 
-             rt = inst[11:8];
-             rd = inst[15:12];
-             decoded_inst = {opcode,imm,rt,rd};
-            end
-         else begin
-            rs = inst[7:4];
-            rt =inst[11:8];
-            rd = inst[15:12];
-            decoded_inst = {opcode,rs,rt,rd};
-         end
-        end 
-        
-           
-    endfunction
-
-   */
-
-
+    
+   endfunction*/

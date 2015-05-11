@@ -32,22 +32,19 @@ module testbench ();
         .data_addr_o    (output_cpu_intf.adr_out),
         .data_stb_o     (output_cpu_intf.stb_out),
         .data_we_o      (output_cpu_intf.we_out),
-        .data_ack_i     (output_cpu_intf.ack_in),
+        .data_ack_i     (output_cpu_intf.akn_in),
         .instr_data_i   (input_cpu_intf.data_in),
         .instr_addr_o   (input_cpu_intf.adr_out),
         .instr_stb_o    (input_cpu_intf.stb_out),
         .instr_we_o     (input_cpu_intf.we_out),
-        .instr_ack_i    (input_cpu_intf.ack_in)
+        .instr_ack_i    (input_cpu_intf.akn_in)
 
     );
 
 
    initial begin
-        $display("START TEST");
         model::test_sv_c_communication(5);
-        //#100;
-        $display("END TEST");
-       // $finish();
+        
     end
 
 

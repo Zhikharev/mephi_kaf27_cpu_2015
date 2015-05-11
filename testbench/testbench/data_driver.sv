@@ -4,7 +4,7 @@ class data_driver;
     virtual wishbone_if vif_instr;
     virtual wishbone_if vif_data;
     mailbox #(trans) mb_dr2dr; 
-    
+    int log_falg;    
     function new (virtual wishbone_if vif_instr, virtual wishbone_if vif_data, mailbox #(trans) mb_dr2dr);
         this.vif_instr= vif_instr;
         this.vif_data = vif_data;

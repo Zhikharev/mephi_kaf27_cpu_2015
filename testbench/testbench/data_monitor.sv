@@ -5,7 +5,7 @@ class data_monitor;
     virtual wishbone_if vif;//data
     mailbox #(trans) mb_mon2mon;
     mailbox #(trans) mb_dmon2sb;
-    
+    int log_flag;    
      
     function new (virtual wishbone_if vif, mailbox #(trans) mb_mon2mon, mailbox #(trans) mb_dmon2sb);
         this.vif = vif;

@@ -25,7 +25,7 @@ class instr_monitor;
             @(vif.mon);
             if(!vif.rst) begin
                 if(vif.mon.akn_in) begin
-                    // model :: decode(vif.drv.data_in,0);
+                     //model :: decode(vif.drv.data_in,1);
                     
                 end
             end         

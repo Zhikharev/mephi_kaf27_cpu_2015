@@ -9,7 +9,7 @@
 # 	Top module of periphery block.
 ###########################################################
 */
-module IO_Hub(
+module iohub(
     input clk_i, 
     input rst_i, 
     input rx, 
@@ -24,8 +24,12 @@ module IO_Hub(
 	 output io_stb_o,
 	 output [15:0] io_addr_o,
 	 output [15:0] io_dat_o,
-	 output io_we_o
+	 output io_we_o,
+	 
+	 output dbg_status
 	  );
+	  
+	  assign dbg_status = ctrl0_status;
 	  
 	// DECLARATION OF WIRES FOR UART INSTANCE
 wire transmit;
@@ -100,8 +104,8 @@ header_control hc (
     .rst_i(rst_i), 
     .rx_byte(rx_byte), 
 	 .received(received),
-	 .io_we_i(io_we_i),
-	 .io_stb_i(io_stb_i),
+	 .io_we_i(io_we_o),
+	 .io_stb_i(io_stb_o),
     .din(din),
 	 .wr_en(wr_en),
 	 .rd_en(rd_en)
@@ -117,7 +121,8 @@ transmitting_FSM tFSM (
 	 .io_stb_o(io_stb_o),
 	 .io_we_o(io_we_o),
 	 .wr_en2(wr_en2),
-	 .rd_en2(rd_en2)
+	 .rd_en2(rd_en2),
+	 .io_ack_o(io_ack_o)
     );
 		
 
