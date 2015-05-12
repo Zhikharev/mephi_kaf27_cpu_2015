@@ -233,83 +233,83 @@ int SETREG (int addr_reg, int data_reg)
 {
 	switch(rd){
 			case 0x0 : reg_A = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_A %x\n", reg_A);
+				    //  if (verbosity == 0)
+					//	   printf("E: reg_A %x\n", reg_A);
 					   return reg_A;
 					break;
 			case 0x1 : reg_B = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_B %x\n", reg_B);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_B %x\n", reg_B);
 					   return reg_B;
 					break;
 			case 0x2 : reg_C = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_C %x\n", reg_C);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_C %x\n", reg_C);
 					   return reg_C;
 					break;
 			case 0x3 : reg_D = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_D %x\n", reg_D);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_D %x\n", reg_D);
 					   return reg_D;
 					break;	
 			case 0x4 : reg_E = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_E %x\n", reg_E);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_E %x\n", reg_E);
 					   return reg_E;
 					break;
 			case 0x5 : reg_F = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_F %x\n", reg_F);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_F %x\n", reg_F);
 					   return reg_F;
 					break;
 			case 0x6 : reg_G = data_reg;
-			       	   if (verbosity == 0)
-						   printf("E: reg_G %x\n", reg_G);
+			       	//   if (verbosity == 0)
+					//	   printf("E: reg_G %x\n", reg_G);
 					   return reg_G;
 					break;
 			case 0x7 : reg_H = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_H %x\n", reg_H);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_H %x\n", reg_H);
 					   return reg_H;
 					break;
 			case 0x8 : reg_W = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_W %x\n", reg_W);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_W %x\n", reg_W);
 					   return reg_W;
 					break;
 			case 0x9 : reg_K = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_K %x\n", reg_K);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_K %x\n", reg_K);
 					   return reg_K;
 					break;	
 			case 0xA : reg_MR = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_MR %x\n", reg_MR);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_MR %x\n", reg_MR);
 					   return reg_MR;
 					break;
 			case 0xB : reg_LR = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_LR %x\n", reg_LR);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_LR %x\n", reg_LR);
 					   return reg_LR;
 					break;
 			case 0xC : reg_zero = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_zero %x\n", reg_zero);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_zero %x\n", reg_zero);
 					   return reg_zero;
 					break;
 			case 0xD : reg_t0 = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_t0 %x\n", reg_t0);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_t0 %x\n", reg_t0);
 					   return reg_t0;
 					break;
 			case 0xE : reg_t1 = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_t1 %x\n", reg_t1);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_t1 %x\n", reg_t1);
 					   return reg_t1;
 					break;
 			case 0xF : reg_t2 = data_reg;
-				       if (verbosity == 0)
-						   printf("E: reg_t2 %x\n", reg_t2);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_t2 %x\n", reg_t2);
 					   return reg_t2;
 					break;
 			default : return 0;
@@ -322,68 +322,68 @@ int GETREG(int addr_reg)
 	int REG;
 	switch(addr_reg){
 			case 0x0 : REG = reg_A;
-					   if (verbosity == 0)
-						   printf("E: reg_A %x\n", reg_A);
+					  // if (verbosity == 0)
+						//   printf("E: reg_A %x\n", reg_A);
 					break;
 			case 0x1 : REG = reg_B;
-					   if (verbosity == 0)
-						   printf("E: reg_B %x\n", reg_B);
+					  // if (verbosity == 0)
+						//   printf("E: reg_B %x\n", reg_B);
 					break;
 			case 0x2 : REG = reg_C;
-					   if (verbosity == 0)
-						   printf("E: reg_C %x\n", reg_C);
+					  // if (verbosity == 0)
+						//   printf("E: reg_C %x\n", reg_C);
 					break;
 			case 0x3 : REG = reg_D;
-				       if (verbosity == 0)
-						   printf("E: reg_D %x\n", reg_D);
+				      // if (verbosity == 0)
+						//   printf("E: reg_D %x\n", reg_D);
 					break;	
 			case 0x4 : REG = reg_E;
-				       if (verbosity == 0)
-						   printf("E: reg_E %x\n", reg_E);
+				      // if (verbosity == 0)
+						//   printf("E: reg_E %x\n", reg_E);
 					break;
 			case 0x5 : REG = reg_F;
-				       if (verbosity == 0)
-						   printf("E: reg_F %x\n", reg_F);
+				      // if (verbosity == 0)
+						//   printf("E: reg_F %x\n", reg_F);
 					break;
 			case 0x6 : REG = reg_G;
-				       if (verbosity == 0)
-						   printf("E: reg_G %x\n", reg_G);
+				       //if (verbosity == 0)
+						//   printf("E: reg_G %x\n", reg_G);
 					break;
 			case 0x7 : REG = reg_H;
-				       if (verbosity == 0)
-						   printf("E: reg_H %x\n", reg_H);
+				      // if (verbosity == 0)
+						//   printf("E: reg_H %x\n", reg_H);
 					break;
 			case 0x8 : REG = reg_W;
-				       if (verbosity == 0)
-						   printf("E: reg_W %x\n", reg_W);
+				      // if (verbosity == 0)
+					//	   printf("E: reg_W %x\n", reg_W);
 					break;
 			case 0x9 : REG = reg_K;
-				       if (verbosity == 0)
-						   printf("E: reg_K %x\n", reg_K);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_K %x\n", reg_K);
 					break;	
 			case 0xA : REG = reg_MR;
-				       if (verbosity == 0)
-						   printf("E: reg_MR %x\n", reg_MR);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_MR %x\n", reg_MR);
 					break;
 			case 0xB : REG = reg_LR;
-				       if (verbosity == 0)
-						   printf("E: reg_LR %x\n", reg_LR);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_LR %x\n", reg_LR);
 					break;
 			case 0xC : REG = reg_zero;
-				       if (verbosity == 0)
-						   printf("E: reg_zero %x\n", reg_zero);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_zero %x\n", reg_zero);
 					break;
 			case 0xD : REG = reg_t0;
-				       if (verbosity == 0)
-						   printf("E: reg_t0 %x\n", reg_t0);
+				      // if (verbosity == 0)
+					//	   printf("E: reg_t0 %x\n", reg_t0);
 					break;
 			case 0xE : REG = reg_t1;
-				       if (verbosity == 0)
-						   printf("E: reg_t1 %x\n", reg_t1);
+				     //  if (verbosity == 0)
+					//	   printf("E: reg_t1 %x\n", reg_t1);
 					break;
 			case 0xF : REG = reg_t2;
-				       if (verbosity == 0)
-						   printf("E: reg_t2 %x\n", reg_t2);
+				    //   if (verbosity == 0)
+					//	   printf("E: reg_t2 %x\n", reg_t2);
 					break;
 			default: return 0;
 					break;
