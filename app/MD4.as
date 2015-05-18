@@ -1,5 +1,4 @@
 .data
-
 W0 0x61626380
 W1 0
 W2 0
@@ -25,10 +24,11 @@ D 0x76543210
 CONSTG 0x5A827999
 CONSTH 0x6ED9EBA1
 
-.text
+s 19
 
+.text
 ADDI $ZERO, $ZERO, 0
-LD 19
+LD s
 ADD $T0, $T0, $MR
 
 LD A
@@ -52,7 +52,6 @@ CC $G
 DD $H
 
 .text
-
 # 1 РАУНД 
 
 LD W0
@@ -377,12 +376,7 @@ LD CONSTH
 ADD $B, $B, $MR
 ROT $B, $B, $K
 
-.text
-
 ADD $A, $A, $AA
 ADD $B, $B, $BB
 ADD $C, $C, $CC
 ADD $D, $D, $DD
-
-# ВЫВОД РЕЗУЛЬТАТА
-# ...
