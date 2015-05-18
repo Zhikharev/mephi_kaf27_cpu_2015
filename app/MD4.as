@@ -7,7 +7,7 @@ W4 0
 W5 0
 W6 0
 W7 0
-W8 0 
+W8 0
 W9 0
 W10 0
 W11 0
@@ -52,7 +52,7 @@ CC $G
 DD $H
 
 .text
-# 1 РАУНД 
+# 1 РАУНД
 
 LD W0
 ADDI $K, $ZERO, 3
@@ -106,7 +106,7 @@ LD W15
 ADD $K, $ZERO, $T0
 JAL B1
 
-# 2 РАУНД  
+# 2 РАУНД
 
 LD W0
 ADDI $K, $ZERO, 3
@@ -160,7 +160,7 @@ LD W15
 ADDI $K, $ZERO, 13
 JAL B2
 
-# 3 РАУНД  
+# 3 РАУНД
 
 LD W0
 ADDI $K, $ZERO, 3
@@ -219,7 +219,7 @@ JAL B3
 
 A1:
 
-# a = (a + F(b,c,d) + X[k]) <<< s        
+# a = (a + F(b,c,d) + X[k]) <<< s
 # a = (a + ((b & c) | (~b & d)) + X[k]) rol s
 # a = (a  + (d ^ (b & (c ^ d))) + X[k]) rol s
 
@@ -268,7 +268,7 @@ ROT $B, $B, $K
 
 A2:
 
-# a = (a + G(b,c,d) + X[k] + 5A827999H) <<< s 
+# a = (a + G(b,c,d) + X[k] + 5A827999H) <<< s
 # a = (a + ((b & c) | (b & d)|(c & d)) + X[k] + 0x5A827999) rol s
 # a = (a + ((b & c) | (d & (b | c))) + X[k] + 0x5A827999) rol s
 
@@ -329,7 +329,7 @@ ROT $B, $B, $K
 
 A3:
 
-# a = (a + H(b,c,d) + X[k] + 0x6ED9EBA1) <<< s 
+# a = (a + H(b,c,d) + X[k] + 0x6ED9EBA1) <<< s
 # a = (a + (b ^ c ^ d) + X[k] + 0x6ED9EBA1) rol s
 
 XOR $E, $B, $C
@@ -376,7 +376,7 @@ LD CONSTH
 ADD $B, $B, $MR
 ROT $B, $B, $K
 
-ADD $A, $A, $AA
-ADD $B, $B, $BB
-ADD $C, $C, $CC
-ADD $D, $D, $DD
+ADD $A, $A, AA
+ADD $B, $B, BB
+ADD $C, $C, CC
+ADD $D, $D, DD
