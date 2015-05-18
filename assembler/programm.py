@@ -2,7 +2,7 @@ from fullWithFlags import *
 import ctypes
 import io
 # Адресс файла с кодом на ассемблере
-parsingFile = open("try.as", 'r')
+parsingFile = open("MD4.as", 'r')
 # Файл разделенный на блоки директивами
 fileByDirects = {}
 # Метки и их адреса
