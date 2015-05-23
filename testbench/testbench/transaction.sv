@@ -61,6 +61,7 @@ class trans;
    reg_t d_rt;
    bit[9:0] d_addr;
    bit[3:0] d_imm;
+   string title;
    
    function bit op_type();
       return opcode inside{ADD,ADDI,OR,AND,XOR,NOR,SLL,ROT,BNE,NOP};
@@ -132,22 +133,22 @@ class trans;
    
    function void print ();
         if(opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
-        $display(": instraction is ------------------------- %0s , rs(%0s), rt(%0s), rd(%0s)",opcode.name(),rs.name(),rt.name(),rd.name());
+        $display("%0s: instraction is -------------------------  %0s, rs(%0s), rt(%0s), rd(%0s)",title,opcode.name(),rs.name(),rt.name(),rd.name());
         end
         else begin
             if(opcode inside{ADDI})begin
-             $display(": instaraction is ------------------------- %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", opcode.name(), imm,imm, rt.name(), rd.name());
+             $display("%0s : instaraction is ------------------------- %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, opcode.name(), imm,imm, rt.name(), rd.name());
             end
             else begin
                 if(opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
-                $display(": instraction is -------------------------- %0s, addr(%0h(%0d))", opcode.name(), addr, addr);            
+                $display("%0s: instraction is -------------------------- %0s, addr(%0h(%0d))",title, opcode.name(), addr, addr);            
                 end
                 else begin
                     if(opcode inside{JR, JALR})begin
-                    $display(": instraction is -------------------------- %0s , rs(%0s)", opcode.name(), rs.name());
+                    $display("%0s: instraction is -------------------------- %0s , rs(%0s)",title, opcode.name(), rs.name());
                     end
                     else begin
-                    $display("TRANSACTION(print method) : ERROR  instraction is not right");
+                    $display("FROM %0s TRANSACTION(print method) : ERROR  instraction is not right",title);
                     end
                 end
             end          
@@ -156,22 +157,22 @@ class trans;
   
 function void d_print ();
         if(d_opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
-        $display(": decoded instraction is -----------------  %0s , rs(%0s), rt(%0s), rd(%0s)",d_opcode.name(),d_rs.name(),d_rt.name(),d_rd.name());
+        $display("%0s: decoded instraction is -----------------  %0s , rs(%0s), rt(%0s), rd(%0s)",title,d_opcode.name(),d_rs.name(),d_rt.name(),d_rd.name());
         end
         else begin
             if(d_opcode inside{ADDI})begin
-             $display(": decoded instaraction is ----------------  %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)", d_opcode.name(), d_imm,imm, d_rt.name(), d_rd.name());
+             $display("%0s: decoded instaraction is ----------------  %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, d_opcode.name(), d_imm,imm, d_rt.name(), d_rd.name());
             end
             else begin
                 if(d_opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
-                $display(": decoded instraction is -----------------  %0s, addr(%0h(%0d))", d_opcode.name(), d_addr, d_addr);            
+                $display("%0s: decoded instraction is -----------------  %0s, addr(%0h(%0d))",title, d_opcode.name(), d_addr, d_addr);            
                 end
                 else begin
                     if(d_opcode inside{JR, JALR})begin
-                    $display(": decoded instraction is -----------------  %0s , rs(%0s)", d_opcode.name(), d_rs.name());
+                    $display("%0s: decoded instraction is -----------------  %0s , rs(%0s)",title, d_opcode.name(), d_rs.name());
                     end
                     else begin
-                    $display("TRANSACTION(decode method) : ERROR  instraction is not right");
+                    $display("FROM %0s TRANSACTION(decode method) : ERROR  instraction is not right",title);
                     end
                 end
             end          
@@ -185,38 +186,4 @@ endclass
     
 `endif
 
-/* function decode (bit[15:0] instr);
-            int loc;
-            if(instr[3:0] inside{4'b1001,4'b1010,4'b1011}) begin
-                loc = instr[5:0];
-                d_opcode = opcod_t'(loc);
-                if(d_opcode inside{JR,JALR})begin
-                    loc = instr[7:4];
-                    d_rs = reg_t'(loc);
-                end
-                else begin
-                    d_addr = instr[15:6];      
-                end
-            end
-            else begin
-                loc = instr[3:0];
-                d_opcode = opcod_t'(loc);
-                if(d_opcode == ADDI) begin
-                    d_imm = instr[7:4];
-                    loc = instr[11:8];
-                    d_rt = reg_t'(loc);
-                    loc = instr[15:12];
-                    d_rd = reg_t'(loc);
-                end
-                else begin
-                    loc = instr[7:4];
-                    d_rs = reg_t'(loc);    
-                    loc = instr[11:8];
-                    d_rt = reg_t'(loc);
-                    loc = instr[15:12];
-                    d_rd = reg_t'(loc);
-                    
-                end
-            end
-    
-   endfunction*/
+

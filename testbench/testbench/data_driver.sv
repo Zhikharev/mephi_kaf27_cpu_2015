@@ -4,7 +4,7 @@ class data_driver;
     virtual wishbone_if vif_instr;
     virtual wishbone_if vif_data;
     mailbox #(trans) mb_dr2dr; 
-    int log_falg;    
+    bit[1:0] log_flag;    
     function new (virtual wishbone_if vif_instr, virtual wishbone_if vif_data, mailbox #(trans) mb_dr2dr);
         this.vif_instr= vif_instr;
         this.vif_data = vif_data;
@@ -21,6 +21,9 @@ class data_driver;
             @(vif_data.drv);
             if(!vif_data.drv.we_out) begin
                 vif_data.drv.data_in <=  model :: get_memory(vif_data.drv.adr_out);
+                if(log_flag) begin
+                $display("DATA DRIVER : value is reterned by model %0b",vif_data.drv.data_in);
+                end
             end  
         end
     endtask
