@@ -47,9 +47,9 @@ class environment;
     task start();
       $display("Enviroment : start is on. %0t", $time);
       fork 
-         //data_drv.run;
-         //data_mon.run;
-         //instr_mon.run;
+         data_drv.run;
+         data_mon.run;
+         instr_mon.run;
          instr_drv.run;
       join_any
       $display("Enviroment : start is done. %0t", $time);
