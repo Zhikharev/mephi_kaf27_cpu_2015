@@ -8,8 +8,7 @@ def addFlags(ifile, ofile):
             file.write(bytes(chr(255), 'iso8859-1'))
             count += 2
 
-            file.write(bytes(chr(char), 'iso8859-1'))
-            count -= 1
+        file.write(bytes(chr(int(char)), 'iso8859-1'))
+        count -= 1
 
     file.write(bytes(chr(0), 'iso8859-1'))
-    
