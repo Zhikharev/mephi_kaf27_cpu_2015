@@ -81,7 +81,6 @@ class instr_driver;
     third_instr.opcode = ADDI;
     third_instr.imm = 5;
     third_instr.rt = zero;
-    //third_instr.rd = A; 
     third_instr.print;
     do begin
             @(vif.drv);
