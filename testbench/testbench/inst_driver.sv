@@ -78,27 +78,30 @@ class instr_driver;
   task init_all_reg ();
     trans third_instr;
     int num_reg = 0;
-    $cast(third_instr,instr);
     third_instr.opcode = ADDI;
     third_instr.imm = 5;
     third_instr.rt = zero;
-    third_instr.rd = A; 
+    //third_instr.rd = A; 
     third_instr.print;
     do begin
-        @(vif.drv);
-        if(vif.drv.stb_out)begin
-            num_reg = num_reg +1;
-            if(num_reg !=12) begin
-                third_instr.print;
-                send_instr(third_instr);
+            @(vif.drv);
+            if(!vif.rst) begin
+                if(vif.drv.stb_out) begin
+                    $cast(third_instr,instr);
+                    num_reg = num_reg +1;
+                    third_instr.rd = reg_t'(num_reg);
+                    send_instr(third_instr);
+                end    
+                else begin
+                    clear_intf();
+                end
             end
             else begin
-                @(vif.drv);
+                reset_intf();
             end
         end
-    end
-    while(num_reg == 17);
-  
+        while(num_reg != 12);
+        
   endtask
 
   task queue_instr ();
