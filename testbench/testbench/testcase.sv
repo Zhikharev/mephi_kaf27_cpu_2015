@@ -1,5 +1,8 @@
 `ifndef TESTCASE
 `define TESCASE
+
+
+
 //$display("testcase was read");
 
 class reduced_trans extends trans;
@@ -12,7 +15,7 @@ class reduced_trans extends trans;
         opcode != LDH;
         */       
 
-        opcode != ADDI;
+        /*opcode != ADDI;
         opcode != ADD;
         opcode != NOR;
         opcode != NOP;
@@ -23,7 +26,8 @@ class reduced_trans extends trans;
         opcode != BNE;
         opcode != OR;
         opcode != NOP;
-
+        */
+            
         /*
         opcode != LDL;
         opcode != LDH;
@@ -40,43 +44,63 @@ endclass
 
 
 
+program full_set (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf, control_if cont_cpu_intf);
+
+    environment env;
+    trans instr;
+    
+    initial begin
+        instr = new();
+        env = new(instr_cpu_intf,data_cpu_intf,cont_cpu_intf);
+        env.build;
+    
+    end    
+    
+endprogram
+
 program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf, control_if cont_cpu_intf);
     
     bit[15:0]instr[$];
     environment env;
     reduced_trans r_trans;
+    int mcd;
+    bit[15:0] captured_data;
+    
+    localparam FULL_LOG = 2'b11;
+    localparam NON_LOG = 2'b00;
+    localparam EX_LOG = 2'b10;
+    localparam MAIN_LOG = 2'b01;
+    
+    localparam QUEUE_MODE = 2'b00;
+    localparam RAND_MODE = 2'b01;
+    localparam INIT_REGS = 2'b10;
+    localparam FULL_SET = 2'b11;
    
    initial begin
         $display("TESTCASE : START is on %0t",$time);
         r_trans = new();            
         env = new(instr_cpu_intf,data_cpu_intf,cont_cpu_intf);
         env.build;
+        //log contrl
+        env.instr_drv.log_flag = FULL_LOG;
+        env.instr_mon.log_flag = FULL_LOG;
+        env.data_mon.log_flag =  NON_LOG;
+        env.data_drv.log_flag =  NON_LOG;
+        //test_control
+        env.instr_drv.run_control = RAND_MODE;
+        
+        env.instr_drv.cycles = 50;
+       
         $cast(env.instr_drv.instr, r_trans);
+        //mcd = $fopen("instr.bin","rb");
         env.run;
-                 
-   
         $display("TESTCASE : DONE  %0t", $time);
+        
    end
-        /*
-        $fopen("instr.bin");
-        if(!file_avib)begin
-            $display("TESCASE : ERROR can not find file instr.bin");
-        end
-        else begin
-            $readmemb("instr.bin",instr);
-        end    
-        */
+    
+        
 endprogram
-/*program test_decode();
-    bit[15:0] instr;
-    int i;
-    transaction trans;
-    repeat(20) begin
-        std :: randomize(instr) with {instr[3:0] !=4'b1101 && instr[3:0] !=4'b1110 && instr[3:0] !=4'b1111};
-        trans.decode(instr);
-        trans.d_print;
-    end   
-endprogram*/
+
 
 
 

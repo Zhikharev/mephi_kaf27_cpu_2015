@@ -75,7 +75,7 @@ class instr_driver;
         
     endtask
   
-  task init_all_reg ();
+  /*task init_all_reg ();
     trans third_instr;
     int num_reg = 0;
     third_instr.opcode = ADDI;
@@ -126,12 +126,13 @@ class instr_driver;
   
   endtask  
     
-
+*/
 
     task send_instr (trans item);
         vif.drv.akn_in <= 1'b1;
         vif.drv.data_in <= item.pack;
         if(log_flag  inside {EX_LOG,FULL_LOG})begin
+            $display("instraction freom instraction driver is %0b ", vif.drv.data_in);
             item.decode(vif.drv.data_in);        
             item.d_print;
             $display(" INSTR DRIVER : sending instraction ------- %0b on %0t",vif.drv.data_in,$time);  
@@ -154,7 +155,7 @@ class instr_driver;
         if(run_control == QUEUE_MODE) begin        
             $display("INSTR DRIVER : mode queue is on ");
             $display("INSTR DRIVER : amount of elements of qeueu is %0d",file_instr.size);
-            queue_instr;
+            //queue_instr;
          end
          if(run_control == RAND_MODE)begin
             $display("INSTR DRIVER : mode random is om");
@@ -163,7 +164,7 @@ class instr_driver;
          end
         if(run_control == INIT_REGS) begin
             $display("INSTR DRIVER : mode init_al_reg is on");
-            init_all_reg;
+            //init_all_reg;
         end
     endtask
  

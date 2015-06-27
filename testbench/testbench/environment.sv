@@ -14,6 +14,7 @@ class environment;
    mailbox #(trans) mb_dmon2sb;
    mailbox #(bit[15:0]) mb_dr2dr;
    mailbox #(bit[15:0]) mb_mon2mon;
+   int i =0;
         
    function new(virtual  wishbone_if instr_cpu_intf, virtual wishbone_if data_cpu_intf, virtual control_if cont_cpu_intf); 
       this.instr_cpu_intf = instr_cpu_intf;
@@ -65,6 +66,13 @@ class environment;
         reset();
         start();
         wait_for_end();
+        $display("__________________ ++++++++++ _________ get all registers ");
+        model :: allreg(0);
+        repeat(16) begin
+            $display("test");
+            i=i+1;
+            model :: GETREG(i);
+        end
     endtask       
 
     
