@@ -10,11 +10,11 @@
 ###########################################################
 */
 module CU(
-	input [15:0] instr,
+	input [3:0] op,
 	output memtoreg,
 	output memwrite,
 	output branch,
-	output [3:0] alucontrol,
+	output [2:0] alucontrol,
 	output alusrc,
 	output regdst,
 	output regwrite,
@@ -35,7 +35,6 @@ localparam ST =   4'b1010;
 localparam JMP =  4'b1011;
 localparam NOP =  4'b1100;
 	 
-wire [3:0] op;
 reg regwrite_reg;
 reg regdst_reg;
 reg alusrc_reg;
@@ -43,26 +42,7 @@ reg branch_reg;
 reg memwrite_reg;
 reg memtoreg_reg;
 reg jump_reg;
-reg [3:0] alucontrol_reg;
-
-assign op = instr[15:12];
-
-
-// always @*
-// 	case(aluop)
-// 		2’b00: alucontrol <= 3’b010; // add (for lw/sw/addi)
-// 		2’b01: alucontrol <= 3’b110; // sub (for beq)
-// 		default: 
-// 			case(funct) // R-type instructions
-// 				6’b100000: alucontrol <= 3’b010; // add
-// 				6’b100010: alucontrol <= 3’b110; // sub
-// 				6’b100100: alucontrol <= 3’b000; // and
-// 				6’b100101: alucontrol <= 3’b001; // or
-// 				6’b101010: alucontrol <= 3’b111; // slt
-// 				default: alucontrol <= 3’bxxx; // ???
-// 			endcase
-// 	endcase
-
+reg [2:0] alucontrol_reg;
 
 always @*
 	case(op)
@@ -99,7 +79,7 @@ always @*
 				memwrite_reg <= 1'b0;
 				memtoreg_reg <= 1'b0;
 				jump_reg <= 1'b0;
-				alucontrol <= 3'b001;
+				alucontrol_reg <= 3'b001;
 			end
 
 		AND:
@@ -207,10 +187,10 @@ always @*
 				memwrite_reg <= 1'b0;
 				memtoreg_reg <= 1'b0;
 				jump_reg <= 1'b1;
-				alucontrol_reg <= 3'bxxx;
+				alucontrol_reg <= 3'b000;
 			end
 
-		NOP:
+		default:
 			begin
 				regwrite_reg <= 1'b0;
 				regdst_reg <= 1'b0;
@@ -218,9 +198,10 @@ always @*
 				branch_reg <= 1'b0;
 				memwrite_reg <= 1'b0;
 				memtoreg_reg <= 1'b0;
-				jump_reg <= 1'b1;
+				jump_reg <= 1'b0;
 				alucontrol_reg <= 3'b111;
 			end
+	endcase
 
 assign regwrite = regwrite_reg;
 assign regdst = regdst_reg;
