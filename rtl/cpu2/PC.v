@@ -13,26 +13,18 @@ module  PC(
 	input clk,
 	input reset,
 	input [9:0] pc_in,
-	input pcsrc,
 	output [9:0] pc_out
 	);
 
-reg [9:0] pc_out_reg;
+reg [9:0] pc_reg;
 reg [9:0] pc_mux;
 
-// always (posedge clk)
-// begin
-// 	case (pcsrc)
-// 		1'b0: pc_mux = pc_out_reg + 2;
-// 		2'b0: pc_mux = pcbranch;
-// 	endcase;
-
-always (posedge clk, posedge reset)
+always @(posedge clk)
 begin
-	if reset
-		pc_out_reg = 0;
-	else
-		pc_out_reg = pc_in;
+		pc_reg <= pc_in;
+		if (reset == 1)
+			pc_reg <= 10'b0;
+end
 
-assign pc_out = pc_out_reg;
+assign pc_out = pc_reg;
 endmodule
