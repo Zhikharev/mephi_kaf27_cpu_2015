@@ -20,9 +20,10 @@ module testbench ();
     cpu_no_ld_st_test cpu_no_ldst(input_cpu_intf,output_cpu_intf,control_intf);
     
     assign inner_intf.pc = dut.unit.pc_1;
-    assign inner_intf.register[0] = cpu_top.rf.reg[0000]
+    
+    
        
-    cpu_top dut (
+    CPU_TOP dut(
         .sys_clk        (clk), 
         .sys_rst        (control_intf.reset),
         .data_data_o    (output_cpu_intf.data_out),
