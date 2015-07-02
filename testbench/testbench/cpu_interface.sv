@@ -37,7 +37,7 @@ interface wishbone_if (input clk,input rst);
                 input data_in;
                 input akn_in;
                 input we_out;
-                input sel_out;
+                input stb_out;
                 input adr_out;
                 input data_out;
                 input akn_out;

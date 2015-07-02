@@ -84,8 +84,8 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         //log contrl
         env.instr_drv.log_flag = FULL_LOG;
         env.instr_mon.log_flag = FULL_LOG;
-        env.data_mon.log_flag =  NON_LOG;
-        env.data_drv.log_flag =  NON_LOG;
+       // env.data_mon.log_flag =  NON_LOG;
+        //env.data_drv.log_flag =  NON_LOG;
         //test_control
         env.instr_drv.run_control = RAND_MODE;
         

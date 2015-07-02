@@ -34,7 +34,7 @@ class instr_monitor;
                 if(vif.mon.akn_in) begin
                      model :: decode(vif.mon.data_in,1);
                     if(log_flag inside{FULL_LOG,EX_LOG,MAIN_LOG})begin
-                        $display(" INSTR MONITOR : got instraction ----------- %0b on %0t",vif.mon.data_in,$time);
+                        $display(" INSTR MONITOR : got   instraction ----------- %0b on %0t",vif.mon.data_in,$time);
                         instr_for_decode.title = "INSTR MONITOR";
                         instr_for_decode.decode(vif.mon.data_in);
                         instr_for_decode.d_print;

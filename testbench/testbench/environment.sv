@@ -5,6 +5,7 @@ class environment;
    virtual wishbone_if  instr_cpu_intf;
    virtual wishbone_if  data_cpu_intf;
    virtual control_if   cont_cpu_intf;
+   virtual inner_if      inner_if_intf;
    instr_monitor instr_mon;  
    instr_driver instr_drv;
    data_monitor data_mon;
@@ -68,11 +69,6 @@ class environment;
         wait_for_end();
         $display("__________________ ++++++++++ _________ get all registers ");
         model :: allreg(0);
-        repeat(16) begin
-            $display("test");
-            i=i+1;
-            model :: GETREG(i);
-        end
     endtask       
 
     
