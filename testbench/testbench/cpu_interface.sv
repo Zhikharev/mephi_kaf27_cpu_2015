@@ -1,10 +1,6 @@
 `ifndef CPU_INTERFACE
 `define CPU_INTERFACE 
 
-///////////////////
-/////wishbone interface /
-//////////
-
 
 interface wishbone_if (input clk,input rst);
         logic   [15:0]  adr_out;//use
@@ -52,9 +48,22 @@ interface control_if (input clk);
 endinterface 
 
 interface inner_if (input clk, input rst);
-    logic [31:0] register[0:15];
+    logic [31:0] a_reg;
+    logic [31:0] b_reg;
+    logic [31:0] c_reg;
+    logic [31:0] d_reg;
+    logic [31:0] e_reg;
+    logic [31:0] f_reg;
+    logic [31:0] g_reg;
+    logic [31:0] h_reg;
+    logic [31:0] w_reg;
+    logic [31:0] k_reg;
+    logic [31:0] mr_reg;
+    logic [31:0] lr_reg;
+    logic [31:0] zero_reg;
+    logic [31:0] t0_reg;
+    logic [31:0] t1_reg;
+    logic [31:0] t2_reg  
     logic [31:0] pc;
-    logic [15:0] mon2mon;
-    logic [15:0] data_mon2data_drv; // spare interface
 endinterface
 `endif

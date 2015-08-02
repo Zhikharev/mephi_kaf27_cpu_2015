@@ -58,7 +58,12 @@ program full_set (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf, control
     
 endprogram
 
-program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf, control_if cont_cpu_intf);
+program cpu_no_ld_st_test (
+    wishbone_if instr_cpu_intf, 
+    wishbone_if data_cpu_intf, 
+    control_if  cont_cpu_intf,
+    inner_if    inner_intf
+);
     
     bit[15:0]instr[$];
     environment env;
@@ -76,10 +81,10 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
     localparam INIT_REGS = 2'b10;
     localparam FULL_SET = 2'b11;
    
-   initial begin
+    task run_test();
         $display("TESTCASE : START is on %0t",$time);
         r_trans = new();            
-        env = new(instr_cpu_intf,data_cpu_intf,cont_cpu_intf);
+        env = new(instr_cpu_intf,data_cpu_intf,cont_cpu_intf,inner_intf);
         env.build;
         //log contrl
         env.instr_drv.log_flag = FULL_LOG;
@@ -96,7 +101,7 @@ program cpu_no_ld_st_test (wishbone_if instr_cpu_intf, wishbone_if data_cpu_intf
         env.run;
         $display("TESTCASE : DONE  %0t", $time);
         
-   end
+   endtask
     
         
 endprogram
