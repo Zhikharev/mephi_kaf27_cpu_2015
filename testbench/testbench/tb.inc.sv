@@ -1,3 +1,4 @@
+/*
 `include "cpu_interface.sv"
 `include "model_pkg.sv"
 `include "transaction.sv"
@@ -8,3 +9,14 @@
 `include "environment.sv"
 `include "testcase.sv"
 `include "topmodule.sv" 
+*/
+`include "my_cpu_interface.sv"
+//`include "my_transaction.sv"
+`include "my_3transaction.sv"
+`include "my_instr_driver.sv"
+`include "ideal_cpu.sv"
+`include "my_scorebord.sv"
+`include "my_mem.sv"
+`include "my_environment.sv"
+`include "my_testcase.sv"
+`include "my_topmodule.sv"

@@ -63,6 +63,7 @@ class trans;
    bit[3:0] d_imm;
    string title;
    
+   
    function bit op_type();
       return opcode inside{ADD,ADDI,OR,AND,XOR,NOR,SLL,ROT,BNE,NOP};
    endfunction
@@ -92,11 +93,14 @@ class trans;
          inst[9:0]=addr;
          end
       end
+      $display("EXAMINATION from pack TRANSACTION ---------------- opcode is(%0b) rs(%0b) or imm(%0b) rt(%0b) rd(%0b)",opcode,rs,imm,rt,rd);
+      $display("EXAMINATION from pack INSTRACTION is ------------------- %0b",inst);      
       return inst;
    endfunction
    
    function decode (bit[15:0] instr);
             int loc;
+            $display("TRANSACTION --------- decode method has accepted instraction %0b",instr);
             if(instr[15:12] inside{4'b1001,4'b1010,4'b1011}) begin
                 loc = instr[15:10];
                 d_opcode = opcod_t'(loc);
@@ -133,19 +137,19 @@ class trans;
    
    function void print ();
         if(opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
-        $display("%0s: instraction is -------------------------  %0s, rs(%0s), rt(%0s), rd(%0s)",title,opcode.name(),rs.name(),rt.name(),rd.name());
+        $display("%0s: instraction is -------------------------  %0s(%0b), rs(%0s), rt(%0s), rd(%0s)",title,opcode.name(),opcode,rs.name(),rt.name(),rd.name());
         end
         else begin
             if(opcode inside{ADDI})begin
-             $display("%0s : instaraction is ------------------------- %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, opcode.name(), imm,imm, rt.name(), rd.name());
+             $display("%0s : instaraction is ------------------------- %0s(%0b) , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, opcode.name(),opcode, imm,imm, rt.name(), rd.name());
             end
             else begin
                 if(opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
-                $display("%0s: instraction is -------------------------- %0s, addr(%0h(%0d))",title, opcode.name(), addr, addr);            
+                $display("%0s: instraction is -------------------------- %0s(%0b), addr(%0h(%0d))",title, opcode.name(),opcode, addr, addr);            
                 end
                 else begin
                     if(opcode inside{JR, JALR})begin
-                    $display("%0s: instraction is -------------------------- %0s , rs(%0s)",title, opcode.name(), rs.name());
+                    $display("%0s: instraction is -------------------------- %0s(%0b) , rs(%0s)",title, opcode.name(),opcode, rs.name());
                     end
                     else begin
                     $display("FROM %0s TRANSACTION(print method) : ERROR  instraction is not right",title);
@@ -157,22 +161,22 @@ class trans;
   
 function void d_print ();
         if(d_opcode inside{ADD,OR,AND,XOR,NOR,SLL,ROT,BNE})begin
-        $display("%0s: decoded instraction is -----------------  %0s , rs(%0s), rt(%0s), rd(%0s)",title,d_opcode.name(),d_rs.name(),d_rt.name(),d_rd.name());
+        $display("%0s: decoded instraction is -----------------  %0s(%0b) , rs(%0s), rt(%0s), rd(%0s)",title,d_opcode.name(),d_opcode,d_rs.name(),d_rt.name(),d_rd.name());
         end
         else begin
             if(d_opcode inside{ADDI})begin
-             $display("%0s: decoded instaraction is ----------------  %0s , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, d_opcode.name(), d_imm,imm, d_rt.name(), d_rd.name());
+             $display("%0s: decoded instaraction is ----------------  %0s(%0b) , imm(%0b(%0d)), rt(%0s), rd(%0s)",title, d_opcode.name(),d_opcode, d_imm,imm, d_rt.name(), d_rd.name());
             end
             else begin
                 if(d_opcode inside{LDL,LDH,STL,STH,JMP,JAL})begin
-                $display("%0s: decoded instraction is -----------------  %0s, addr(%0h(%0d))",title, d_opcode.name(), d_addr, d_addr);            
+                $display("%0s: decoded instraction is -----------------  %0s(%0b), addr(%0h(%0d))",title, d_opcode.name(),d_opcode, d_addr, d_addr);            
                 end
                 else begin
                     if(d_opcode inside{JR, JALR})begin
-                    $display("%0s: decoded instraction is -----------------  %0s , rs(%0s)",title, d_opcode.name(), d_rs.name());
+                    $display("%0s: decoded instraction is -----------------  %0s(%0b) , rs(%0s)",title, d_opcode.name(),d_opcode, d_rs.name());
                     end
                     else begin
-                    $display("FROM %0s TRANSACTION(decode method) : ERROR  instraction is not right",title);
+                    $display("FROM %0s TRANSACTION(decode method) : ERROR  instraction is not right %0b",title,d_opcode);
                     end
                 end
             end          
@@ -185,5 +189,56 @@ endclass
 
     
 `endif
+
+/*
+
+//viribles for not full randomisation
+   
+   opcode_t nr_opcode;
+   rand bit[3:0] nr_imm;
+   rand bit[9:0] nr_addr;
+   rand reg_t nr_rs;
+   rand reg_t nr_rd;
+   rand reg_t nr_rt;
+   
+
+
+  function bit nr_op_type();
+      return nr_opcode inside{ADD,ADDI,OR,AND,XOR,NOR,SLL,ROT,BNE,NOP};
+   endfunction
+
+   
+   function bit[15:0] nr_pack ();
+      bit[15:0] inst;
+      if(this.nr_op_type()) begin
+         nr_inst[15:12] = nr_opcode[3:0];
+         if(nr_opcode == ADDI)begin
+             inst[11:8] = nr_imm;
+             inst[8:4] = nr_rt;
+             inst[3:0] = nr_rd;
+         end
+         else begin
+            inst[11:8]=nr_rs;
+            inst[8:4]=nr_rt;
+            inst[3:0]=nr_rd;
+         end
+      end
+      else begin 
+      inst[15:10] = nr_opcode;
+         if(opcode inside {JR, JALR})begin
+         inst[8:0]=0;
+         inst[7:4]=nr_rs;
+         end
+         else begin
+         inst[9:0]=nr_addr;
+         end
+      end
+      return inst;
+   endfunction
+
+
+
+*/
+
 
 
