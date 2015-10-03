@@ -7,7 +7,7 @@
 */
 
 module register_file (
-    input[4:0] addr_sourse,
+    input[4:0] addr_source,
     input[4:0] addr_temp,
     input[4:0] addr_dest,
     input[4:0] addr_wr_dest,
@@ -39,7 +39,7 @@ begin
         else begin
         end
 end
-assign s_data_out = rf[addr_sourse];
+assign s_data_out = rf[addr_source];
 assign t_data_out = rf[addr_temp];
 assign d_data_out = rf[addr_dest];
 

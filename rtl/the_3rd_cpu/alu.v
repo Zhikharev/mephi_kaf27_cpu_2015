@@ -1,8 +1,6 @@
-3
 module alu(
     input[31:0] srca,
     input[31:0] srcb,
-    input[3:0] shift,
     input[2:0] control,
     output[31:0] resalt,
     output zero_flag
@@ -43,11 +41,11 @@ begin
         end
         
         SLL:begin
-            local_resalt = srca << shift;
+            local_resalt = srca << srcb;
             local_flag =1'b0;
         end
         ROT:begin
-            local_resalt = (srca << shift) | (srca >> shift);
+            local_resalt = (srca << srcb) | (srca >> srcb);
             local_flag =1'b0;
         end
         SUB:begin
